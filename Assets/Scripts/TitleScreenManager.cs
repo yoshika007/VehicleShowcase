@@ -5,7 +5,7 @@ public class TitleScreenManager : MonoBehaviour
 {
     public void StartShowcase()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("ShowcaseScene");
     }
 
 }
