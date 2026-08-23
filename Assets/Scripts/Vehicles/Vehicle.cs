@@ -5,7 +5,7 @@ public abstract class Vehicle : MonoBehaviour
     [SerializeField] private string displayName;
     [SerializeField] private string category;
 
-    //ENCAPSULATION
+    // ENCAPSULATION
     public string DisplayName
     {
         get => displayName;

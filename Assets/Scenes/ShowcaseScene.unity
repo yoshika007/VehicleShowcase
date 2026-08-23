@@ -789,9 +789,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleShowcaseManager
   vehiclePrefabs:
-  - {fileID: 3831433149264519913, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
-  - {fileID: 9062147881238350366, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
-  - {fileID: 8593089063253140159, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
+  - {fileID: -7342034073049832200, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+  - {fileID: 1946071844309559333, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
+  - {fileID: 2760597074614571929, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
   displaypoint: {fileID: 1142547361}
 --- !u!4 &1628243156
 Transform:

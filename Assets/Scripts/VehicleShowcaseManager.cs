@@ -3,11 +3,11 @@ using UnityEngine;
 public class VehicleShowcaseManager : MonoBehaviour
 {
 
-    [SerializeField] private GameObject[] vehiclePrefabs;
+    [SerializeField] private Vehicle[] vehiclePrefabs;
     [SerializeField] private Transform displaypoint;
 
     private int currentVehicleIndex;
-    private GameObject currentVehicle;
+    private Vehicle currentVehicle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,13 +35,18 @@ public class VehicleShowcaseManager : MonoBehaviour
         ShowVehicle();
     }
 
+    // ABSTRUCTION
     public void ShowVehicle()
     {
         if(currentVehicle != null)
         {
-            Destroy(currentVehicle);
+            Destroy(currentVehicle.gameObject);
         }
         currentVehicle = Instantiate(vehiclePrefabs[currentVehicleIndex], displaypoint.position, displaypoint.rotation);
+
+        Debug.Log(currentVehicle.DisplayName);
+        Debug.Log(currentVehicle.Category);
+        Debug.Log(currentVehicle.GetDiscription());
     }
 
 }

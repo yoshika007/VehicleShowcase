@@ -1,9 +1,9 @@
 using UnityEngine;
 
-//INHERITANCE
+// INHERITANCE
 public class ClassicCar : Vehicle
 {
-    //POLYMORPHISM
+    // POLYMORPHISM
     public override string GetDiscription()
     {
         return "A classic vehicle with traditional styling and charactor";
