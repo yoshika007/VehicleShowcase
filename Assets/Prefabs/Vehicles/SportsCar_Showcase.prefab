@@ -77,5 +77,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c74aee9ff54f1ea964afca46062a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SportsCar
-  displayName: Sport Car
+  displayName: APEX GT
   category: Sports Car

@@ -77,5 +77,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4603dbb56560c4d75b8176b4c3c7ed05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterTruck
-  displayName: Monster Truck
+  displayName: TRAILMASTER
   category: Off-Road

@@ -1,10 +1,16 @@
 using UnityEngine;
+using TMPro;
+using Unity.VisualScripting;
 
 public class VehicleShowcaseManager : MonoBehaviour
 {
 
     [SerializeField] private Vehicle[] vehiclePrefabs;
     [SerializeField] private Transform displaypoint;
+
+    [SerializeField] private TMP_Text vehicleNameText;
+    [SerializeField] private TMP_Text categoryText;
+    [SerializeField] private TMP_Text descriptionText;
 
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
@@ -44,9 +50,14 @@ public class VehicleShowcaseManager : MonoBehaviour
         }
         currentVehicle = Instantiate(vehiclePrefabs[currentVehicleIndex], displaypoint.position, displaypoint.rotation);
 
-        Debug.Log(currentVehicle.DisplayName);
-        Debug.Log(currentVehicle.Category);
-        Debug.Log(currentVehicle.GetDiscription());
+        UpdateVehicleInfo();
+    }
+
+    private void UpdateVehicleInfo()
+    {
+        vehicleNameText.text = currentVehicle.DisplayName;
+        categoryText.text = currentVehicle.Category;
+        descriptionText.text = currentVehicle.GetDiscription();
     }
 
 }
