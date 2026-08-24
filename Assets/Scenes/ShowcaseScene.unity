@@ -1148,6 +1148,9 @@ MonoBehaviour:
   - {fileID: -2016204142287490404, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
   - {fileID: -5054965624577890401, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
   - {fileID: 6742294041843850954, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
+  - {fileID: -581852860843720124, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  - {fileID: -2337498436412758096, guid: b5b56907ec3734ec09cda853815d29cc, type: 3}
+  - {fileID: -7436635528002281685, guid: 9057df944c96d438286f6573b8d0b43f, type: 3}
   displaypoint: {fileID: 1142547361}
   vehicleNameText: {fileID: 1663055428}
   categoryText: {fileID: 897741179}

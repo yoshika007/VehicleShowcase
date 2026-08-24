@@ -6,6 +6,6 @@ public class MonsterTruck : Vehicle
     // POLYMORPHISM
     public override string GetDiscription()
     {
-        return "A powerfull monster truck built around oversized wheels and rugged presence";
+        return "A powerfull monster truck built around oversized wheels and rugged presence.";
     }
 }
