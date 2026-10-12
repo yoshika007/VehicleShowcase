@@ -1,0 +1,5 @@
+Lakeside overlook trial, 2026-10-12.
+All scenery meshes and materials were created locally for VehicleShowcase; no third-party asset downloads or purchases.
+Visual reference: existing Assets/UI/Title/TitleBackdrop.png (sunny lake, mountains, green slopes, road).
+Original ShowcaseFloor, StudioBackdrop, and Directional Light remain in the scene, disabled. Original studio assets remain intact.
+Previous studio checkpoint: d7a34a1.
