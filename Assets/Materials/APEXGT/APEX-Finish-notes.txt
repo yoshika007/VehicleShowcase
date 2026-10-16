@@ -1,0 +1,6 @@
+APEX GT paint and glass trial, 2026-10-16.
+Original Color material, Color.png palette, source meshes, emissive lamps and tire material assets remain unchanged.
+Only SportsCar_Showcase root body's first material slot uses APEX_PaintAndGlass.
+APEX_FinishMask is linear data: R metallic, A smoothness. Paint: 0.18 / 0.78. Tinted-glass approximation: 0.25 / 0.90. Other palette regions: 0 / 0.5.
+Reflection cubemap baked locally from ShowcaseScene at world (0,1.1,0), 256px per face, including non-static scenery. Prefab Custom reflection probe intensity 0.85, no realtime capture. Tire renderers retain skybox-only reflections so they do not pick up the local probe.
+No external assets downloaded or purchased. Re-bake the cubemap if the showcase environment changes substantially.
