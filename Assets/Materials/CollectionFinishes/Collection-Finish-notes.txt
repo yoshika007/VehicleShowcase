@@ -1,0 +1,15 @@
+Vehicle collection paint and glass finishes.
+Uses the existing free vehicle palette and APEX's baked lakeside reflection. Source meshes, shared Color and Color Bloom materials remain unchanged.
+Each vehicle has its own linear metallic/smoothness mask (R=metallic, A=smoothness). No mipmaps; uncompressed; bilinear. Non-target palette regions retain 0 metallic and 0.5 smoothness.
+Glass is an opaque tinted approximation: metallic 0.25, smoothness 0.90. Pale painted accents: 0.08 / 0.70.
+SENTINEL shares its dark body and trim palette; both receive a restrained satin finish. Separate tire renderers keep their original material and skybox reflections, without the local probe. Emissive material slots are unchanged.
+The shared cubemap is a static capture from ShowcaseScene; re-bake it if the environment changes. No realtime capture or external asset downloads.
+
+REGENT S: paint metallic 0.18, smoothness 0.76; mask 512 px; 34 body UV samples verified.
+CITYLINE: paint metallic 0.14, smoothness 0.74; mask 512 px; 20 body UV samples verified.
+SENTINEL: paint metallic 0.04, smoothness 0.56; mask 512 px; 132 body UV samples verified.
+TRAILMASTER: paint metallic 0.22, smoothness 0.7; mask 512 px; 28 body UV samples verified.
+VORTEX V8: paint metallic 0.2, smoothness 0.78; mask 512 px; 26 body UV samples verified.
+WORKHORSE: paint metallic 0.12, smoothness 0.68; mask 512 px; 17 body UV samples verified.
+INTERCEPTOR: paint metallic 0.12, smoothness 0.74; mask 1024 px; 39 body UV samples verified.
+WAYFARER: paint metallic 0.1, smoothness 0.68; mask 512 px; 24 body UV samples verified.

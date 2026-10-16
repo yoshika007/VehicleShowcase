@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Unity.VisualScripting;
 
@@ -11,6 +12,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private TMP_Text vehicleNameText;
     [SerializeField] private TMP_Text categoryText;
     [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private TMP_Text vehicleCounterText;
 
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
@@ -41,6 +43,11 @@ public class VehicleShowcaseManager : MonoBehaviour
         ShowVehicle();
     }
 
+    public void BackToTitle()
+    {
+        SceneManager.LoadScene("TitleScene");
+    }
+
     // ABSTRUCTION
     public void ShowVehicle()
     {
@@ -58,6 +65,7 @@ public class VehicleShowcaseManager : MonoBehaviour
         vehicleNameText.text = currentVehicle.DisplayName;
         categoryText.text = currentVehicle.Category;
         descriptionText.text = currentVehicle.GetDiscription();
+        vehicleCounterText.text = $"{currentVehicleIndex + 1} / {vehiclePrefabs.Length}";
     }
 
 }
