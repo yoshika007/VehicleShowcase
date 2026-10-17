@@ -14,6 +14,8 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text vehicleCounterText;
 
+    [SerializeField] private VehicleDragRotation vehicleDragRotation;
+
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
 
@@ -56,6 +58,9 @@ public class VehicleShowcaseManager : MonoBehaviour
             Destroy(currentVehicle.gameObject);
         }
         currentVehicle = Instantiate(vehiclePrefabs[currentVehicleIndex], displaypoint.position, displaypoint.rotation);
+
+        if (vehicleDragRotation != null)
+            vehicleDragRotation.SetVehicle(currentVehicle.transform);
 
         UpdateVehicleInfo();
     }
