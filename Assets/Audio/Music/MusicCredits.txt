@@ -1,0 +1,20 @@
+TitleScene trial music
+
+Chill (Loopable)
+Artist: Alex McCulloch (Pro Sensory)
+Source: https://opengameart.org/content/chill-loopable
+Original download: https://opengameart.org/sites/default/files/chillloopable_0.mp3
+License: CC0 1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+The source page states the music is public domain and requests credit to Alex McCulloch.
+Credit: Music: Chill (Loopable) by Alex McCulloch.
+Downloaded for VehicleShowcase on 2026-10-17. Original audio unchanged.
+
+Current TitleScene selection: Upbeat Title Theme Loop
+Artist: beardalaxy
+Source: https://opengameart.org/content/upbeat-title-theme-loop
+Download: https://opengameart.org/sites/default/files/title_in_game.ogg
+License: CC0 1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Credit appreciated but not required by the artist. Original audio unchanged.
+Previous Chill (Loopable) track retained as an unused alternative.
