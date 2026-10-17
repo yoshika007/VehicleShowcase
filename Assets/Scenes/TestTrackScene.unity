@@ -15330,7 +15330,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3831433149264519913, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
       propertyPath: m_Name
-      value: "Sports Car \u2014 scale reference (parked)"
+      value: "Sports Car \u2014 Test Drive"
       objectReference: {fileID: 0}
     - target: {fileID: 4494641402958919763, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15379,7 +15379,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3831433149264519913, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1797075410}
+    - targetCorrespondingSourceObject: {fileID: 3831433149264519913, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1797075409}
   m_SourcePrefab: {fileID: 100100000, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
 --- !u!4 &608521396 stripped
 Transform:
@@ -22678,8 +22684,9 @@ GameObject:
   - component: {fileID: 932022080}
   - component: {fileID: 932022079}
   - component: {fileID: 932022081}
+  - component: {fileID: 932022082}
   m_Layer: 0
-  m_Name: Track Overview Camera
+  m_Name: Test Drive Follow Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22803,6 +22810,23 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &932022082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932022077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9fea0338d97645e29f9071fbe1c787f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveCameraFollow
+  target: {fileID: 608521396}
+  followOffset: {x: 0.0000008940697, y: 3.6, z: -7.500001}
+  lookOffset: {x: -0.000027318583, y: 0.66716063, z: 5.1648526}
+  followSharpness: 10
+  lookSharpness: 12
 --- !u!1 &935728275
 GameObject:
   m_ObjectHideFlags: 0
@@ -46394,6 +46418,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1796162024}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1797075404 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3831433149264519913, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+  m_PrefabInstance: {fileID: 608521395}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1797075409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797075404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2627b51df750494f94b6eb91a5389a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveMovement
+  moveSpeed: 8
+  turnSpeed: 60
+--- !u!54 &1797075410
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1797075404}
+  serializedVersion: 5
+  m_Mass: 1200
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 80
+  m_CollisionDetection: 2
 --- !u!1 &1799516547
 GameObject:
   m_ObjectHideFlags: 0
