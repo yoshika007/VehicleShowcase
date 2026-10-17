@@ -4142,8 +4142,8 @@ MonoBehaviour:
   vehicleCounterText: {fileID: 1458511591}
   vehicleDragRotation: {fileID: 1769842590}
   buttonAudio: {fileID: 1628243157}
-  navigationSound: {fileID: 8300000, guid: 771fb0c45d5144a709ef0673e73a431b, type: 3}
-  backSound: {fileID: 8300000, guid: 077f9ae27545c4190985fc36b05650a6, type: 3}
+  navigationSound: {fileID: 8300000, guid: a5de864cccb6a476493d451f901a6ab1, type: 3}
+  backSound: {fileID: 8300000, guid: 86bbd39c044924a7b906c89d69d6d1fd, type: 3}
   navigationButtons:
   - {fileID: 1906402056}
   - {fileID: 2049102403}
