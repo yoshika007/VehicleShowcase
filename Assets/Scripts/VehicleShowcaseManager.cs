@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -16,6 +17,13 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     [SerializeField] private VehicleDragRotation vehicleDragRotation;
 
+    [SerializeField] private AudioSource buttonAudio;
+    [SerializeField] private AudioClip navigationSound;
+    [SerializeField] private AudioClip backSound;
+    [SerializeField] private UnityEngine.UI.Button[] navigationButtons = new UnityEngine.UI.Button[0];
+    [SerializeField, Min(0f)] private float backTransitionDelay = 0.22f;
+
+    private bool isReturningToTitle;
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
 
@@ -27,6 +35,8 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void ShowNextVehicle()
     {
+        if (isReturningToTitle) return;
+        PlayButtonSound(navigationSound);
         currentVehicleIndex++;
         if(currentVehicleIndex >= vehiclePrefabs.Length)
         {
@@ -37,6 +47,8 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void ShowPreviousVehicle()
     {
+        if (isReturningToTitle) return;
+        PlayButtonSound(navigationSound);
         currentVehicleIndex--;
         if(currentVehicleIndex < 0)
         {
@@ -47,6 +59,29 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void BackToTitle()
     {
+        if (isReturningToTitle) return;
+        isReturningToTitle = true;
+        foreach (var button in navigationButtons)
+            if (button != null) button.interactable = false;
+        StartCoroutine(ReturnToTitle());
+    }
+
+    private void PlayButtonSound(AudioClip clip)
+    {
+        if (buttonAudio == null || clip == null) return;
+        // Replace the previous click instead of stacking sounds on rapid presses.
+        buttonAudio.Stop();
+        buttonAudio.clip = clip;
+        buttonAudio.Play();
+    }
+
+    private IEnumerator ReturnToTitle()
+    {
+        PlayButtonSound(backSound);
+        float delay = backTransitionDelay;
+        if (buttonAudio != null && backSound != null)
+            delay = Mathf.Max(delay, backSound.length / Mathf.Max(0.01f, Mathf.Abs(buttonAudio.pitch)));
+        yield return new WaitForSecondsRealtime(delay);
         SceneManager.LoadScene("TitleScene");
     }
 

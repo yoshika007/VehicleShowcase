@@ -17,4 +17,18 @@ Download: https://opengameart.org/sites/default/files/title_in_game.ogg
 License: CC0 1.0 Universal
 License URL: https://creativecommons.org/publicdomain/zero/1.0/
 Credit appreciated but not required by the artist. Original audio unchanged.
-Previous Chill (Loopable) track retained as an unused alternative.
+Previous showcase trial: Chill (Loopable) by Alex McCulloch (Pro Sensory).
+
+Previous showcase trial: Slipstream
+Artist: James Gargette (cinameng)
+Source: https://opengameart.org/content/slipstream
+License: CC0 1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Original audio unchanged.
+
+Current ShowcaseScene selection: Lofi Hip Hop Loop
+Artist: OMF-Games (omfgdude)
+Source: https://opengameart.org/content/lofi-hip-hop-loop
+License: CC0 1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Original audio unchanged.

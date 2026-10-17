@@ -5,3 +5,23 @@ License: CC0 1.0 Universal. Original audio unchanged.
 EnterShowcaseConfirm.ogg: confirmation_001.ogg from Interface Sounds by Kenney.
 Source: https://kenney.nl/assets/interface-sounds
 License: CC0 1.0 Universal. Original audio unchanged.
+
+BackToTitle.ogg: back_001.ogg from Interface Sounds by Kenney.
+Source: https://kenney.nl/assets/interface-sounds
+License: CC0 1.0 Universal. Original audio unchanged.
+Previous and Next reuse EnterShowcaseClick.ogg (click_001.ogg).
+
+NavigationTick.ogg: tick_002.ogg; ReturnClose.ogg: close_001.ogg.
+From Interface Sounds by Kenney, https://kenney.nl/assets/interface-sounds
+License: CC0 1.0 Universal. Original audio unchanged.
+Current showcase sounds: NavigationTick for Previous/Next; ReturnClose for Back to Title.
+
+NavigationPluck.ogg: pluck_001.ogg from Interface Sounds by Kenney.
+Source: https://kenney.nl/assets/interface-sounds
+License: CC0 1.0 Universal. Original audio unchanged.
+Current Previous/Next sound: NavigationPluck.
+
+ReturnCloseAlternate.ogg: close_002.ogg from Interface Sounds by Kenney.
+Source: https://kenney.nl/assets/interface-sounds
+License: CC0 1.0 Universal. Original audio unchanged.
+Current Back to Title sound: ReturnCloseAlternate.
