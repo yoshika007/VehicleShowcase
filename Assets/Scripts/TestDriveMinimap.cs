@@ -17,6 +17,12 @@ public class TestDriveMinimap : UnityEngine.UI.MaskableGraphic
     private Vector3 previousPosition;
     private Vector3 previousForward;
 
+    public void SetVehicle(Transform target)
+    {
+        vehicle = target;
+        SetVerticesDirty();
+    }
+
     private void LateUpdate()
     {
         if (vehicle == null) return;

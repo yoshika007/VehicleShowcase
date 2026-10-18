@@ -125,6 +125,12 @@ public class TestDriveMovement : MonoBehaviour
         }
     }
 
+    public void ConfigureReset(Transform spawnPoint, TestDriveCameraFollow cameraFollow)
+    {
+        resetPoint = spawnPoint;
+        followCamera = cameraFollow;
+    }
+
     public void ResetVehicle()
     {
         ClearControls();

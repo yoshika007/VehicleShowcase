@@ -8,11 +8,20 @@ public class TestDriveCameraFollow : MonoBehaviour
     [SerializeField, Min(0.01f)] private float followSharpness = 10f;
     [SerializeField, Min(0.01f)] private float lookSharpness = 12f;
 
+    private float framingScale = 1f;
+
+    public void SetTarget(Transform vehicle, float scale = 1f)
+    {
+        target = vehicle;
+        framingScale = scale;
+        SnapToTarget();
+    }
+
     public void SnapToTarget()
     {
         if (target == null) return;
-        Vector3 position = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * followOffset;
-        Vector3 lookPoint = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * lookOffset;
+        Vector3 position = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (followOffset * framingScale);
+        Vector3 lookPoint = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (lookOffset * framingScale);
         transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookPoint - position, Vector3.up));
     }
 
@@ -21,11 +30,11 @@ public class TestDriveCameraFollow : MonoBehaviour
         if (target == null) return;
 
         // Rotate the offset with the car so the camera stays behind it through turns.
-        Vector3 desiredPosition = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * followOffset;
+        Vector3 desiredPosition = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (followOffset * framingScale);
         float followBlend = 1f - Mathf.Exp(-followSharpness * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followBlend);
 
-        Vector3 lookPoint = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * lookOffset;
+        Vector3 lookPoint = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (lookOffset * framingScale);
         Vector3 lookDirection = lookPoint - transform.position;
         if (lookDirection.sqrMagnitude < 0.0001f) return;
 

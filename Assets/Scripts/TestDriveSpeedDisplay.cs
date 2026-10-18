@@ -8,6 +8,13 @@ public class TestDriveSpeedDisplay : MonoBehaviour
 
     private int displayedSpeed = -1;
 
+    public void SetVehicle(Rigidbody body)
+    {
+        vehicleBody = body;
+        displayedSpeed = -1;
+        UpdateDisplay();
+    }
+
     private void OnEnable()
     {
         displayedSpeed = -1;

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02235a55cfdc241c0b95a9a2c4a690d9, type: 3}
+  m_Name: VehicleCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveVehicleCatalog
+  drivingPrefabs:
+  - {fileID: 4629347821248520023, guid: aaaa5177177bf40379e56b4fbd8a8845, type: 3}
+  - {fileID: 7687858548471625318, guid: c3ebadf32631f480985c9a865bc591db, type: 3}
+  - {fileID: 7202454550117966489, guid: 6ac220bb6ee784295aaa7f25dd83590a, type: 3}
+  - {fileID: 8963252035677798766, guid: ba66275737c4d4925802b5c77bcfcca6, type: 3}
+  - {fileID: 1433585171426019241, guid: d5e4d2f22752c4eb3b37cf5325abe606, type: 3}
+  - {fileID: 4610443512397395274, guid: 6238af8c71cc34261b3bb1e151f26c40, type: 3}
+  - {fileID: 6690422218199673091, guid: 8bfb5bf31b7ba427bba4e9f9c6ac2d1a, type: 3}
+  - {fileID: 8404406381266988464, guid: c72ab874c87d14e9e95da4e9ecc1ed7c, type: 3}
+  - {fileID: 7983767961304911519, guid: eeb15848dd5104e15b25a026b5060001, type: 3}

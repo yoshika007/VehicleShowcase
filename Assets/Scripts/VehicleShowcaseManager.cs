@@ -23,19 +23,22 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button[] navigationButtons = new UnityEngine.UI.Button[0];
     [SerializeField, Min(0f)] private float backTransitionDelay = 0.22f;
 
-    private bool isReturningToTitle;
+    [SerializeField] private TestDriveVehicleCatalog testDriveCatalog;
+
+    private bool isTransitioning;
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        currentVehicleIndex = Mathf.Clamp(TestDriveSelection.VehicleIndex, 0, vehiclePrefabs.Length - 1);
         ShowVehicle();
     }
 
     public void ShowNextVehicle()
     {
-        if (isReturningToTitle) return;
+        if (isTransitioning) return;
         PlayButtonSound(navigationSound);
         currentVehicleIndex++;
         if(currentVehicleIndex >= vehiclePrefabs.Length)
@@ -47,7 +50,7 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void ShowPreviousVehicle()
     {
-        if (isReturningToTitle) return;
+        if (isTransitioning) return;
         PlayButtonSound(navigationSound);
         currentVehicleIndex--;
         if(currentVehicleIndex < 0)
@@ -59,11 +62,30 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void BackToTitle()
     {
-        if (isReturningToTitle) return;
-        isReturningToTitle = true;
+        if (isTransitioning) return;
+        TestDriveSelection.Clear();
+        BeginTransition("TitleScene");
+    }
+
+    public void TestDrive()
+    {
+        if (isTransitioning) return;
+        if (testDriveCatalog == null || currentVehicleIndex >= testDriveCatalog.drivingPrefabs.Length ||
+            testDriveCatalog.drivingPrefabs[currentVehicleIndex] == null)
+        {
+            Debug.LogError("No driving prefab is configured for this vehicle.", this);
+            return;
+        }
+        TestDriveSelection.Select(currentVehicleIndex);
+        BeginTransition("TestTrackScene");
+    }
+
+    private void BeginTransition(string sceneName)
+    {
+        isTransitioning = true;
         foreach (var button in navigationButtons)
             if (button != null) button.interactable = false;
-        StartCoroutine(ReturnToTitle());
+        StartCoroutine(LoadAfterSound(sceneName));
     }
 
     private void PlayButtonSound(AudioClip clip)
@@ -75,14 +97,14 @@ public class VehicleShowcaseManager : MonoBehaviour
         buttonAudio.Play();
     }
 
-    private IEnumerator ReturnToTitle()
+    private IEnumerator LoadAfterSound(string sceneName)
     {
         PlayButtonSound(backSound);
         float delay = backTransitionDelay;
         if (buttonAudio != null && backSound != null)
             delay = Mathf.Max(delay, backSound.length / Mathf.Max(0.01f, Mathf.Abs(buttonAudio.pitch)));
         yield return new WaitForSecondsRealtime(delay);
-        SceneManager.LoadScene("TitleScene");
+        SceneManager.LoadScene(sceneName);
     }
 
     // ABSTRUCTION
