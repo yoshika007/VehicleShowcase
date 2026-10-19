@@ -55,12 +55,12 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
+    m_AsymptoteValue: 0.85
     m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
@@ -126,13 +126,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -232,13 +232,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -303,12 +303,12 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
+    m_AsymptoteValue: 0.85
     m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
@@ -419,7 +419,7 @@ Rigidbody:
   m_Mass: 1200
   m_LinearDamping: 0.02
   m_AngularDamping: 0.5
-  m_CenterOfMass: {x: 0, y: 0.5647664, z: 0}
+  m_CenterOfMass: {x: 0, y: 0.52, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -451,28 +451,29 @@ MonoBehaviour:
   - collider: {fileID: 7906224949559951530}
     visual: {fileID: 6713683324326681281}
     steering: 1
-    driven: 0
+    driven: 1
   - collider: {fileID: 4891986062178603156}
     visual: {fileID: 9181693368104110949}
     steering: 1
-    driven: 0
+    driven: 1
   - collider: {fileID: 5855733654254246678}
     visual: {fileID: 2456521162345610351}
     steering: 0
-    driven: 1
+    driven: 0
   - collider: {fileID: 5098476143583059284}
     visual: {fileID: 5449734643851172330}
     steering: 0
-    driven: 1
+    driven: 0
   moveSpeed: 50
   reverseSpeed: 4
-  motorTorque: 3500
-  torqueResponse: 8000
-  brakeTorque: 6000
-  coastingBrakeTorque: 80
-  maximumSteerAngle: 32
-  highSpeedSteerAngle: 10
-  steeringResponse: 180
+  motorTorque: 2000
+  torqueResponse: 4500
+  brakeTorque: 3400
+  coastingBrakeTorque: 75
+  maximumSteerAngle: 34
+  highSpeedSteerAngle: 7.5
+  steeringFullReductionSpeed: 14
+  steeringResponse: 170
   resetPoint: {fileID: 0}
   followCamera: {fileID: 0}
 --- !u!4 &5449734643851172330 stripped

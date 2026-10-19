@@ -78,8 +78,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.39182413
   m_SuspensionSpring:
-    spring: 55416.668
-    damper: 7125
+    spring: 53000
+    damper: 7200
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -90,13 +90,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -149,8 +149,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.39182413
   m_SuspensionSpring:
-    spring: 55416.668
-    damper: 7125
+    spring: 53000
+    damper: 7200
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -161,13 +161,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1.15
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.23
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -220,8 +220,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.39182413
   m_SuspensionSpring:
-    spring: 55416.668
-    damper: 7125
+    spring: 53000
+    damper: 7200
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -232,13 +232,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1.15
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.23
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -291,8 +291,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.39182413
   m_SuspensionSpring:
-    spring: 55416.668
-    damper: 7125
+    spring: 53000
+    damper: 7200
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -303,13 +303,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 1.05
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -429,7 +429,7 @@ Rigidbody:
   m_Mass: 1900
   m_LinearDamping: 0.02
   m_AngularDamping: 0.5
-  m_CenterOfMass: {x: 0, y: 0.66354257, z: 0}
+  m_CenterOfMass: {x: 0, y: 0.61, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -461,28 +461,29 @@ MonoBehaviour:
   - collider: {fileID: 3694882685546077861}
     visual: {fileID: 8926351554163339005}
     steering: 1
-    driven: 0
+    driven: 1
   - collider: {fileID: 7143541536544232191}
     visual: {fileID: 1152949674167704663}
     steering: 1
-    driven: 0
+    driven: 1
   - collider: {fileID: 4794442471668246812}
     visual: {fileID: 2142662276681168814}
     steering: 0
-    driven: 1
+    driven: 0
   - collider: {fileID: 4618619312715131144}
     visual: {fileID: 3957632723273154565}
     steering: 0
-    driven: 1
+    driven: 0
   moveSpeed: 50
   reverseSpeed: 4
-  motorTorque: 3500
-  torqueResponse: 8000
-  brakeTorque: 6000
-  coastingBrakeTorque: 80
-  maximumSteerAngle: 32
-  highSpeedSteerAngle: 10
-  steeringResponse: 180
+  motorTorque: 2500
+  torqueResponse: 3500
+  brakeTorque: 5500
+  coastingBrakeTorque: 110
+  maximumSteerAngle: 35
+  highSpeedSteerAngle: 7.5
+  steeringFullReductionSpeed: 16
+  steeringResponse: 150
   resetPoint: {fileID: 0}
   followCamera: {fileID: 0}
 --- !u!4 &8926351554163339005 stripped

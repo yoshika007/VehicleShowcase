@@ -28,6 +28,8 @@ public class TestDriveMovement : MonoBehaviour
     [Header("Steering")]
     [SerializeField, Range(0f, 45f)] private float maximumSteerAngle = 30f;
     [SerializeField, Range(0f, 45f)] private float highSpeedSteerAngle = 12f;
+    [Tooltip("Speed in m/s at which steering reaches its high-speed angle. Zero uses maximum forward speed.")]
+    [SerializeField, Min(0f)] private float steeringFullReductionSpeed;
     [SerializeField, Min(0f)] private float steeringResponse = 90f;
 
     [Header("Reset")]
@@ -101,7 +103,8 @@ public class TestDriveMovement : MonoBehaviour
         // Hold at rest when no pedal is pressed, instead of slowly creeping.
         if (moveInput == 0f && Mathf.Abs(speed) < 0.15f) appliedBrake = brakeTorque;
 
-        float speedRatio = Mathf.Clamp01(Mathf.Abs(speed) / Mathf.Max(0.01f, moveSpeed));
+        float steeringReferenceSpeed = steeringFullReductionSpeed > 0f ? steeringFullReductionSpeed : moveSpeed;
+        float speedRatio = Mathf.Clamp01(Mathf.Abs(speed) / Mathf.Max(0.01f, steeringReferenceSpeed));
         float steerLimit = Mathf.Lerp(maximumSteerAngle, highSpeedSteerAngle, speedRatio);
         currentSteerAngle = Mathf.MoveTowards(currentSteerAngle, steerInput * steerLimit, steeringResponse * Time.fixedDeltaTime);
 

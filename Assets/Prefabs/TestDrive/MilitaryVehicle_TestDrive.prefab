@@ -43,8 +43,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.56398284
   m_SuspensionSpring:
-    spring: 102083.336
-    damper: 13125
+    spring: 98000
+    damper: 13500
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -60,8 +60,8 @@ WheelCollider:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.1
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -114,8 +114,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.56398284
   m_SuspensionSpring:
-    spring: 102083.336
-    damper: 13125
+    spring: 98000
+    damper: 13500
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -131,8 +131,8 @@ WheelCollider:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1.15
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.18
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -185,8 +185,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.56398284
   m_SuspensionSpring:
-    spring: 102083.336
-    damper: 13125
+    spring: 98000
+    damper: 13500
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -202,8 +202,8 @@ WheelCollider:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.1
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -291,8 +291,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.56398284
   m_SuspensionSpring:
-    spring: 102083.336
-    damper: 13125
+    spring: 98000
+    damper: 13500
     targetPosition: 0.5
   m_SuspensionDistance: 0.25
   m_ForceAppPointDistance: 0.15
@@ -308,8 +308,8 @@ WheelCollider:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1.15
+    m_AsymptoteValue: 0.85
+    m_Stiffness: 1.18
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -409,7 +409,7 @@ Rigidbody:
   m_Mass: 3500
   m_LinearDamping: 0.02
   m_AngularDamping: 0.5
-  m_CenterOfMass: {x: 0, y: 0.85, z: 0}
+  m_CenterOfMass: {x: 0, y: 0.8, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -441,11 +441,11 @@ MonoBehaviour:
   - collider: {fileID: 4177165234581029384}
     visual: {fileID: 3831097866029884171}
     steering: 1
-    driven: 0
+    driven: 1
   - collider: {fileID: 1911954750607315027}
     visual: {fileID: 4876500400839027305}
     steering: 1
-    driven: 0
+    driven: 1
   - collider: {fileID: 1272409298863603541}
     visual: {fileID: 1961711286834832395}
     steering: 0
@@ -456,13 +456,14 @@ MonoBehaviour:
     driven: 1
   moveSpeed: 50
   reverseSpeed: 4
-  motorTorque: 3500
-  torqueResponse: 8000
-  brakeTorque: 6000
-  coastingBrakeTorque: 80
-  maximumSteerAngle: 32
-  highSpeedSteerAngle: 10
-  steeringResponse: 180
+  motorTorque: 7000
+  torqueResponse: 6000
+  brakeTorque: 13000
+  coastingBrakeTorque: 200
+  maximumSteerAngle: 34
+  highSpeedSteerAngle: 6.5
+  steeringFullReductionSpeed: 16
+  steeringResponse: 130
   resetPoint: {fileID: 0}
   followCamera: {fileID: 0}
 --- !u!4 &577291794652998382 stripped
