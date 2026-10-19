@@ -91,7 +91,14 @@ public static class BlendOffroadLandscape
         mesh.vertices = v; mesh.uv = uv; mesh.colors = colors; mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals(); mesh.RecalculateBounds();
         var existing = AssetDatabase.LoadAssetAtPath<Mesh>(Dir + name + ".asset");
-        if (existing != null) { EditorUtility.CopySerialized(mesh, existing); EditorUtility.SetDirty(existing); Object.DestroyImmediate(mesh); AssetDatabase.SaveAssets(); AssetDatabase.ImportAsset(Dir + name + ".asset", ImportAssetOptions.ForceUpdate); return AssetDatabase.LoadAssetAtPath<Mesh>(Dir + name + ".asset"); }
+        if (existing != null)
+        {
+            // Copy mesh data through the runtime APIs so native render buffers are rebuilt too.
+            existing.Clear(); existing.vertices = mesh.vertices; existing.normals = mesh.normals;
+            existing.colors = mesh.colors; existing.uv = mesh.uv; existing.triangles = mesh.triangles;
+            existing.RecalculateBounds(); existing.UploadMeshData(false);
+            EditorUtility.SetDirty(existing); Object.DestroyImmediate(mesh); return existing;
+        }
         AssetDatabase.CreateAsset(mesh, Dir + name + ".asset"); return mesh;
     }
     static void CreateLand(Transform parent, string name, Vector3[] points, float width, bool closed, bool branch, Material material, float grip, Color dust)
@@ -116,14 +123,16 @@ public static class BlendOffroadLandscape
         routes = new[] { new Route { points = main, halfWidth = 7 }, new Route { points = branch, halfWidth = 6 }, new Route { points = access, halfWidth = 7 } };
         grass = AssetDatabase.LoadAssetAtPath<Material>("Assets/Environments/TestTrack/Track_Grass.mat").color;
         soil = new Color(.48f, .36f, .22f); gravel = new Color(.50f, .46f, .36f);
-        // URP's lit particle shader supports mesh vertex colors and the same PBR lighting as the grass.
-        var shader = Shader.Find("Universal Render Pipeline/Particles/Lit");
+        // The opaque terrain shader retains vertex blends and supplies depth, normal and shadow passes.
+        var shader = Shader.Find("Vehicle Showcase/Offroad Ground");
         if (shader == null) throw new System.Exception("Vertex-color lit shader unavailable.");
         var material = AssetDatabase.LoadAssetAtPath<Material>(Dir + "Natural Ground Blend.mat");
         bool newMaterial = material == null;
         if (newMaterial) material = new Material(shader) { name = "Natural Ground Blend" };
-        material.SetColor("_BaseColor", Color.white); material.SetFloat("_Surface", 0); material.SetFloat("_Smoothness", .12f);
-        material.SetFloat("_Metallic", 0); material.SetFloat("_ZWrite", 1);
+        else material.shader = shader;
+        material.SetColor("_BaseColor", Color.white); material.SetFloat("_Smoothness", .12f);
+        material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Geometry;
+        EditorUtility.SetDirty(material);
         if (newMaterial) AssetDatabase.CreateAsset(material, Dir + "Natural Ground Blend.mat");
         var group = new GameObject("Natural ground edges").transform; group.SetParent(root, false);
         CreateLand(group, "Rounded main loop banks", main, 7, true, false, material, .8f, new Color(.73f,.59f,.41f,.42f));
