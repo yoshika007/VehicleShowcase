@@ -89,7 +89,6 @@ public class TestDriveMovement : MonoBehaviour
         {
             forward |= touchControls.Forward;
             reverse |= touchControls.Reverse;
-            brakeInput |= touchControls.Brake;
             steerInput += touchControls.Steering;
         }
         moveInput = (forward ? 1f : 0f) - (reverse ? 1f : 0f);

@@ -43,21 +43,20 @@ public static class SetupTouchDriving
   var rr=(RectTransform)root.transform;rr.anchorMin=Vector2.zero;rr.anchorMax=Vector2.one;rr.offsetMin=rr.offsetMax=Vector2.zero;
   var area=Node("SafeArea",root.transform,typeof(CanvasGroup));var ar=(RectTransform)area.transform;ar.anchorMin=Vector2.zero;ar.anchorMax=Vector2.one;ar.offsetMin=ar.offsetMax=Vector2.zero;
   var steering=Node("Steering",area.transform);Place((RectTransform)steering.transform,Vector2.zero,Vector2.zero,new Vector2(36,36),new Vector2(304,160));
-  var pedals=Node("Pedals",area.transform);Place((RectTransform)pedals.transform,new Vector2(1,0),new Vector2(1,0),new Vector2(-36,36),new Vector2(416,184));
+  var pedals=Node("Pedals",area.transform);Place((RectTransform)pedals.transform,new Vector2(1,0),new Vector2(1,0),new Vector2(-36,36),new Vector2(304,184));
   Color dark=new Color(.035f,.07f,.085f,.78f), gold=new Color(.98f,.77f,.25f,.94f), light=new Color(.96f,.98f,1f), ink=new Color(.04f,.05f,.06f);
   var left=Button("SteerLeft",steering.transform,Vector2.zero,Vector2.zero,Vector2.zero,new Vector2(144,160),"<\nLEFT",dark,light).gameObject.AddComponent<TestDriveTouchButton>();
   var right=Button("SteerRight",steering.transform,Vector2.zero,Vector2.zero,new Vector2(160,0),new Vector2(144,160),">\nRIGHT",dark,light).gameObject.AddComponent<TestDriveTouchButton>();
-  var reverse=Button("Reverse",pedals.transform,Vector2.zero,Vector2.zero,Vector2.zero,new Vector2(112,120),"REV",dark,light).gameObject.AddComponent<TestDriveTouchButton>();
-  var brake=Button("Brake",pedals.transform,Vector2.zero,Vector2.zero,new Vector2(128,0),new Vector2(128,160),"BRAKE",new Color(.36f,.12f,.10f,.85f),light).gameObject.AddComponent<TestDriveTouchButton>();
-  var gas=Button("Accelerator",pedals.transform,Vector2.zero,Vector2.zero,new Vector2(272,0),new Vector2(144,184),"GAS",gold,ink).gameObject.AddComponent<TestDriveTouchButton>();
+  var reverse=Button("BrakeReverse",pedals.transform,Vector2.zero,Vector2.zero,Vector2.zero,new Vector2(144,160),"BRAKE\n/ REV",new Color(.36f,.12f,.10f,.85f),light).gameObject.AddComponent<TestDriveTouchButton>();
+  var gas=Button("Accelerator",pedals.transform,Vector2.zero,Vector2.zero,new Vector2(160,0),new Vector2(144,184),"GAS",gold,ink).gameObject.AddComponent<TestDriveTouchButton>();
   var reset=Button("TouchReset",area.transform,new Vector2(.5f,0),new Vector2(.5f,0),new Vector2(0,36),new Vector2(160,68),"RESET",dark,light);
   reset.GetComponentInChildren<TMP_Text>().fontSize=24;
   var controls=root.GetComponent<TestDriveTouchControls>();var so=new SerializedObject(controls);
   Ref(so,"controls",area.GetComponent<CanvasGroup>());Ref(so,"safeArea",ar);Ref(so,"steeringGroup",steering.transform);Ref(so,"pedalGroup",pedals.transform);Ref(so,"resetButton",reset.transform);
-  Ref(so,"left",left);Ref(so,"right",right);Ref(so,"gas",gas);Ref(so,"reverse",reverse);Ref(so,"brake",brake);Ref(so,"speedPanel",canvas.transform.Find("SpeedPanel"));Ref(so,"keyboardResetHint",canvas.transform.Find("ResetHint").gameObject);
+  Ref(so,"left",left);Ref(so,"right",right);Ref(so,"gas",gas);Ref(so,"reverse",reverse);Ref(so,"speedPanel",canvas.transform.Find("SpeedPanel"));Ref(so,"keyboardResetHint",canvas.transform.Find("ResetHint").gameObject);
   so.ApplyModifiedPropertiesWithoutUndo();UnityEventTools.AddPersistentListener(reset.onClick,controls.ResetVehicle);
   var manager=UnityEngine.Object.FindAnyObjectByType<TestDriveSceneManager>();var managerSo=new SerializedObject(manager);Ref(managerSo,"touchControls",controls);managerSo.ApplyModifiedPropertiesWithoutUndo();
   EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
-  return "Added safe-area multi-touch steering, gas, brake, reverse and reset. Existing HUD and EventSystem retained.";
+  return "Added safe-area multi-touch steering, gas, combined brake/reverse and reset. Existing HUD and EventSystem retained.";
  }
 }

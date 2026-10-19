@@ -12,7 +12,6 @@ public class TestDriveTouchControls : MonoBehaviour
     [SerializeField] private TestDriveTouchButton right;
     [SerializeField] private TestDriveTouchButton gas;
     [SerializeField] private TestDriveTouchButton reverse;
-    [SerializeField] private TestDriveTouchButton brake;
     [SerializeField] private RectTransform speedPanel;
     [SerializeField] private GameObject keyboardResetHint;
     [SerializeField] private bool showInEditor = true;
@@ -26,7 +25,6 @@ public class TestDriveTouchControls : MonoBehaviour
     private Vector2Int lastScreen;
     public bool Forward => showing && gas != null && gas.IsHeld;
     public bool Reverse => showing && reverse != null && reverse.IsHeld;
-    public bool Brake => showing && brake != null && brake.IsHeld;
     public float Steering => showing ? (right != null && right.IsHeld ? 1f : 0f) - (left != null && left.IsHeld ? 1f : 0f) : 0f;
     public bool IsVisible => showing;
 
@@ -94,7 +92,6 @@ public class TestDriveTouchControls : MonoBehaviour
         if (right != null) right.Release();
         if (gas != null) gas.Release();
         if (reverse != null) reverse.Release();
-        if (brake != null) brake.Release();
     }
     private void OnApplicationFocus(bool focused) { if (!focused) ReleaseAll(); }
     private void OnApplicationPause(bool paused) { if (paused) ReleaseAll(); }
