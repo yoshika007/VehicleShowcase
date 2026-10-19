@@ -5,6 +5,9 @@ public class TestDriveTouchControls : MonoBehaviour
 {
     [SerializeField] private CanvasGroup controls;
     [SerializeField] private RectTransform safeArea;
+    [SerializeField] private RectTransform hudSafeArea;
+    [SerializeField] private RectTransform minimapPanel;
+    [SerializeField] private RectTransform backButton;
     [SerializeField] private RectTransform steeringGroup;
     [SerializeField] private RectTransform pedalGroup;
     [SerializeField] private RectTransform resetButton;
@@ -44,7 +47,8 @@ public class TestDriveTouchControls : MonoBehaviour
         if (vehicle != null) vehicle.ConfigureTouchInput(this);
         Refresh();
     }
-    private void Update() => Refresh();
+    // Run after CanvasScaler so rotation and Simulator device changes use the new canvas size.
+    private void LateUpdate() => Refresh();
     private void Refresh()
     {
         Initialize();
@@ -63,23 +67,51 @@ public class TestDriveTouchControls : MonoBehaviour
             controls.alpha = visible ? 1f : 0f;
             controls.interactable = controls.blocksRaycasts = visible;
         }
-        if (speedPanel != null) speedPanel.anchoredPosition = originalSpeedPosition + (visible ? new Vector2(0, 220) : Vector2.zero);
         if (keyboardResetHint != null) keyboardResetHint.SetActive(!visible && originalHintActive);
-        Rect area = Screen.safeArea;
-        var size = new Vector2Int(Screen.width, Screen.height);
-        if (safeArea == null || size.x <= 0 || size.y <= 0) return;
-        if (area != lastSafeArea || size != lastScreen)
+        ApplyLayout(Screen.safeArea, new Vector2Int(Screen.width, Screen.height), visible);
+    }
+
+    private void ApplyLayout(Rect area, Vector2Int screen, bool touchVisible)
+    {
+        RectTransform bounds = hudSafeArea != null ? hudSafeArea : safeArea;
+        if (bounds == null || screen.x <= 0 || screen.y <= 0) return;
+        // Clamp transient Simulator/rotation values before converting pixels to anchors.
+        float xMin = Mathf.Clamp(area.xMin, 0, screen.x);
+        float yMin = Mathf.Clamp(area.yMin, 0, screen.y);
+        float xMax = Mathf.Clamp(area.xMax, xMin, screen.x);
+        float yMax = Mathf.Clamp(area.yMax, yMin, screen.y);
+        if (xMax <= xMin || yMax <= yMin) return;
+        area = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
+        if (area != lastSafeArea || screen != lastScreen)
         {
-            lastSafeArea = area; lastScreen = size;
-            safeArea.anchorMin = new Vector2(area.xMin / size.x, area.yMin / size.y);
-            safeArea.anchorMax = new Vector2(area.xMax / size.x, area.yMax / size.y);
-            safeArea.offsetMin = safeArea.offsetMax = Vector2.zero;
+            lastSafeArea = area; lastScreen = screen;
+            bounds.anchorMin = new Vector2(area.xMin / screen.x, area.yMin / screen.y);
+            bounds.anchorMax = new Vector2(area.xMax / screen.x, area.yMax / screen.y);
+            bounds.offsetMin = bounds.offsetMax = Vector2.zero;
         }
-        // CanvasScaler settles after the screen change; use its current width each frame.
-        float scale = Mathf.Min(1f, safeArea.rect.width / 1100f);
-        if (steeringGroup != null) steeringGroup.localScale = Vector3.one * scale;
-        if (pedalGroup != null) pedalGroup.localScale = Vector3.one * scale;
-        if (resetButton != null) resetButton.localScale = Vector3.one * scale;
+        // Reserve room for the top HUD, speed readout and controls even on short screens.
+        float scale = Mathf.Min(1f, bounds.rect.width / 1100f, bounds.rect.height / 760f);
+        if (scale <= 0f) return;
+        float margin = 36f * scale;
+        Place(steeringGroup, scale, new Vector2(margin, margin));
+        Place(pedalGroup, scale, new Vector2(-margin, margin));
+        Place(resetButton, scale, new Vector2(0, margin));
+        Place(minimapPanel, scale, new Vector2(-margin, -margin));
+        Place(backButton, scale, new Vector2(margin, -margin));
+        if (speedPanel != null)
+        {
+            // The readout follows the actual scaled pedal height, with a scaled gap.
+            float pedalHeight = pedalGroup != null ? pedalGroup.rect.height * scale : 0f;
+            float speedY = margin + (touchVisible ? pedalHeight + 24f * scale : 0f);
+            Place(speedPanel, scale, new Vector2(-margin, speedY));
+        }
+    }
+
+    private static void Place(RectTransform target, float scale, Vector2 position)
+    {
+        if (target == null) return;
+        target.localScale = Vector3.one * scale;
+        target.anchoredPosition = position;
     }
     public void ResetVehicle()
     {

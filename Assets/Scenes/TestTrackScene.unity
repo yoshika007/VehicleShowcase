@@ -30333,6 +30333,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveTouchControls
   controls: {fileID: 1940060599}
   safeArea: {fileID: 1940060598}
+  hudSafeArea: {fileID: 1021026550}
+  minimapPanel: {fileID: 895114763}
+  backButton: {fileID: 1789523786}
   steeringGroup: {fileID: 1550695387}
   pedalGroup: {fileID: 956443015}
   resetButton: {fileID: 268147041}
@@ -30356,7 +30359,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1940060598}
-  m_Father: {fileID: 845890681}
+  m_Father: {fileID: 1021026550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -37244,11 +37247,11 @@ RectTransform:
   - {fileID: 1650702421}
   - {fileID: 870457492}
   - {fileID: 998793497}
-  m_Father: {fileID: 845890681}
+  m_Father: {fileID: 1021026550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -40, y: 40}
+  m_AnchoredPosition: {x: -36, y: 244}
   m_SizeDelta: {x: 240, y: 144}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &679956450
@@ -40872,7 +40875,7 @@ RectTransform:
   m_Children:
   - {fileID: 1261838565}
   - {fileID: 1195829216}
-  m_Father: {fileID: 845890681}
+  m_Father: {fileID: 1021026550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -45894,11 +45897,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 679956449}
-  - {fileID: 895114763}
-  - {fileID: 1789523786}
-  - {fileID: 748354145}
-  - {fileID: 549543482}
+  - {fileID: 1021026550}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -48226,11 +48225,11 @@ RectTransform:
   - {fileID: 1240655253}
   - {fileID: 1752030216}
   - {fileID: 1368167994}
-  m_Father: {fileID: 845890681}
+  m_Father: {fileID: 1021026550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -40, y: -40}
+  m_AnchoredPosition: {x: -36, y: -36}
   m_SizeDelta: {x: 360, y: 230}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &895114764
@@ -55600,6 +55599,46 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016616337}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1021026549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1021026550}
+  m_Layer: 5
+  m_Name: DrivingSafeArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1021026550
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021026549}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 679956449}
+  - {fileID: 895114763}
+  - {fileID: 1789523786}
+  - {fileID: 748354145}
+  - {fileID: 549543482}
+  m_Father: {fileID: 845890681}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1021769837
 GameObject:
   m_ObjectHideFlags: 0
@@ -101587,11 +101626,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1673450382}
-  m_Father: {fileID: 845890681}
+  m_Father: {fileID: 1021026550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -40}
+  m_AnchoredPosition: {x: 36, y: -36}
   m_SizeDelta: {x: 320, y: 68}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1789649564
