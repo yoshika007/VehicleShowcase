@@ -392,6 +392,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9062147881238350366, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7687858548471625318}
+    - targetCorrespondingSourceObject: {fileID: 9062147881238350366, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4653501910736844631}
   m_SourcePrefab: {fileID: 100100000, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
 --- !u!4 &255134506438287683 stripped
 Transform:
@@ -476,6 +479,21 @@ MonoBehaviour:
   steeringResponse: 120
   resetPoint: {fileID: 0}
   followCamera: {fileID: 0}
+--- !u!114 &4653501910736844631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2639203153987979296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a980b8a39327405f974d561a17c10b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveDust
+  dustMaterial: {fileID: 2100000, guid: b6f34c2a84fc946559b13158412a9dd3, type: 2}
+  minimumSpeed: 0.8
+  maximumParticlesPerWheel: 32
 --- !u!4 &3288603890939746525 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8412748180015307491, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}

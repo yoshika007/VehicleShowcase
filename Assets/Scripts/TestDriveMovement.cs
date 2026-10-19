@@ -12,6 +12,9 @@ public class TestDriveMovement : MonoBehaviour
         public bool steering;
         public bool driven;
         [System.NonSerialized] public Quaternion visualRotationOffset;
+        [System.NonSerialized] public WheelFrictionCurve forwardFriction;
+        [System.NonSerialized] public WheelFrictionCurve sidewaysFriction;
+        [System.NonSerialized] public float surfaceGrip = 1f;
     }
 
     [Header("Wheel setup")]
@@ -58,6 +61,8 @@ public class TestDriveMovement : MonoBehaviour
             if (wheel.driven) drivenWheelCount++;
             if (wheel.visual != null)
                 wheel.visualRotationOffset = Quaternion.Inverse(wheel.collider.transform.rotation) * wheel.visual.rotation;
+            wheel.forwardFriction = wheel.collider.forwardFriction;
+            wheel.sidewaysFriction = wheel.collider.sidewaysFriction;
             wheel.collider.ConfigureVehicleSubsteps(5f, 12, 15);
         }
     }
@@ -111,6 +116,20 @@ public class TestDriveMovement : MonoBehaviour
         foreach (var wheel in wheels)
         {
             if (wheel.collider == null) continue;
+            float grip = 1f;
+            if (wheel.collider.GetGroundHit(out WheelHit hit) &&
+                hit.collider.TryGetComponent<TestDriveSurface>(out var surface))
+                grip = surface.GripMultiplier;
+            if (!Mathf.Approximately(grip, wheel.surfaceGrip))
+            {
+                var forward = wheel.forwardFriction;
+                var sideways = wheel.sidewaysFriction;
+                forward.stiffness *= grip;
+                sideways.stiffness *= grip;
+                wheel.collider.forwardFriction = forward;
+                wheel.collider.sidewaysFriction = sideways;
+                wheel.surfaceGrip = grip;
+            }
             wheel.collider.steerAngle = wheel.steering ? currentSteerAngle : 0f;
             wheel.collider.motorTorque = wheel.driven ? currentMotorTorque / Mathf.Max(1, drivenWheelCount) : 0f;
             wheel.collider.brakeTorque = appliedBrake;
@@ -137,6 +156,7 @@ public class TestDriveMovement : MonoBehaviour
     public void ResetVehicle()
     {
         ClearControls();
+        if (TryGetComponent<TestDriveDust>(out var dust)) dust.ClearDust();
         vehicleBody.linearVelocity = Vector3.zero;
         vehicleBody.angularVelocity = Vector3.zero;
         Vector3 position = resetPoint != null ? resetPoint.position : initialPosition;
