@@ -395,6 +395,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3071569019502557928, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4424479076755733814}
+    - targetCorrespondingSourceObject: {fileID: 3071569019502557928, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3629680328488023788}
   m_SourcePrefab: {fileID: 100100000, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
 --- !u!4 &55434470774356588 stripped
 Transform:
@@ -489,6 +492,25 @@ MonoBehaviour:
   dustMaterial: {fileID: 2100000, guid: b6f34c2a84fc946559b13158412a9dd3, type: 2}
   minimumSpeed: 0.8
   maximumParticlesPerWheel: 32
+--- !u!114 &3629680328488023788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6182499244797981795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01e97ac8fa5c4ec68817c5941f134cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudio
+  engineLoop: {fileID: 8300000, guid: 4292d7ac4ebb6429db131cfe8b19d5ce, type: 3}
+  asphaltLoop: {fileID: 8300000, guid: 028ba1677c35340b1a28531ec9fce5d8, type: 3}
+  dirtLoop: {fileID: 8300000, guid: 785484d4211704943828017f102793f3, type: 3}
+  gravelLoop: {fileID: 8300000, guid: 06bbf96c555e9438db1e63de1a91d96d, type: 3}
+  engineVolume: 0.48
+  roadVolume: 0.55
+  engineTone: 1
 --- !u!4 &6225776087119476483 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2957360465772427656, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}

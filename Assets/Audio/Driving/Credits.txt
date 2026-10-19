@@ -1,0 +1,26 @@
+VehicleShowcase driving audio - all source recordings released under CC0 1.0.
+License: https://creativecommons.org/publicdomain/zero/1.0/
+
+EngineLoop.wav
+  racing car engine sound loops / loop_0.wav by domasx2
+  https://opengameart.org/content/racing-car-engine-sound-loops
+  Source: https://opengameart.org/sites/default/files/loop_0.wav
+  Author states these were remade from a public domain recording.
+  Changes: mono, DC removal, normalized level, overlapping loop seam.
+
+AsphaltLoop.wav
+  Car rolling on asphalt .wav by orlandorizo
+  https://freesound.org/people/orlandorizo/sounds/591079/
+  Source: publicly available high-quality MP3 preview (original WAV requires login).
+  Changes: 30-38 second excerpt, mono, DC removal, level adjustment, loop seam.
+
+GravelLoop.wav / DirtLoop.wav
+  Tires on Gravel Road 1 by OBXJohn
+  https://freesound.org/people/OBXJohn/sounds/251661/
+  Source: publicly available high-quality MP3 preview.
+  Changes: 2-10 second excerpt, mono, DC removal, level adjustment, loop seam.
+  DirtLoop additionally low-pass filtered at 1100 Hz for a softer packed-dirt layer.
+
+Dirt is an adapted gravel recording, rather than a separate dirt recording.
+Runtime cosmetic engine gearing and per-vehicle pitch variation do not change physics.
+No recordings from the evaluated Stunt Rally pack are included.

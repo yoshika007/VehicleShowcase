@@ -6161,6 +6161,7 @@ GameObject:
   - component: {fileID: 111387030}
   - component: {fileID: 111387029}
   - component: {fileID: 111387028}
+  - component: {fileID: 111387032}
   m_Layer: 0
   m_Name: Rounded hill climb banks
   m_TagString: Untagged
@@ -6276,6 +6277,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111387026}
   m_Mesh: {fileID: 4300000, guid: 9872653c63e3748828ae21c0924d0932, type: 2}
+--- !u!114 &111387032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111387026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &111435279
 GameObject:
   m_ObjectHideFlags: 0
@@ -9710,6 +9724,7 @@ GameObject:
   - component: {fileID: 177479254}
   - component: {fileID: 177479253}
   - component: {fileID: 177479252}
+  - component: {fileID: 177479256}
   m_Layer: 0
   m_Name: Dirt Hill 1 earth banks
   m_TagString: Untagged
@@ -9825,6 +9840,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 177479250}
   m_Mesh: {fileID: 4300000, guid: a3a84abb9ac864b498a3e691d94fae47, type: 2}
+--- !u!114 &177479256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177479250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &177570298
 GameObject:
   m_ObjectHideFlags: 0
@@ -11215,6 +11243,7 @@ GameObject:
   - component: {fileID: 200424857}
   - component: {fileID: 200424856}
   - component: {fileID: 200424855}
+  - component: {fileID: 200424859}
   m_Layer: 0
   m_Name: Dirt Hill 2 earth banks
   m_TagString: Untagged
@@ -11330,6 +11359,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 200424853}
   m_Mesh: {fileID: 4300000, guid: e7d795dc02c4849139a9052b439d2f4e, type: 2}
+--- !u!114 &200424859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200424853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &203804220
 GameObject:
   m_ObjectHideFlags: 0
@@ -16506,6 +16548,7 @@ GameObject:
   - component: {fileID: 290198051}
   - component: {fileID: 290198050}
   - component: {fileID: 290198049}
+  - component: {fileID: 290198052}
   m_Layer: 0
   m_Name: Offroad ground
   m_TagString: Untagged
@@ -16606,6 +16649,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290198047}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &290198052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290198047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 3
 --- !u!1 &296351537
 GameObject:
   m_ObjectHideFlags: 0
@@ -17386,6 +17442,7 @@ GameObject:
   - component: {fileID: 318264636}
   - component: {fileID: 318264635}
   - component: {fileID: 318264634}
+  - component: {fileID: 318264638}
   m_Layer: 0
   m_Name: Blended access shoulders
   m_TagString: Untagged
@@ -17501,6 +17558,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318264632}
   m_Mesh: {fileID: 4300000, guid: 580c17d493a7c44c9baea581f64c8958, type: 2}
+--- !u!114 &318264638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318264632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &319174237
 GameObject:
   m_ObjectHideFlags: 0
@@ -18278,6 +18348,7 @@ GameObject:
   - component: {fileID: 328880374}
   - component: {fileID: 328880373}
   - component: {fileID: 328880372}
+  - component: {fileID: 328880376}
   m_Layer: 0
   m_Name: Gravel Corner 2
   m_TagString: Untagged
@@ -18393,6 +18464,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 328880370}
   m_Mesh: {fileID: 4300000, guid: 5ec477222fbf6424690ebda55beca345, type: 2}
+--- !u!114 &328880376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328880370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 2
 --- !u!1 &329411350
 GameObject:
   m_ObjectHideFlags: 0
@@ -41733,6 +41817,7 @@ GameObject:
   - component: {fileID: 782332171}
   - component: {fileID: 782332170}
   - component: {fileID: 782332169}
+  - component: {fileID: 782332172}
   m_Layer: 0
   m_Name: Paddock apron
   m_TagString: Untagged
@@ -41833,6 +41918,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782332167}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &782332172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782332167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 0
 --- !u!1 &782427987
 GameObject:
   m_ObjectHideFlags: 0
@@ -44457,6 +44555,7 @@ GameObject:
   - component: {fileID: 832951106}
   - component: {fileID: 832951105}
   - component: {fileID: 832951104}
+  - component: {fileID: 832951107}
   m_Layer: 0
   m_Name: Grandstand forecourt
   m_TagString: Untagged
@@ -44557,6 +44656,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832951102}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &832951107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832951102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 0
 --- !u!1 &833961866
 GameObject:
   m_ObjectHideFlags: 0
@@ -63373,6 +63485,7 @@ GameObject:
   - component: {fileID: 1171279501}
   - component: {fileID: 1171279500}
   - component: {fileID: 1171279499}
+  - component: {fileID: 1171279502}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -63473,6 +63586,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1171279497}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1171279502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171279497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 3
 --- !u!1 &1171698488
 GameObject:
   m_ObjectHideFlags: 0
@@ -78102,6 +78228,7 @@ GameObject:
   - component: {fileID: 1425421723}
   - component: {fileID: 1425421722}
   - component: {fileID: 1425421721}
+  - component: {fileID: 1425421724}
   m_Layer: 0
   m_Name: "Asphalt \u2014 12m wide"
   m_TagString: Untagged
@@ -78203,6 +78330,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425421719}
   m_Mesh: {fileID: 4300000, guid: 416a34cc515da455bae4c5507a243987, type: 2}
+--- !u!114 &1425421724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425421719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 0
 --- !u!1 &1427494765
 GameObject:
   m_ObjectHideFlags: 0
@@ -80774,6 +80914,7 @@ GameObject:
   - component: {fileID: 1469660046}
   - component: {fileID: 1469660045}
   - component: {fileID: 1469660044}
+  - component: {fileID: 1469660048}
   m_Layer: 0
   m_Name: Dirt access road
   m_TagString: Untagged
@@ -80889,6 +81030,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1469660042}
   m_Mesh: {fileID: 4300000, guid: bcf5c4e38639b4b45b1377578800a9b8, type: 2}
+--- !u!114 &1469660048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1469660042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &1470780266
 GameObject:
   m_ObjectHideFlags: 0
@@ -81642,6 +81796,7 @@ GameObject:
   - component: {fileID: 1494126554}
   - component: {fileID: 1494126553}
   - component: {fileID: 1494126552}
+  - component: {fileID: 1494126556}
   m_Layer: 0
   m_Name: Truck ridge branch
   m_TagString: Untagged
@@ -81757,6 +81912,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494126550}
   m_Mesh: {fileID: 4300000, guid: 2e34d89a2ad8f4d218450b15763cdb31, type: 2}
+--- !u!114 &1494126556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494126550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &1495497210
 GameObject:
   m_ObjectHideFlags: 0
@@ -83588,6 +83756,7 @@ GameObject:
   - component: {fileID: 1524397566}
   - component: {fileID: 1524397565}
   - component: {fileID: 1524397564}
+  - component: {fileID: 1524397568}
   m_Layer: 0
   m_Name: Dirt Hill 2
   m_TagString: Untagged
@@ -83703,6 +83872,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524397562}
   m_Mesh: {fileID: 4300000, guid: e5cf50205470b4f94be4cafe5f7430b0, type: 2}
+--- !u!114 &1524397568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524397562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &1525043917
 GameObject:
   m_ObjectHideFlags: 0
@@ -99548,6 +99730,7 @@ GameObject:
   - component: {fileID: 1775898973}
   - component: {fileID: 1775898972}
   - component: {fileID: 1775898971}
+  - component: {fileID: 1775898975}
   m_Layer: 0
   m_Name: Dirt Hill 1
   m_TagString: Untagged
@@ -99663,6 +99846,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1775898969}
   m_Mesh: {fileID: 4300000, guid: bcbf005555e7246489e09c7647771bcf, type: 2}
+--- !u!114 &1775898975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775898969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &1776558899
 GameObject:
   m_ObjectHideFlags: 0
@@ -101313,6 +101509,7 @@ GameObject:
   - component: {fileID: 1813997854}
   - component: {fileID: 1813997853}
   - component: {fileID: 1813997852}
+  - component: {fileID: 1813997856}
   m_Layer: 0
   m_Name: Truck ridge branch earth banks
   m_TagString: Untagged
@@ -101428,6 +101625,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813997850}
   m_Mesh: {fileID: 4300000, guid: c96aef226f3394c4482a028ef484e903, type: 2}
+--- !u!114 &1813997856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813997850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &1815107755
 GameObject:
   m_ObjectHideFlags: 0
@@ -112755,6 +112965,7 @@ GameObject:
   - component: {fileID: 2004955468}
   - component: {fileID: 2004955467}
   - component: {fileID: 2004955466}
+  - component: {fileID: 2004955470}
   m_Layer: 0
   m_Name: Gravel Corner 1
   m_TagString: Untagged
@@ -112870,6 +113081,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004955464}
   m_Mesh: {fileID: 4300000, guid: fc496b9ce88ab4713bc166d69671579a, type: 2}
+--- !u!114 &2004955470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004955464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 2
 --- !u!1 &2009561323
 GameObject:
   m_ObjectHideFlags: 0
@@ -115017,6 +115241,7 @@ GameObject:
   - component: {fileID: 2062107218}
   - component: {fileID: 2062107217}
   - component: {fileID: 2062107216}
+  - component: {fileID: 2062107220}
   m_Layer: 0
   m_Name: Rounded main loop banks
   m_TagString: Untagged
@@ -115132,6 +115357,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062107214}
   m_Mesh: {fileID: 4300000, guid: dd3179226d81e40e1b595e29389842f5, type: 2}
+--- !u!114 &2062107220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062107214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74915918e86ca4b6eaaead76ca21c60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudioSurface
+  kind: 1
 --- !u!1 &2064103918
 GameObject:
   m_ObjectHideFlags: 0
