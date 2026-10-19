@@ -39,6 +39,7 @@ public class TestDriveMovement : MonoBehaviour
     [SerializeField] private Transform resetPoint;
     [SerializeField] private TestDriveCameraFollow followCamera;
 
+    private TestDriveTouchControls touchControls;
     private Rigidbody vehicleBody;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
@@ -73,15 +74,27 @@ public class TestDriveMovement : MonoBehaviour
         steerInput = 0f;
         brakeInput = false;
         var keyboard = Keyboard.current;
-        if (keyboard == null) return;
-
-        if (keyboard.rKey.wasPressedThisFrame) resetRequested = true;
-        bool forward = keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed;
-        bool reverse = keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed;
+        bool forward = false;
+        bool reverse = false;
+        if (keyboard != null)
+        {
+            if (keyboard.rKey.wasPressedThisFrame) resetRequested = true;
+            forward = keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed;
+            reverse = keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed;
+            brakeInput = keyboard.spaceKey.isPressed;
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) steerInput -= 1f;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) steerInput += 1f;
+        }
+        if (touchControls != null)
+        {
+            forward |= touchControls.Forward;
+            reverse |= touchControls.Reverse;
+            brakeInput |= touchControls.Brake;
+            steerInput += touchControls.Steering;
+        }
         moveInput = (forward ? 1f : 0f) - (reverse ? 1f : 0f);
-        brakeInput = keyboard.spaceKey.isPressed || (forward && reverse);
-        if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) steerInput -= 1f;
-        if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) steerInput += 1f;
+        brakeInput |= forward && reverse;
+        steerInput = Mathf.Clamp(steerInput, -1f, 1f);
     }
 
     private void FixedUpdate()
@@ -147,6 +160,8 @@ public class TestDriveMovement : MonoBehaviour
         }
     }
 
+    public void ConfigureTouchInput(TestDriveTouchControls controls) => touchControls = controls;
+
     public void ConfigureReset(Transform spawnPoint, TestDriveCameraFollow cameraFollow)
     {
         resetPoint = spawnPoint;
@@ -170,6 +185,7 @@ public class TestDriveMovement : MonoBehaviour
 
     private void ClearControls()
     {
+        if (touchControls != null) touchControls.ReleaseAll();
         moveInput = 0f;
         steerInput = 0f;
         brakeInput = false;

@@ -14,6 +14,8 @@ public class TestDriveSceneManager : MonoBehaviour
     [SerializeField] private AudioSource buttonAudio;
     [SerializeField] private AudioClip returnSound;
 
+    [SerializeField] private TestDriveTouchControls touchControls;
+
     private TestDriveMovement vehicle;
     private bool isReturning;
 
@@ -33,6 +35,7 @@ public class TestDriveSceneManager : MonoBehaviour
         }
         vehicle = Instantiate(catalog.drivingPrefabs[index], spawnPoint.position, spawnPoint.rotation);
         vehicle.ConfigureReset(spawnPoint, followCamera);
+        if (touchControls != null) touchControls.BindVehicle(vehicle);
         float framingScale = Mathf.Max(1f, vehicle.GetComponent<BoxCollider>().size.z / 4.74f);
         followCamera.SetTarget(vehicle.transform, framingScale);
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
@@ -50,6 +53,7 @@ public class TestDriveSceneManager : MonoBehaviour
         if (isReturning) return;
         isReturning = true;
         if (returnButton != null) returnButton.interactable = false;
+        if (touchControls != null) touchControls.BindVehicle(null);
         if (vehicle != null) vehicle.enabled = false;
         StartCoroutine(ReturnAfterSound());
     }
