@@ -10,6 +10,7 @@ public class TestDriveDust : MonoBehaviour
     private WheelCollider[] wheels;
     private ParticleSystem[] clouds;
     private float[] emissionRemainders;
+    private bool[] wetClouds;
     private Rigidbody vehicleBody;
     private TestDriveMovement movement;
 
@@ -20,6 +21,7 @@ public class TestDriveDust : MonoBehaviour
         wheels = GetComponentsInChildren<WheelCollider>();
         clouds = new ParticleSystem[wheels.Length];
         emissionRemainders = new float[wheels.Length];
+        wetClouds = new bool[wheels.Length];
         if (dustMaterial == null) return;
 
         for (int i = 0; i < wheels.Length; i++)
@@ -72,8 +74,21 @@ public class TestDriveDust : MonoBehaviour
                 emissionRemainders[i] = 0f;
                 continue;
             }
+            bool wet = surface.SurfaceKind != TestDriveSurface.Kind.Dry;
+            if (wetClouds[i] != wet)
+            {
+                // Existing airborne particles must not switch from rising dust to falling droplets.
+                clouds[i].Clear();
+                emissionRemainders[i] = 0f;
+                var main = clouds[i].main;
+                main.gravityModifier = wet ? 0.9f : -0.015f;
+                var size = clouds[i].sizeOverLifetime;
+                size.enabled = !wet;
+                wetClouds[i] = wet;
+            }
             Vector3 velocity = vehicleBody.GetPointVelocity(hit.point);
-            float speed = Vector3.ProjectOnPlane(velocity, hit.normal).magnitude;
+            Vector3 planarVelocity = Vector3.ProjectOnPlane(velocity, hit.normal);
+            float speed = planarVelocity.magnitude;
             float slip = Mathf.Max(Mathf.Abs(hit.forwardSlip), Mathf.Abs(hit.sidewaysSlip));
             float speedDust = Mathf.InverseLerp(minimumSpeed, 14f, speed);
             // Wheelspin can throw dust while the body is moving only slowly.
@@ -86,13 +101,34 @@ public class TestDriveDust : MonoBehaviour
             float scale = Mathf.Clamp(wheels[i].radius / 0.4f, 0.8f, 1.6f);
             for (int p = 0; p < count; p++)
             {
-                var emit = new ParticleSystem.EmitParams
+                ParticleSystem.EmitParams emit;
+                if (wet)
                 {
-                    position = hit.point + hit.normal * 0.12f + Random.insideUnitSphere * 0.12f,
-                    velocity = velocity * 0.12f + hit.normal * Random.Range(0.3f, 0.75f) + Random.insideUnitSphere * 0.3f,
-                    startColor = surface.DustColor,
-                    startSize = Random.Range(0.65f, 1.15f) * scale * Mathf.Lerp(0.7f, 1.2f, intensity)
-                };
+                    Vector3 travelDirection = speed > 0.001f ? planarVelocity / speed :
+                        Vector3.ProjectOnPlane(wheels[i].transform.forward, hit.normal).normalized;
+                    Vector3 sideDirection = Vector3.Cross(hit.normal, travelDirection);
+                    float height = surface.SurfaceKind == TestDriveSurface.Kind.Water ? 0.3f : 0.08f;
+                    emit = new ParticleSystem.EmitParams
+                    {
+                        position = hit.point + hit.normal * height +
+                            Vector3.ProjectOnPlane(Random.insideUnitSphere, hit.normal) * 0.06f,
+                        velocity = planarVelocity * 0.18f + sideDirection * Random.Range(-1.2f, 1.2f) +
+                            hit.normal * Random.Range(0.9f, 2.1f),
+                        startColor = surface.DustColor,
+                        startLifetime = Random.Range(0.25f, 0.55f),
+                        startSize = Random.Range(0.08f, 0.2f) * scale
+                    };
+                }
+                else
+                {
+                    emit = new ParticleSystem.EmitParams
+                    {
+                        position = hit.point + hit.normal * 0.12f + Random.insideUnitSphere * 0.12f,
+                        velocity = velocity * 0.12f + hit.normal * Random.Range(0.3f, 0.75f) + Random.insideUnitSphere * 0.3f,
+                        startColor = surface.DustColor,
+                        startSize = Random.Range(0.65f, 1.15f) * scale * Mathf.Lerp(0.7f, 1.2f, intensity)
+                    };
+                }
                 clouds[i].Emit(emit, 1);
             }
         }

@@ -127,13 +127,27 @@ public class TestDriveMovement : MonoBehaviour
         float steerLimit = Mathf.Lerp(maximumSteerAngle, highSpeedSteerAngle, speedRatio);
         currentSteerAngle = Mathf.MoveTowards(currentSteerAngle, steerInput * steerLimit, steeringResponse * Time.fixedDeltaTime);
 
+        Vector3 surfaceResistance = Vector3.zero;
+        int assignedWheelCount = 0;
         foreach (var wheel in wheels)
         {
             if (wheel.collider == null) continue;
+            assignedWheelCount++;
             float grip = 1f;
             bool grounded = wheel.collider.GetGroundHit(out WheelHit hit);
             if (grounded && hit.collider.TryGetComponent<TestDriveSurface>(out var surface))
+            {
                 grip = surface.GripMultiplier;
+                Vector3 planarVelocity = Vector3.ProjectOnPlane(vehicleBody.linearVelocity, hit.normal);
+                float planarSpeed = planarVelocity.magnitude;
+                if (planarSpeed > 0.001f)
+                {
+                    float resistance = surface.ResistanceAcceleration + surface.VelocityResistance * planarSpeed;
+                    // Limit resistance to this step's speed so it cannot reverse a slow vehicle.
+                    resistance = Mathf.Min(resistance, planarSpeed / Time.fixedDeltaTime);
+                    surfaceResistance -= planarVelocity / planarSpeed * resistance;
+                }
+            }
             if (!Mathf.Approximately(grip, wheel.surfaceGrip))
             {
                 var forward = wheel.forwardFriction;
@@ -165,7 +179,10 @@ public class TestDriveMovement : MonoBehaviour
             }
             wheel.collider.brakeTorque = wheelBrake;
         }
-        // Wheel contact forces now drive and rotate the car; no velocity or rotation overrides.
+        // One wheel entering mud contributes only its share; airborne and dry wheels add no drag.
+        if (assignedWheelCount > 0 && surfaceResistance.sqrMagnitude > 0f)
+            vehicleBody.AddForce(surfaceResistance / assignedWheelCount, ForceMode.Acceleration);
+        // Wheel contact forces drive and rotate the car; no velocity or rotation overrides.
     }
 
     private void LateUpdate()
