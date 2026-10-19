@@ -112,7 +112,9 @@ public class TestDriveMovement : MonoBehaviour
         // Ease engine torque near the limit; never clamp the Rigidbody's velocity.
         float availableTorque = Mathf.Clamp01((speedLimit - speedInRequestedDirection) / 2f);
         float requestedTorque = !braking && moveInput != 0f ? moveInput * motorTorque * availableTorque : 0f;
-        currentMotorTorque = braking || speedInRequestedDirection >= speedLimit
+        // Smooth power application, but release the throttle immediately: residual drive
+        // torque otherwise overpowers the light coasting brakes after the pedal is released.
+        currentMotorTorque = braking || moveInput == 0f || speedInRequestedDirection >= speedLimit
             ? 0f
             : Mathf.MoveTowards(currentMotorTorque, requestedTorque, torqueResponse * Time.fixedDeltaTime);
 
@@ -129,8 +131,8 @@ public class TestDriveMovement : MonoBehaviour
         {
             if (wheel.collider == null) continue;
             float grip = 1f;
-            if (wheel.collider.GetGroundHit(out WheelHit hit) &&
-                hit.collider.TryGetComponent<TestDriveSurface>(out var surface))
+            bool grounded = wheel.collider.GetGroundHit(out WheelHit hit);
+            if (grounded && hit.collider.TryGetComponent<TestDriveSurface>(out var surface))
                 grip = surface.GripMultiplier;
             if (!Mathf.Approximately(grip, wheel.surfaceGrip))
             {
@@ -144,7 +146,24 @@ public class TestDriveMovement : MonoBehaviour
             }
             wheel.collider.steerAngle = wheel.steering ? currentSteerAngle : 0f;
             wheel.collider.motorTorque = wheel.driven ? currentMotorTorque / Mathf.Max(1, drivenWheelCount) : 0f;
-            wheel.collider.brakeTorque = appliedBrake;
+            float wheelBrake = appliedBrake;
+            if (!braking && moveInput == 0f && wheel.driven && grounded)
+            {
+                // Loose surfaces can leave driven wheels spinning much faster than the car.
+                // Shed that stored spin on lift-off instead of continuing to propel the body.
+                Vector3 rollingDirection = Quaternion.AngleAxis(wheel.collider.steerAngle,
+                    wheel.collider.transform.up) * wheel.collider.transform.forward;
+                float roadSpeed = Mathf.Abs(Vector3.Dot(vehicleBody.GetPointVelocity(hit.point),
+                    Vector3.ProjectOnPlane(rollingDirection, hit.normal).normalized));
+                float radius = Mathf.Max(0.01f, wheel.collider.radius);
+                float excessAngularSpeed = Mathf.Max(0f, Mathf.Abs(wheel.collider.rpm) * Mathf.PI / 30f
+                    - (roadSpeed + 0.75f) / radius);
+                float wheelInertia = 0.5f * wheel.collider.mass * radius * radius;
+                // Bound the spin correction so it does not intentionally brake below road speed.
+                float spinBrake = excessAngularSpeed * wheelInertia / Time.fixedDeltaTime;
+                wheelBrake = Mathf.Max(wheelBrake, Mathf.Min(brakeTorque, spinBrake));
+            }
+            wheel.collider.brakeTorque = wheelBrake;
         }
         // Wheel contact forces now drive and rotate the car; no velocity or rotation overrides.
     }
