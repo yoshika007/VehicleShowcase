@@ -167,7 +167,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -238,7 +238,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 1.15
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -474,7 +474,7 @@ MonoBehaviour:
     visual: {fileID: 3957632723273154565}
     steering: 0
     driven: 1
-  moveSpeed: 180
+  moveSpeed: 50
   reverseSpeed: 4
   motorTorque: 3500
   torqueResponse: 8000
