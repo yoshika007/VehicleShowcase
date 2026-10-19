@@ -15,8 +15,8 @@ public class TestDriveButtonFace : MaskableGraphic
     {
         mesh.Clear();
         Rect r=GetPixelAdjustedRect();
-        Color edge=new Color(.64f,.43f,.10f);
-        Color face=Color.Lerp(new Color(.98f,.77f,.25f),new Color(1f,.86f,.42f),emphasis);
+        Color edge=Color.Lerp(new Color(.64f,.43f,.10f),new Color(1f,.92f,.62f),emphasis);
+        Color face=Color.Lerp(new Color(.98f,.77f,.25f),new Color(.85f,.64f,.18f),emphasis);
         Color ink=new Color(.055f,.065f,.075f);
         if(unavailable){face=new Color(.45f,.43f,.36f);edge=new Color(.30f,.29f,.26f);}
         Panel(mesh,r,edge);
