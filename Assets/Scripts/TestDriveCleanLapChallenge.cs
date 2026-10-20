@@ -1,30 +1,24 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-// Tracks the authored oval centerline. Road contact plus ordered progress prevents shortcuts.
+// Tracks the enclosed circuit: barrier contact fails a lap; runoff recovery is allowed.
 [DefaultExecutionOrder(100)]
 public class TestDriveCleanLapChallenge : MonoBehaviour
 {
     public enum Phase { Ready, Countdown, Armed, Running, Finished, Failed }
     public enum Medal { None, Bronze, Silver, Gold }
     [SerializeField] private MeshFilter circuit;
-    [SerializeField] private MeshCollider asphalt;
-    [SerializeField] private Transform legalCurbs;
     [SerializeField, Min(0f)] private float startLineHalfWidth = 8.2f;
     [SerializeField] private Transform startLine;
     [SerializeField, Min(1f)] private float goldSeconds = 35f;
     [SerializeField, Min(1f)] private float silverSeconds = 50f;
-    [SerializeField, Min(0f)] private float offTrackGrace = .25f;
     [SerializeField] private TestDriveCleanLapView view;
     private TestDriveMovement vehicle;
     private Rigidbody body;
     private WheelCollider[] wheels;
-    private readonly HashSet<Collider> curbColliders = new HashSet<Collider>();
-    private readonly RaycastHit[] centerHits = new RaycastHit[16];
     private Vector3[] route;
     private float[] distances;
-    private float length, lastDistance, travelled, offTrackTime;
+    private float length, lastDistance, travelled, gateHalfWidth;
     private Vector3 previousPosition;
     private double countdownEnd, startedAt;
     private int resetCount;
@@ -61,6 +55,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     {
         if (vehicle != null)
         {
+            vehicle.ColliderContact -= ReportBarrierContact;
             vehicle.SetChallengeStopped(false);
             vehicle.SetChallengeInputLocked(false);
         }
@@ -73,6 +68,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         if (target == null) return;
         target.SetChallengeStopped(true);
         target.SetChallengeInputLocked(true);
+        target.ColliderContact += ReportBarrierContact;
         body = target.GetComponent<Rigidbody>();
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
@@ -80,14 +76,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         saveKey = "VehicleShowcase.CleanLap.v1." + id + ".BestSeconds";
         float saved = PlayerPrefs.GetFloat(saveKey, 0f);
         BestSeconds = saved > 0 && !float.IsInfinity(saved) && !float.IsNaN(saved) ? saved : 0f;
-        message = "Asphalt + curbs. No resets.";
+        message = "Avoid barriers. No resets.";
         CacheRoute();
     }
     private void CacheRoute()
     {
         if (route != null) return;
-        if (legalCurbs != null)
-            foreach (var collider in legalCurbs.GetComponentsInChildren<Collider>()) curbColliders.Add(collider);
         var vertices = circuit.sharedMesh.vertices;
         route = new Vector3[vertices.Length / 2];
         distances = new float[route.Length];
@@ -97,6 +91,18 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             if (i > 0) distances[i] = distances[i - 1] + Vector3.Distance(route[i - 1], route[i]);
         }
         length = distances[distances.Length - 1];
+        int gateRow = 0;
+        float closest = float.PositiveInfinity;
+        for (int i = 0; i < route.Length - 1; i++)
+        {
+            float square = (route[i] - startLine.position).sqrMagnitude;
+            if (square < closest) { closest = square; gateRow = i; }
+        }
+        Vector3 inner = vertices[gateRow * 2], outer = vertices[gateRow * 2 + 1];
+        float roadWidth = Vector3.Distance(circuit.transform.TransformPoint(inner), circuit.transform.TransformPoint(outer));
+        float roadScale = roadWidth / Vector3.Distance(inner, outer);
+        // Include the enclosed runoff without allowing a crossing on the opposite straight.
+        gateHalfWidth = Mathf.Max(startLineHalfWidth, roadWidth * .5f + CleanLapCircuitBarrier.GetInsideClearance(roadScale));
     }
     private float RouteDistance(Vector3 position)
     {
@@ -125,7 +131,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             vehicle.SetChallengeStopped(true);
             vehicle.SetChallengeInputLocked(true);
             State = Phase.Ready;
-            message = "Asphalt + curbs. No resets.";
+            message = "Avoid barriers. No resets.";
             if (view != null) view.Refresh(this);
             return;
         }
@@ -140,7 +146,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         vehicle.SetChallengeInputLocked(true);
         State = Phase.Countdown;
         countdownEnd = Time.timeAsDouble + 3;
-        ElapsedSeconds = travelled = offTrackTime = 0;
+        ElapsedSeconds = travelled = 0;
         CheckpointsPassed = 0;
         LastMedal = Medal.None;
         message = "Get ready";
@@ -164,6 +170,11 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (IsAvailable && (State == Phase.Countdown || State == Phase.Armed || State == Phase.Running))
+        {
+            foreach (var wheel in wheels)
+                if (wheel.GetGroundHit(out var hit)) ReportBarrierContact(hit.collider);
+        }
         if (State != Phase.Armed && State != Phase.Running) return;
         if (!IsAvailable) { Fail("Attempt ended. Try again."); return; }
         if (vehicle.ResetCount != resetCount) { Fail("Reset used. Try again."); return; }
@@ -171,22 +182,17 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         // Reject warps while allowing the maximum normal speed and physics jitter.
         float allowedStep = Mathf.Max(5f, body.linearVelocity.magnitude * Time.fixedDeltaTime * 2f + 1f);
         if (Vector3.Distance(position, previousPosition) > allowedStep) { Fail("Position changed. Try again."); return; }
-        bool onRoad = IsLegalUnderBody(position);
-        foreach (var wheel in wheels)
-            if (wheel.GetGroundHit(out var hit) && !IsLegalSurface(hit.collider)) onRoad = false;
-        offTrackTime = onRoad ? 0f : offTrackTime + Time.fixedDeltaTime;
-        if (offTrackTime >= offTrackGrace) { Fail("Off track. Avoid the runoff."); return; }
         float before = Vector3.Dot(previousPosition - startLine.position, startLine.forward);
         float after = Vector3.Dot(position - startLine.position, startLine.forward);
-        bool crossed = before < 0f && after >= 0f && onRoad
-            && Mathf.Abs(Vector3.Dot(position - startLine.position, startLine.right)) <= startLineHalfWidth;
+        bool crossed = before < 0f && after >= 0f
+            && Mathf.Abs(Vector3.Dot(position - startLine.position, startLine.right)) <= gateHalfWidth;
         float distance = RouteDistance(position);
         if (State == Phase.Armed && crossed)
         {
             State = Phase.Running;
             startedAt = Time.fixedTimeAsDouble;
             lastDistance = distance;
-            message = "Asphalt + curbs. No resets.";
+            message = "Avoid barriers. No resets.";
         }
         else if (State == Phase.Running)
         {
@@ -199,18 +205,17 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         }
         previousPosition = position;
     }
-    private bool IsLegalSurface(Collider surface) => surface == asphalt || curbColliders.Contains(surface);
-
-    private bool IsLegalUnderBody(Vector3 position)
+    private void ReportBarrierContact(Collider surface)
     {
-        var ray = new Ray(position + Vector3.up * 3f, Vector3.down);
-        if (asphalt.Raycast(ray, out _, 6f)) return true;
-        // Only authored curb colliders count: widening the asphalt bounds would also
-        // accept the adjacent runoff. Reuse the hit buffer to avoid per-tick allocations.
-        int count = Physics.RaycastNonAlloc(ray, centerHits, 6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
-        for (int i = 0; i < count; i++)
-            if (curbColliders.Contains(centerHits[i].collider)) return true;
-        return false;
+        if (!isActiveAndEnabled || !IsAvailable || surface == null) return;
+        if (State != Phase.Countdown && State != Phase.Armed && State != Phase.Running) return;
+        if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
+            Fail("Barrier hit. Try again.");
+    }
+
+    private void OnDestroy()
+    {
+        if (vehicle != null) vehicle.ColliderContact -= ReportBarrierContact;
     }
 
     private void Finish()

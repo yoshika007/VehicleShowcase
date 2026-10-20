@@ -51,6 +51,7 @@ public class TestDriveMovement : MonoBehaviour
     private RigidbodyConstraints preChallengeConstraints;
     public bool IsChallengeStopped { get; private set; }
     public bool IsChallengeCoasting { get; private set; }
+    public event System.Action<Collider> ColliderContact;
     public int ResetCount { get; private set; }
     public bool IsBraking { get; private set; }
     public bool IsReversing { get; private set; }
@@ -281,6 +282,9 @@ public class TestDriveMovement : MonoBehaviour
             boggedOrigin = vehicleBody.position;
         }
     }
+
+    private void OnCollisionEnter(Collision collision) => ColliderContact?.Invoke(collision.collider);
+    private void OnCollisionStay(Collision collision) => ColliderContact?.Invoke(collision.collider);
 
     private void LateUpdate()
     {

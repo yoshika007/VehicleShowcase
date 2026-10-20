@@ -39,9 +39,9 @@ public class CleanLapBriefing : MonoBehaviour
         panel = Rect("BriefingPanel", cover, new Vector2(920, 780));
         panel.gameObject.AddComponent<Image>().color = new Color(.045f, .12f, .14f, 1);
         Text("Heading", panel, "CLEAN LAP CHALLENGE", 42, 28, 72, font);
-        Text("Objective", panel, "One clean lap. Off-road access is closed.", 30, 110, 50, font);
+        Text("Objective", panel, "Complete one full lap without hitting the barriers.", 30, 110, 50, font);
         Text("Rules", panel,
-            "STAY ON TRACK\nAsphalt and red-and-white curbs are allowed.\nRunoff and off-road surfaces invalidate the attempt.\n\nFOLLOW THE CIRCUIT\nAfter the countdown, cross START / FINISH to start the clock.\nComplete the full lap in the correct direction.\nResetting the car cancels your attempt.", 26, 180, 320, font);
+            "AVOID THE BARRIERS\nCurbs and runoff are allowed for recovery.\nAny contact with the circuit barriers ends the attempt.\n\nFOLLOW THE CIRCUIT\nAfter the countdown, cross START / FINISH to start the clock.\nComplete the full lap in the correct direction.\nResetting the car cancels your attempt.", 26, 180, 320, font);
         Text("Medals", panel, $"GOLD  ≤ {challenge.GoldSeconds:0}s     SILVER  ≤ {challenge.SilverSeconds:0}s\nBRONZE  Complete a clean lap at any time", 28, 510, 90, font);
         var start = MakeButton("StartChallenge", panel, "START CHALLENGE", new Vector2(460, 72), font, Continue);
         ((RectTransform)start.transform).anchoredPosition = new Vector2(0, -270);

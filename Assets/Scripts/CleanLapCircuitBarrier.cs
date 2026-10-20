@@ -92,6 +92,8 @@ public sealed class CleanLapCircuitBarrier : MonoBehaviour
         return root;
     }
 
+    public static float GetInsideClearance(float roadScale) => Mathf.Max(0, EdgeOffset * roadScale - WallThickness * .5f);
+
     private static Material MaterialFor(Shader shader, string label, Color color)
     {
         var material = new Material(shader) { name = label, color = color };
