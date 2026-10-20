@@ -55,7 +55,18 @@ public static class DeepenMudTrial
         {
             float wx=Mathf.Lerp(hole.min.x,hole.max.x,x/(float)nx),wz=Mathf.Lerp(hole.min.z,hole.max.z,z/(float)nz);
             float edge=Mathf.Min(wx-hole.min.x,hole.max.x-wx,wz-hole.min.z,hole.max.z-wz);
-            float y=Mathf.Lerp(-.05f,-.65f,Mathf.SmoothStep(0,1,edge/2.3f));v.Add(new Vector3(wx,y,wz));uv.Add(new Vector2(wx/4,wz/4));
+            float y=Mathf.Lerp(-.05f,-.65f,Mathf.SmoothStep(0,1,edge/2.3f));
+            // Only the mud needs the deep pocket; keep exposed bank approaches dry and level.
+            float distance=float.PositiveInfinity;var horizontal=new Vector3(wx,0,wz);
+            for(int k=0;k<80;k++)
+            {
+                var a=Point(Mathf.Lerp(Start,End,k/80f));a.y=0;
+                var b=Point(Mathf.Lerp(Start,End,(k+1)/80f));b.y=0;var segment=b-a;
+                var nearest=a+segment*Mathf.Clamp01(Vector3.Dot(horizontal-a,segment)/segment.sqrMagnitude);
+                distance=Mathf.Min(distance,Vector3.Distance(horizontal,nearest));
+            }
+            y=Mathf.Max(y,Mathf.Lerp(-.65f,-.05f,Mathf.SmoothStep(0,1,Mathf.InverseLerp(6f,8f,distance))));
+            v.Add(new Vector3(wx,y,wz));uv.Add(new Vector2(wx/4,wz/4));
             if(x<nx&&z<nz){int n=z*(nx+1)+x;t.AddRange(new[]{n,n+nx+1,n+1,n+1,n+nx+1,n+nx+2});}
         }
         var mesh=Mesh("Mud pocket ground",v,t,uv);AssetDatabase.CreateAsset(mesh,Dir+"/Mud pocket ground.asset");

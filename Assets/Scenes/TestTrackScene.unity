@@ -31458,7 +31458,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4291940282
   m_fontColor: {r: 0.73, g: 0.81, b: 0.82, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -31471,7 +31471,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -59471,6 +59471,7 @@ GameObject:
   - component: {fileID: 1026968781}
   - component: {fileID: 1026968783}
   - component: {fileID: 1026968782}
+  - component: {fileID: 1026968784}
   m_Layer: 0
   m_Name: Inner wet trial bank
   m_TagString: Untagged
@@ -59549,6 +59550,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1026968780}
+  m_Mesh: {fileID: 4300000, guid: d2d7b29b78c5b4a90917883847416f4c, type: 2}
+--- !u!64 &1026968784
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026968780}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: d2d7b29b78c5b4a90917883847416f4c, type: 2}
 --- !u!1 &1027897745
 GameObject:
@@ -75717,6 +75740,7 @@ GameObject:
   - component: {fileID: 1277674426}
   - component: {fileID: 1277674428}
   - component: {fileID: 1277674427}
+  - component: {fileID: 1277674429}
   m_Layer: 0
   m_Name: Outer wet trial bank
   m_TagString: Untagged
@@ -75795,6 +75819,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1277674425}
+  m_Mesh: {fileID: 4300000, guid: 3d6f733b85dd54da388581d5971a88fe, type: 2}
+--- !u!64 &1277674429
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277674425}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 3d6f733b85dd54da388581d5971a88fe, type: 2}
 --- !u!1 &1281168200
 GameObject:
@@ -85644,7 +85690,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4282434810
   m_fontColor: {r: 0.98, g: 0.77, b: 0.25, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -85657,7 +85703,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -109562,7 +109608,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4294966005
   m_fontColor: {r: 0.96, g: 0.98, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -109575,7 +109621,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

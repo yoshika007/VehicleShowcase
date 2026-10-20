@@ -150,7 +150,7 @@ public static class AddMudWaterTrial
                 for(int j=0;j<across;j++)
                 {
                     float offset=new[]{6f,7.3f,9f,11f}[j];var q=p+side*direction*offset;
-                    float rise=new[]{0f,.55f,.23f,0f}[j];q.y=Mathf.Max(.02f,ExistingGround(q)+.015f)+rise*fade;
+                    float rise=new[]{0f,.13f,.08f,0f}[j];q.y=Mathf.Max(.02f,ExistingGround(q)+.015f)+rise*fade;
                     v[i*across+j]=q;uv[i*across+j]=new Vector2(q.x/4,q.z/4);
                     if(i<rows&&j<across-1){int k=i*across+j;t.AddRange(new[]{k,k+across,k+1,k+1,k+across,k+across+1});}
                 }
@@ -163,6 +163,7 @@ public static class AddMudWaterTrial
             AssetDatabase.CreateAsset(mesh,Dir+"/"+name+".asset");
             var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(root,false);
             go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=bank;
+            go.AddComponent<MeshCollider>().sharedMesh=mesh;
         }
     }
     public static string Main()
