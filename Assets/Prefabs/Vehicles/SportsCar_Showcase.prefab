@@ -147,7 +147,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2922220883736789182, guid: 041e4e3100f07184cacfe35dce34f022, type: 3}
       insertIndex: -1
       addedObject: {fileID: -7342034073049832200}
+    - targetCorrespondingSourceObject: {fileID: 2922220883736789182, guid: 041e4e3100f07184cacfe35dce34f022, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6730483760617128522}
   m_SourcePrefab: {fileID: 100100000, guid: 041e4e3100f07184cacfe35dce34f022, type: 3}
+--- !u!23 &3326753121060700988 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3714673755498455403, guid: 041e4e3100f07184cacfe35dce34f022, type: 3}
+  m_PrefabInstance: {fileID: 2136443791061377623}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3831433149264519913 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2922220883736789182, guid: 041e4e3100f07184cacfe35dce34f022, type: 3}
@@ -167,6 +175,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SportsCar
   displayName: APEX GT
   category: Sports Car
+--- !u!114 &6730483760617128522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3831433149264519913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f800e4f51454ec6b8549037395a752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaint
+  palette: {fileID: 11400000, guid: 8bd77b6dd76114347b8ff53eb2280820, type: 2}
+  body: {fileID: 3326753121060700988}
+  materialSlot: 0
 --- !u!4 &4494641402958919763 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2577748686464113156, guid: 041e4e3100f07184cacfe35dce34f022, type: 3}

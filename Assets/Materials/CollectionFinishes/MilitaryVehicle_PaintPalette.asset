@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe919f30f6094398bb36f19a9e4ec74, type: 3}
+  m_Name: MilitaryVehicle_PaintPalette
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
+  paletteId: sentinel
+  options:
+  - displayName: TACTICAL CHARCOAL
+    swatch: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+    material: {fileID: 2100000, guid: 3c1a4d081777a40eeb723e84f65edde2, type: 2}
+  - displayName: OLIVE DRAB
+    swatch: {r: 0.38431373, g: 0.4392157, b: 0.3019608, a: 1}
+    material: {fileID: 2100000, guid: 7684bec1f36e94e1aa9bdc857ac7a3da, type: 2}
+  - displayName: DESERT SAND
+    swatch: {r: 0.72156864, g: 0.63529414, b: 0.4862745, a: 1}
+    material: {fileID: 2100000, guid: 7ce4fe9d6f7554a4eb66d1ec241952ad, type: 2}
+  - displayName: WINTER GREY
+    swatch: {r: 0.6509804, g: 0.6784314, b: 0.68235296, a: 1}
+    material: {fileID: 2100000, guid: eb268be1681d047139f328ccba079c6e, type: 2}

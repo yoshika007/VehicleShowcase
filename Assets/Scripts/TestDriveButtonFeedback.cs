@@ -55,6 +55,12 @@ public class TestDriveButtonFeedback : MonoBehaviour, IPointerExitHandler,
         if (clearanceHint != null)
             clearanceHint.anchoredPosition = restingHintPosition + Vector2.up * (height - restingHeight);
     }
+    // Layout changes can move the button without fighting its touch-size adjustment.
+    public void SetRestingPosition(Vector2 position)
+    {
+        restingPosition = position;
+        if (rect != null) rect.anchoredPosition = position;
+    }
     public void OnPointerDown(PointerEventData e)
     {
         if (e.button != PointerEventData.InputButton.Left || !button.IsInteractable() || pointer.HasValue) return;

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe919f30f6094398bb36f19a9e4ec74, type: 3}
+  m_Name: Hatchback_PaintPalette
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
+  paletteId: cityline
+  options:
+  - displayName: SUNNY YELLOW
+    swatch: {r: 0.972549, g: 0.7411765, b: 0, a: 1}
+    material: {fileID: 2100000, guid: 59731276f8f784af58266773a5e2b6a0, type: 2}
+  - displayName: CORAL
+    swatch: {r: 1, g: 0.45490196, b: 0.4, a: 1}
+    material: {fileID: 2100000, guid: e5048700c226d4c91a67ca9181cac7ed, type: 2}
+  - displayName: MINT
+    swatch: {r: 0.5137255, g: 0.8117647, b: 0.72156864, a: 1}
+    material: {fileID: 2100000, guid: 9966591d155eb4d36ac5562df3f6074e, type: 2}
+  - displayName: SKY BLUE
+    swatch: {r: 0.39215687, g: 0.7294118, b: 0.8901961, a: 1}
+    material: {fileID: 2100000, guid: 62d2ecb8df3734f7d99d64ddc15eafb1, type: 2}

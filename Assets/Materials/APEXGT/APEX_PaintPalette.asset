@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe919f30f6094398bb36f19a9e4ec74, type: 3}
+  m_Name: APEX_PaintPalette
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
+  paletteId: apex-gt
+  options:
+  - displayName: SKY BLUE
+    swatch: {r: 0.21176471, g: 0.62352943, b: 1, a: 1}
+    material: {fileID: 2100000, guid: f56b5f95ebacd40ee9385847071f1ecd, type: 2}
+  - displayName: RACING RED
+    swatch: {r: 1, g: 0.25882354, b: 0.28235295, a: 1}
+    material: {fileID: 2100000, guid: 7fa67e93ef0bf4a77874ba23c29cdac8, type: 2}
+  - displayName: PEARL WHITE
+    swatch: {r: 0.9529412, g: 0.9647059, b: 0.9882353, a: 1}
+    material: {fileID: 2100000, guid: 87567741626784efbaf7298b9cb8b1f1, type: 2}
+  - displayName: SOLAR YELLOW
+    swatch: {r: 1, g: 0.83137256, b: 0.2784314, a: 1}
+    material: {fileID: 2100000, guid: 1c8095dbebeb6419882b1341741e08ea, type: 2}

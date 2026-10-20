@@ -25,6 +25,8 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     [SerializeField] private TestDriveVehicleCatalog testDriveCatalog;
 
+    [SerializeField] private VehiclePaintSelector paintSelector;
+
     private bool isTransitioning;
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
@@ -83,6 +85,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     private void BeginTransition(string sceneName)
     {
         isTransitioning = true;
+        if (paintSelector != null) paintSelector.SetInteractable(false);
         foreach (var button in navigationButtons)
             if (button != null) button.interactable = false;
         StartCoroutine(LoadAfterSound(sceneName));
@@ -118,6 +121,9 @@ public class VehicleShowcaseManager : MonoBehaviour
 
         if (vehicleDragRotation != null)
             vehicleDragRotation.SetVehicle(currentVehicle.transform);
+
+        if (paintSelector != null)
+            paintSelector.Bind(currentVehicle.GetComponent<VehiclePaint>(), () => PlayButtonSound(navigationSound));
 
         UpdateVehicleInfo();
     }

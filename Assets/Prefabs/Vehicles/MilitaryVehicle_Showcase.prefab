@@ -147,6 +147,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3314894990512055167, guid: 24895160902fca14ebd21bad6edc37cf, type: 3}
       insertIndex: -1
       addedObject: {fileID: -581852860843720124}
+    - targetCorrespondingSourceObject: {fileID: 3314894990512055167, guid: 24895160902fca14ebd21bad6edc37cf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2748809197643865023}
   m_SourcePrefab: {fileID: 100100000, guid: 24895160902fca14ebd21bad6edc37cf, type: 3}
 --- !u!4 &4753519550207981052 stripped
 Transform:
@@ -172,3 +175,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MilitaryVehicle
   displayName: SENTINEL
   category: Military
+--- !u!114 &2748809197643865023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5385236931102977862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f800e4f51454ec6b8549037395a752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaint
+  palette: {fileID: 11400000, guid: 399523407d37d4c22a16e2f7015a92d0, type: 2}
+  body: {fileID: 5889802335740923539}
+  materialSlot: 0
+--- !u!23 &5889802335740923539 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3819091097907282602, guid: 24895160902fca14ebd21bad6edc37cf, type: 3}
+  m_PrefabInstance: {fileID: 7258935199210425401}
+  m_PrefabAsset: {fileID: 0}

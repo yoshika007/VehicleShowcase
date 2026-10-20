@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe919f30f6094398bb36f19a9e4ec74, type: 3}
+  m_Name: Van_PaintPalette
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
+  paletteId: wayfarer
+  options:
+  - displayName: DUSTY ROSE
+    swatch: {r: 0.73333335, g: 0.5294118, b: 0.5647059, a: 1}
+    material: {fileID: 2100000, guid: 52d8e2096c2d04a5d8a3ed0fbf46d760, type: 2}
+  - displayName: CREAM
+    swatch: {r: 0.9019608, g: 0.84705883, b: 0.7137255, a: 1}
+    material: {fileID: 2100000, guid: d246e030fbc254be8aeba91a91047323, type: 2}
+  - displayName: SEAFOAM
+    swatch: {r: 0.4745098, g: 0.69411767, b: 0.627451, a: 1}
+    material: {fileID: 2100000, guid: 69a0d2821d964485f831f9ca8701be7b, type: 2}
+  - displayName: SLATE BLUE
+    swatch: {r: 0.4117647, g: 0.5254902, b: 0.62352943, a: 1}
+    material: {fileID: 2100000, guid: 99d2cbc4093354e4196cefb9b535c50e, type: 2}

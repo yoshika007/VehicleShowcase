@@ -147,7 +147,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 745966575250574594, guid: 789bb11bfacf90443892854edcbb02f4, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2337498436412758096}
+    - targetCorrespondingSourceObject: {fileID: 745966575250574594, guid: 789bb11bfacf90443892854edcbb02f4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5156302505590503225}
   m_SourcePrefab: {fileID: 100100000, guid: 789bb11bfacf90443892854edcbb02f4, type: 3}
+--- !u!23 &276562271047724468 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1250532667637607639, guid: 789bb11bfacf90443892854edcbb02f4, type: 3}
+  m_PrefabInstance: {fileID: 1336517125113413987}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1413469713669609179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 77093397131712440, guid: 789bb11bfacf90443892854edcbb02f4, type: 3}
@@ -172,3 +180,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Van
   displayName: WAYFARER
   category: Van
+--- !u!114 &5156302505590503225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789749412260252769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f800e4f51454ec6b8549037395a752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaint
+  palette: {fileID: 11400000, guid: 73e276a153afd48a3bde9a9dd93a1b3a, type: 2}
+  body: {fileID: 276562271047724468}
+  materialSlot: 0

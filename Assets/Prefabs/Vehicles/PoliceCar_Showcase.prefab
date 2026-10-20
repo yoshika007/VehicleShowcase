@@ -147,6 +147,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2295116759664368373, guid: 69cdbe0692ba4624b9259fb58689f06d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6742294041843850954}
+    - targetCorrespondingSourceObject: {fileID: 2295116759664368373, guid: 69cdbe0692ba4624b9259fb58689f06d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5975511752230043980}
   m_SourcePrefab: {fileID: 100100000, guid: 69cdbe0692ba4624b9259fb58689f06d, type: 3}
 --- !u!4 &2444248516289830994 stripped
 Transform:
@@ -172,3 +175,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PoliceCar
   displayName: INTERCEPTOR
   category: Emergency
+--- !u!114 &5975511752230043980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3071569019502557928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f800e4f51454ec6b8549037395a752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaint
+  palette: {fileID: 11400000, guid: ddbdc07ee60bc4e439276b34d94bd796, type: 2}
+  body: {fileID: 3576029421253221181}
+  materialSlot: 0
+--- !u!23 &3576029421253221181 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 349337901130627872, guid: 69cdbe0692ba4624b9259fb58689f06d, type: 3}
+  m_PrefabInstance: {fileID: 3853255231649112093}
+  m_PrefabAsset: {fileID: 0}

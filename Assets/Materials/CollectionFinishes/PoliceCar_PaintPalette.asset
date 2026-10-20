@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe919f30f6094398bb36f19a9e4ec74, type: 3}
+  m_Name: PoliceCar_PaintPalette
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
+  paletteId: interceptor
+  options:
+  - displayName: PATROL CYAN
+    swatch: {r: 0, g: 0.6156863, b: 0.8, a: 1}
+    material: {fileID: 2100000, guid: e83215800068b4cdb9f33e1a3c469752, type: 2}
+  - displayName: MIDNIGHT NAVY
+    swatch: {r: 0.14117648, g: 0.27058825, b: 0.40784314, a: 1}
+    material: {fileID: 2100000, guid: 55875322279f342e69314d8f806f9c68, type: 2}
+  - displayName: PATROL BLACK
+    swatch: {r: 0.20392157, g: 0.23921569, b: 0.28235295, a: 1}
+    material: {fileID: 2100000, guid: 9ed674e4563274e44be718805c567b53, type: 2}
+  - displayName: HIGHWAY SILVER
+    swatch: {r: 0.6313726, g: 0.6784314, b: 0.72156864, a: 1}
+    material: {fileID: 2100000, guid: ecc1963ccf89b456f9ca0eed9eb1ebd1, type: 2}

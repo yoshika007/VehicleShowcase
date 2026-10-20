@@ -147,7 +147,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 793685457875359081, guid: 9c92406c14c380849bca38280c133c64, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2016204142287490404}
+    - targetCorrespondingSourceObject: {fileID: 793685457875359081, guid: 9c92406c14c380849bca38280c133c64, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4594033638597036175}
   m_SourcePrefab: {fileID: 100100000, guid: 9c92406c14c380849bca38280c133c64, type: 3}
+--- !u!23 &996126709089451600 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1153837158124123324, guid: 9c92406c14c380849bca38280c133c64, type: 3}
+  m_PrefabInstance: {fileID: 2148695579929889516}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1644393885903986565 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 793685457875359081, guid: 9c92406c14c380849bca38280c133c64, type: 3}
@@ -167,6 +175,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hatchback
   displayName: CITYLINE
   category: Hatchback
+--- !u!114 &4594033638597036175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644393885903986565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f800e4f51454ec6b8549037395a752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaint
+  palette: {fileID: 11400000, guid: b69ff5a5bdf4d4fe9bdab1ad13fb375f, type: 2}
+  body: {fileID: 996126709089451600}
+  materialSlot: 0
 --- !u!4 &2132981272074634559 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 20385034141536211, guid: 9c92406c14c380849bca38280c133c64, type: 3}

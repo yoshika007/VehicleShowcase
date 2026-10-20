@@ -147,7 +147,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7199546247579947592, guid: 8c0f502c596c3c746a68e5631858c360, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2760597074614571929}
+    - targetCorrespondingSourceObject: {fileID: 7199546247579947592, guid: 8c0f502c596c3c746a68e5631858c360, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 960975464129868402}
   m_SourcePrefab: {fileID: 100100000, guid: 8c0f502c596c3c746a68e5631858c360, type: 3}
+--- !u!23 &7800292320386007914 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8712514036133032861, guid: 8c0f502c596c3c746a68e5631858c360, type: 3}
+  m_PrefabInstance: {fileID: 1488762741140271351}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8593089063253140159 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7199546247579947592, guid: 8c0f502c596c3c746a68e5631858c360, type: 3}
@@ -167,6 +175,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterTruck
   displayName: TRAILMASTER
   category: Off-Road
+--- !u!114 &960975464129868402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8593089063253140159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f800e4f51454ec6b8549037395a752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehiclePaint
+  palette: {fileID: 11400000, guid: ea6672516d20f4362aa0d7a7158c506a, type: 2}
+  body: {fileID: 7800292320386007914}
+  materialSlot: 0
 --- !u!4 &8938264638945966085 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7539656373186824434, guid: 8c0f502c596c3c746a68e5631858c360, type: 3}
