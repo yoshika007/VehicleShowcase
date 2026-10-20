@@ -177,6 +177,96 @@ Transform:
   - {fileID: 4375617934375647934}
   m_Father: {fileID: 4705775187883119266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2012783551533319546
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 536943214041875949}
+  - component: {fileID: 5528607504336166019}
+  - component: {fileID: 2680815896356796476}
+  m_Layer: 0
+  m_Name: Brake and Reverse Lamps
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &536943214041875949
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012783551533319546}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4705775187883119266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5528607504336166019
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012783551533319546}
+  m_Mesh: {fileID: 4300000, guid: fff9f2ac95ddd46f3a9f50ce26c99ef2, type: 2}
+--- !u!23 &2680815896356796476
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012783551533319546}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0f9fc1d9a1bdd4e17bf56b479bd6279f, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2332199466612006801
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,6 +461,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3041623817737652890, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 7456cb340f52a459f81a2b2fe27cd9e4, type: 2}
     - target: {fileID: 6602408999513857226, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -385,6 +479,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2132981272074634559, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2269489681266207538}
+    - targetCorrespondingSourceObject: {fileID: 2132981272074634559, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 536943214041875949}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1644393885903986565, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       insertIndex: -1
@@ -398,6 +495,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1644393885903986565, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1040163557568468365}
+    - targetCorrespondingSourceObject: {fileID: 1644393885903986565, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9103448744407393823}
   m_SourcePrefab: {fileID: 100100000, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
 --- !u!4 &2456521162345610351 stripped
 Transform:
@@ -516,6 +616,19 @@ MonoBehaviour:
   engineVolume: 0.48
   roadVolume: 0.55
   engineTone: 1.16
+--- !u!114 &9103448744407393823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5333833390572341272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fec3545090b7f4702a68556f43ae27ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveRearLights
+  rearLamps: {fileID: 2680815896356796476}
 --- !u!4 &5449734643851172330 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1690752544850873975, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}

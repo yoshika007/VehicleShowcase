@@ -47,6 +47,8 @@ public class TestDriveMovement : MonoBehaviour
     private Vector3 bogAttemptOrigin;
     private Vector3 boggedOrigin;
     private TestDriveSurface boggedSurface;
+    public bool IsBraking { get; private set; }
+    public bool IsReversing { get; private set; }
     public bool IsBoggedDown { get; private set; }
     public float BoggingAttemptSeconds => bogAttemptTime;
     public bool CanRecoverLocally => IsBoggedDown && boggedSurface != null && boggedSurface.RecoveryPoint != null;
@@ -118,6 +120,10 @@ public class TestDriveMovement : MonoBehaviour
         float speed = Vector3.Dot(vehicleBody.linearVelocity, transform.forward);
         bool changingDirection = speed * moveInput < -0.4f;
         bool braking = brakeInput || changingDirection;
+        IsBraking = braking;
+        // BRAKE / REV first slows forward travel, then selects reverse. Keep white
+        // lamps on while coasting backward, with active braking taking priority.
+        IsReversing = !braking && (moveInput < 0f || speed < -.15f);
         float speedLimit = moveInput > 0f ? moveSpeed : reverseSpeed;
         float speedInRequestedDirection = speed * moveInput;
         // Ease engine torque near the limit; never clamp the Rigidbody's velocity.
@@ -298,6 +304,8 @@ public class TestDriveMovement : MonoBehaviour
 
     private void ClearControls()
     {
+        IsBraking = false;
+        IsReversing = false;
         IsBoggedDown = false;
         bogAttemptTime = 0f;
         boggedSurface = null;
