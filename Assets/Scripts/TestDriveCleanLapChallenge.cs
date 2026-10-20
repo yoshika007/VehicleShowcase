@@ -29,6 +29,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     private double countdownEnd, startedAt;
     private int resetCount;
     private string saveKey, message;
+    private bool briefingOpen;
+    public void SetBriefingOpen(bool open) => briefingOpen = open;
     public Phase State { get; private set; }
     public Medal LastMedal { get; private set; }
     public float ElapsedSeconds { get; private set; }
@@ -102,7 +104,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     }
     public void HandleAction()
     {
-        if (!IsAvailable) return;
+        if (!IsAvailable || briefingOpen) return;
         if (State == Phase.Countdown || State == Phase.Armed)
         {
             vehicle.SetChallengeInputLocked(false);
@@ -114,7 +116,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     }
     public void StartAttempt()
     {
-        if (!IsAvailable) return;
+        if (!IsAvailable || briefingOpen) return;
         vehicle.ResetVehicle();
         resetCount = vehicle.ResetCount;
         vehicle.SetChallengeInputLocked(true);
@@ -125,6 +127,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         LastMedal = Medal.None;
         message = "Get ready";
         previousPosition = body.position;
+        if (view != null) view.Refresh(this);
     }
     private void Update()
     {

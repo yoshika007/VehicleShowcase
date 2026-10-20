@@ -43,7 +43,15 @@ public class TestDriveSceneManager : MonoBehaviour
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
         minimap.SetVehicle(vehicle.transform);
         if (cleanLapChallenge != null)
-            cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
+            {
+            bool challengeMode = TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge;
+            cleanLapChallenge.ConfigureMode(challengeMode, vehicle);
+            if (challengeMode)
+            {
+                var briefing = new GameObject("CleanLapBriefing", typeof(RectTransform)).AddComponent<CleanLapBriefing>();
+                briefing.Initialize(cleanLapChallenge, vehicle, this);
+            }
+        }
     }
 
     private void Update()
