@@ -18,15 +18,24 @@ public class TestDriveCleanLapView : MonoBehaviour
     public void Refresh(TestDriveCleanLapChallenge challenge)
     {
         var phase = challenge.State;
+        bool showBest = phase == TestDriveCleanLapChallenge.Phase.Ready && challenge.BestSeconds > 0;
         heading.text = phase == TestDriveCleanLapChallenge.Phase.Finished
-            ? challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL" : "CLEAN LAP";
+            ? challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL"
+            : showBest ? "CLEAN LAP / BEST" : "CLEAN LAP";
         heading.color = phase == TestDriveCleanLapChallenge.Phase.Finished
             ? challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Gold ? Gold
             : challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Silver ? new Color(.8f, .86f, .92f)
             : new Color(.88f, .58f, .3f) : Gold;
-        bool showBest = phase == TestDriveCleanLapChallenge.Phase.Ready && challenge.BestSeconds > 0;
-        clock.fontSize = showBest ? 26 : 32;
-        clock.text = showBest ? "BEST " + FormatTime(challenge.BestSeconds) : FormatTime(challenge.ElapsedSeconds);
+        clock.fontSize = 64;
+        clock.fontStyle = FontStyles.Bold;
+        clock.color = phase == TestDriveCleanLapChallenge.Phase.Finished ? Gold
+            : phase == TestDriveCleanLapChallenge.Phase.Running ? new Color(.64f, 1f, .88f) : Color.white;
+        // Fixed cells and left alignment prevent changing glyph bounds from shifting the row.
+        string time = FormatTime(showBest ? challenge.BestSeconds : challenge.ElapsedSeconds);
+        clock.fontFeatures.Clear();
+        clock.alignment = TextAlignmentOptions.Left;
+        clock.margin = new Vector4(Mathf.Max(0, (clock.rectTransform.rect.width - 64f * .58f * time.Length) * .5f), 0, 0, 0);
+        clock.text = "<mspace=0.58em>" + time + "</mspace>";
         status.text = phase == TestDriveCleanLapChallenge.Phase.Ready ? "Ready to start"
             : phase == TestDriveCleanLapChallenge.Phase.Countdown ? "Get ready"
             : phase == TestDriveCleanLapChallenge.Phase.Armed ? "Cross the start line"

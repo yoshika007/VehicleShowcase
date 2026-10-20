@@ -102,9 +102,9 @@ public class TestDriveTouchControls : MonoBehaviour
         Place(pedalGroup, scale, new Vector2(-margin, margin));
         Place(resetButton, scale, new Vector2(0, margin));
         Place(recoveryPanel, scale, new Vector2(0, margin + 200f * scale));
-        Place(minimapPanel, scale, new Vector2(-margin, -margin));
+        Place(minimapPanel, scale, new Vector2(margin, -margin - 92f * scale));
         Place(backButton, scale, new Vector2(margin, -margin));
-        Place(cleanLapPanel, scale, new Vector2(margin, -margin - 92f * scale));
+        Place(cleanLapPanel, scale, new Vector2(-margin, -margin));
         if (speedPanel != null)
         {
             // The readout follows the actual scaled pedal height, with a scaled gap.
