@@ -48,6 +48,8 @@ public class TestDriveMovement : MonoBehaviour
     private Vector3 boggedOrigin;
     private TestDriveSurface boggedSurface;
     private bool challengeInputLocked;
+    private RigidbodyConstraints preChallengeConstraints;
+    public bool IsChallengeStopped { get; private set; }
     public int ResetCount { get; private set; }
     public bool IsBraking { get; private set; }
     public bool IsReversing { get; private set; }
@@ -85,6 +87,12 @@ public class TestDriveMovement : MonoBehaviour
 
     private void Update()
     {
+        if (IsChallengeStopped)
+        {
+            ClearControls();
+            return;
+        }
+
         moveInput = 0f;
         steerInput = 0f;
         brakeInput = false;
@@ -113,6 +121,14 @@ public class TestDriveMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (IsChallengeStopped)
+        {
+            ClearControls();
+            vehicleBody.linearVelocity = Vector3.zero;
+            vehicleBody.angularVelocity = Vector3.zero;
+            return;
+        }
+
         if (resetRequested)
         {
             RecoverOrResetVehicle();
@@ -276,6 +292,29 @@ public class TestDriveMovement : MonoBehaviour
         if (locked) ClearControls();
     }
 
+    public void SetChallengeStopped(bool stopped)
+    {
+        if (IsChallengeStopped == stopped) return;
+        if (vehicleBody == null) vehicleBody = GetComponent<Rigidbody>();
+        if (stopped)
+        {
+            preChallengeConstraints = vehicleBody.constraints;
+            IsChallengeStopped = true;
+            ClearControls();
+            vehicleBody.linearVelocity = Vector3.zero;
+            vehicleBody.angularVelocity = Vector3.zero;
+            vehicleBody.constraints = RigidbodyConstraints.FreezeAll;
+            vehicleBody.Sleep();
+        }
+        else
+        {
+            IsChallengeStopped = false;
+            vehicleBody.constraints = preChallengeConstraints;
+            ClearControls();
+            vehicleBody.WakeUp();
+        }
+    }
+
     public void ConfigureReset(Transform spawnPoint, TestDriveCameraFollow cameraFollow)
     {
         resetPoint = spawnPoint;
@@ -284,6 +323,7 @@ public class TestDriveMovement : MonoBehaviour
 
     public void RecoverOrResetVehicle()
     {
+        if (IsChallengeStopped) return;
         if (CanRecoverLocally)
         {
             Transform point = boggedSurface.RecoveryPoint;
@@ -294,6 +334,7 @@ public class TestDriveMovement : MonoBehaviour
 
     public void ResetVehicle()
     {
+        if (IsChallengeStopped) return;
         ResetAt(resetPoint != null ? resetPoint.position : initialPosition,
             resetPoint != null ? resetPoint.rotation : initialRotation);
     }

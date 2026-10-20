@@ -47,7 +47,8 @@ public class TestDriveCleanLapView : MonoBehaviour
         actionLabel.text = phase == TestDriveCleanLapChallenge.Phase.Countdown || phase == TestDriveCleanLapChallenge.Phase.Armed
             ? "CANCEL" : phase == TestDriveCleanLapChallenge.Phase.Running ? "RESTART LAP"
             : phase == TestDriveCleanLapChallenge.Phase.Ready ? "START LAP" : "TRY AGAIN";
-        action.interactable = challenge.IsAvailable;
+        action.interactable = challenge.IsAvailable
+            && phase != TestDriveCleanLapChallenge.Phase.Finished && phase != TestDriveCleanLapChallenge.Phase.Failed;
         RefreshCountdown(challenge);
     }
     private void RefreshCountdown(TestDriveCleanLapChallenge challenge)

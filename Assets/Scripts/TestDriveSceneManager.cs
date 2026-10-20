@@ -43,7 +43,7 @@ public class TestDriveSceneManager : MonoBehaviour
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
         minimap.SetVehicle(vehicle.transform);
         if (cleanLapChallenge != null)
-            {
+        {
             bool challengeMode = TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge;
             cleanLapChallenge.ConfigureMode(challengeMode, vehicle);
             if (challengeMode)
@@ -67,7 +67,11 @@ public class TestDriveSceneManager : MonoBehaviour
         if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(null);
         if (returnButton != null) returnButton.interactable = false;
         if (touchControls != null) touchControls.BindVehicle(null);
-        if (vehicle != null) vehicle.enabled = false;
+        if (vehicle != null)
+        {
+            vehicle.SetChallengeStopped(true);
+            vehicle.enabled = false;
+        }
         StartCoroutine(ReturnAfterSound());
     }
 

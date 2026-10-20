@@ -30,6 +30,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     private int resetCount;
     private string saveKey, message;
     private bool briefingOpen;
+    private GameObject circuitBarrier;
+    public event Action<TestDriveCleanLapChallenge> AttemptEnded;
     public void SetBriefingOpen(bool open) => briefingOpen = open;
     public Phase State { get; private set; }
     public Medal LastMedal { get; private set; }
@@ -45,19 +47,32 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public void ConfigureMode(bool challengeMode, TestDriveMovement target)
     {
         BindVehicle(challengeMode ? target : null);
+        if (challengeMode && circuitBarrier == null)
+        {
+            circuitBarrier = CleanLapCircuitBarrier.Create(circuit);
+            if (circuitBarrier != null) circuitBarrier.transform.SetParent(transform, true);
+        }
+        if (circuitBarrier != null) circuitBarrier.SetActive(challengeMode);
         if (view != null) view.gameObject.SetActive(challengeMode);
         gameObject.SetActive(challengeMode);
     }
 
     public void BindVehicle(TestDriveMovement target)
     {
-        if (vehicle != null) vehicle.SetChallengeInputLocked(false);
+        if (vehicle != null)
+        {
+            vehicle.SetChallengeStopped(false);
+            vehicle.SetChallengeInputLocked(false);
+        }
+        briefingOpen = false;
         vehicle = target;
         State = Phase.Ready;
         LastMedal = Medal.None;
         ElapsedSeconds = 0;
         CheckpointsPassed = 0;
         if (target == null) return;
+        target.SetChallengeStopped(true);
+        target.SetChallengeInputLocked(true);
         body = target.GetComponent<Rigidbody>();
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
@@ -104,12 +119,14 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     }
     public void HandleAction()
     {
-        if (!IsAvailable || briefingOpen) return;
+        if (!IsAvailable || briefingOpen || State == Phase.Finished || State == Phase.Failed) return;
         if (State == Phase.Countdown || State == Phase.Armed)
         {
-            vehicle.SetChallengeInputLocked(false);
+            vehicle.SetChallengeStopped(true);
+            vehicle.SetChallengeInputLocked(true);
             State = Phase.Ready;
             message = "Asphalt + curbs. No resets.";
+            if (view != null) view.Refresh(this);
             return;
         }
         StartAttempt();
@@ -117,6 +134,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public void StartAttempt()
     {
         if (!IsAvailable || briefingOpen) return;
+        vehicle.SetChallengeStopped(false);
         vehicle.ResetVehicle();
         resetCount = vehicle.ResetCount;
         vehicle.SetChallengeInputLocked(true);
@@ -197,7 +215,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
 
     private void Finish()
     {
-        // A completed attempt can award only once; another award requires START LAP.
+        // A completed attempt can award only once; another award requires a retry.
+        if (State != Phase.Running) return;
         State = Phase.Finished;
         CheckpointsPassed = 8;
         LastMedal = EvaluateMedal(ElapsedSeconds);
@@ -209,16 +228,33 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             PlayerPrefs.Save();
         }
         message = improved ? "Clean lap complete. New best!" : "Clean lap complete.";
+        EndAttempt();
     }
     private void Fail(string reason)
     {
-        if (vehicle != null) vehicle.SetChallengeInputLocked(false);
+        if (State == Phase.Finished || State == Phase.Failed) return;
         State = Phase.Failed;
         LastMedal = Medal.None;
         message = reason;
+        EndAttempt();
+    }
+    private void EndAttempt()
+    {
+        if (vehicle != null)
+        {
+            vehicle.SetChallengeInputLocked(true);
+            vehicle.SetChallengeStopped(true);
+        }
+        if (view != null) view.Refresh(this);
+        AttemptEnded?.Invoke(this);
     }
     private void OnDisable()
     {
-        if (vehicle != null) vehicle.SetChallengeInputLocked(false);
+        if (circuitBarrier != null) circuitBarrier.SetActive(false);
+        if (vehicle != null)
+        {
+            vehicle.SetChallengeStopped(false);
+            vehicle.SetChallengeInputLocked(false);
+        }
     }
 }
