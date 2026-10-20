@@ -42241,6 +42241,8 @@ GameObject:
   m_Component:
   - component: {fileID: 721319956}
   - component: {fileID: 721319955}
+  - component: {fileID: 721319958}
+  - component: {fileID: 721319957}
   m_Layer: 0
   m_Name: Clean Lap Challenge
   m_TagString: Untagged
@@ -42261,14 +42263,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveCleanLapChallenge
   circuit: {fileID: 1425421723}
-  asphalt: {fileID: 1425421721}
-  legalCurbs: {fileID: 978955754}
   startLineHalfWidth: 8.2
   startLine: {fileID: 139737550}
   goldSeconds: 35
   silverSeconds: 50
-  offTrackGrace: 0.25
   view: {fileID: 403526831}
+  challengeAudio: {fileID: 721319957}
 --- !u!4 &721319956
 Transform:
   m_ObjectHideFlags: 0
@@ -42285,6 +42285,120 @@ Transform:
   - {fileID: 139737550}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &721319957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721319954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f926d3e35e9c44237b9d6ee47e3238b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CleanLapChallengeAudio
+  countdownTick: {fileID: 8300000, guid: a6a85bd74daca48fea454a75c17a9cff, type: 3}
+  startSound: {fileID: 8300000, guid: 4a8af3dcd4b4a43768aaa87056f2aacf, type: 3}
+  finishSound: {fileID: 8300000, guid: 2265940a79a7c45a5b3585fd35680a5c, type: 3}
+  failSound: {fileID: 8300000, guid: b0ae1e016b15745fb845ce24eb2c95c2, type: 3}
+  countdownPitch: 1.5
+--- !u!82 &721319958
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721319954}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.82
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 40
+  DopplerLevel: 0
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &724617114
 GameObject:
   m_ObjectHideFlags: 0

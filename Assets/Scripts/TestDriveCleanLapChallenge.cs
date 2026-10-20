@@ -13,6 +13,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [SerializeField, Min(1f)] private float goldSeconds = 35f;
     [SerializeField, Min(1f)] private float silverSeconds = 50f;
     [SerializeField] private TestDriveCleanLapView view;
+    [SerializeField] private CleanLapChallengeAudio challengeAudio;
     private TestDriveMovement vehicle;
     private Rigidbody body;
     private WheelCollider[] wheels;
@@ -53,6 +54,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
 
     public void BindVehicle(TestDriveMovement target)
     {
+        if (challengeAudio != null) challengeAudio.Stop();
         if (vehicle != null)
         {
             vehicle.ColliderContact -= ReportBarrierContact;
@@ -128,6 +130,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         if (!IsAvailable || briefingOpen || State == Phase.Finished || State == Phase.Failed) return;
         if (State == Phase.Countdown || State == Phase.Armed)
         {
+            if (challengeAudio != null) challengeAudio.Stop();
             vehicle.SetChallengeStopped(true);
             vehicle.SetChallengeInputLocked(true);
             State = Phase.Ready;
@@ -152,6 +155,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         message = "Get ready";
         previousPosition = body.position;
         if (view != null) view.Refresh(this);
+        if (challengeAudio != null) challengeAudio.BeginCountdown();
     }
     private void Update()
     {
@@ -164,7 +168,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
                 State = Phase.Armed;
                 previousPosition = body.position;
                 message = "Cross START / FINISH to begin.";
+                if (challengeAudio != null) challengeAudio.PlayStart();
             }
+            else if (challengeAudio != null) challengeAudio.PlayCountdown(CountdownNumber);
         }
         if (view != null) view.Refresh(this);
     }
@@ -255,10 +261,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             }
         }
         if (view != null) view.Refresh(this);
+        if (challengeAudio != null) challengeAudio.PlayResult(State == Phase.Finished);
         AttemptEnded?.Invoke(this);
     }
     private void OnDisable()
     {
+        if (challengeAudio != null) challengeAudio.Stop();
         if (circuitBarrier != null) circuitBarrier.SetActive(false);
         if (vehicle != null)
         {

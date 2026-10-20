@@ -5887,6 +5887,7 @@ MonoBehaviour:
   buttonAudio: {fileID: 1628243157}
   navigationSound: {fileID: 8300000, guid: a5de864cccb6a476493d451f901a6ab1, type: 3}
   backSound: {fileID: 8300000, guid: 86bbd39c044924a7b906c89d69d6d1fd, type: 3}
+  driveStartSound: {fileID: 8300000, guid: 3ff395f7e8cd64251b5c974166dc4e58, type: 3}
   navigationButtons:
   - {fileID: 1906402056}
   - {fileID: 2049102403}

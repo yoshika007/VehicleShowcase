@@ -21,6 +21,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private AudioSource buttonAudio;
     [SerializeField] private AudioClip navigationSound;
     [SerializeField] private AudioClip backSound;
+    [SerializeField] private AudioClip driveStartSound;
     [SerializeField] private UnityEngine.UI.Button[] navigationButtons = new UnityEngine.UI.Button[0];
     [SerializeField, Min(0f)] private float backTransitionDelay = 0.22f;
 
@@ -73,7 +74,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     {
         if (isTransitioning || ModeMenuOpen) return;
         TestDriveSelection.Clear();
-        BeginTransition("TitleScene");
+        BeginTransition("TitleScene", backSound);
     }
 
     // Retains the original callback for existing scene-authoring tools.
@@ -130,10 +131,10 @@ public class VehicleShowcaseManager : MonoBehaviour
             return;
         }
         TestDriveSelection.Select(currentVehicleIndex, mode);
-        BeginTransition("TestTrackScene");
+        BeginTransition("TestTrackScene", driveStartSound != null ? driveStartSound : backSound);
     }
 
-    private void BeginTransition(string sceneName)
+    private void BeginTransition(string sceneName, AudioClip transitionSound)
     {
         isTransitioning = true;
         if (driveModePanel != null && driveModePanel.TryGetComponent<CanvasGroup>(out var group))
@@ -141,7 +142,7 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (paintSelector != null) paintSelector.SetInteractable(false);
         foreach (var button in navigationButtons)
             if (button != null) button.interactable = false;
-        StartCoroutine(LoadAfterSound(sceneName));
+        StartCoroutine(LoadAfterSound(sceneName, transitionSound));
     }
 
     private void PlayButtonSound(AudioClip clip)
@@ -153,12 +154,12 @@ public class VehicleShowcaseManager : MonoBehaviour
         buttonAudio.Play();
     }
 
-    private IEnumerator LoadAfterSound(string sceneName)
+    private IEnumerator LoadAfterSound(string sceneName, AudioClip transitionSound)
     {
-        PlayButtonSound(backSound);
+        PlayButtonSound(transitionSound);
         float delay = backTransitionDelay;
-        if (buttonAudio != null && backSound != null)
-            delay = Mathf.Max(delay, backSound.length / Mathf.Max(0.01f, Mathf.Abs(buttonAudio.pitch)));
+        if (buttonAudio != null && transitionSound != null)
+            delay = Mathf.Max(delay, transitionSound.length / Mathf.Max(0.01f, Mathf.Abs(buttonAudio.pitch)));
         yield return new WaitForSecondsRealtime(delay);
         SceneManager.LoadScene(sceneName);
     }
