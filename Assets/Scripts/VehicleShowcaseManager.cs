@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.InputSystem;
 using Unity.VisualScripting;
 
 public class VehicleShowcaseManager : MonoBehaviour
@@ -27,6 +28,11 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     [SerializeField] private VehiclePaintSelector paintSelector;
 
+    [SerializeField] private GameObject driveModePanel;
+    private bool[] navigationAvailability;
+    private bool dragWasEnabled;
+    private bool ModeMenuOpen => driveModePanel != null && driveModePanel.activeSelf;
+
     private bool isTransitioning;
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
@@ -34,13 +40,14 @@ public class VehicleShowcaseManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (driveModePanel != null) driveModePanel.SetActive(false);
         currentVehicleIndex = Mathf.Clamp(TestDriveSelection.VehicleIndex, 0, vehiclePrefabs.Length - 1);
         ShowVehicle();
     }
 
     public void ShowNextVehicle()
     {
-        if (isTransitioning) return;
+        if (isTransitioning || ModeMenuOpen) return;
         PlayButtonSound(navigationSound);
         currentVehicleIndex++;
         if(currentVehicleIndex >= vehiclePrefabs.Length)
@@ -52,7 +59,7 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void ShowPreviousVehicle()
     {
-        if (isTransitioning) return;
+        if (isTransitioning || ModeMenuOpen) return;
         PlayButtonSound(navigationSound);
         currentVehicleIndex--;
         if(currentVehicleIndex < 0)
@@ -64,27 +71,73 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void BackToTitle()
     {
-        if (isTransitioning) return;
+        if (isTransitioning || ModeMenuOpen) return;
         TestDriveSelection.Clear();
         BeginTransition("TitleScene");
     }
 
-    public void TestDrive()
+    // Retains the original callback for existing scene-authoring tools.
+    public void TestDrive() => OpenDriveMenu();
+
+    private void Update()
     {
-        if (isTransitioning) return;
+        if (ModeMenuOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            CloseDriveMenu();
+    }
+
+    public void OpenDriveMenu()
+    {
+        if (isTransitioning || ModeMenuOpen || driveModePanel == null) return;
+        PlayButtonSound(navigationSound);
+        navigationAvailability = new bool[navigationButtons.Length];
+        for (int i = 0; i < navigationButtons.Length; i++)
+        {
+            if (navigationButtons[i] == null) continue;
+            navigationAvailability[i] = navigationButtons[i].interactable;
+            navigationButtons[i].interactable = false;
+        }
+        if (paintSelector != null) paintSelector.SetInteractable(false);
+        if (vehicleDragRotation != null)
+        {
+            dragWasEnabled = vehicleDragRotation.enabled;
+            vehicleDragRotation.enabled = false;
+        }
+        if (driveModePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
+        driveModePanel.SetActive(true);
+    }
+
+    public void CloseDriveMenu()
+    {
+        if (isTransitioning || !ModeMenuOpen) return;
+        PlayButtonSound(navigationSound);
+        driveModePanel.SetActive(false);
+        for (int i = 0; i < navigationButtons.Length; i++)
+            if (navigationButtons[i] != null) navigationButtons[i].interactable = navigationAvailability[i];
+        if (paintSelector != null) paintSelector.SetInteractable(true);
+        if (vehicleDragRotation != null) vehicleDragRotation.enabled = dragWasEnabled;
+    }
+
+    public void FreeRun() => BeginDrive(TestDriveSelection.DriveMode.FreeRun);
+    public void Challenge() => BeginDrive(TestDriveSelection.DriveMode.Challenge);
+
+    private void BeginDrive(TestDriveSelection.DriveMode mode)
+    {
+        if (isTransitioning || !ModeMenuOpen) return;
         if (testDriveCatalog == null || currentVehicleIndex >= testDriveCatalog.drivingPrefabs.Length ||
             testDriveCatalog.drivingPrefabs[currentVehicleIndex] == null)
         {
             Debug.LogError("No driving prefab is configured for this vehicle.", this);
             return;
         }
-        TestDriveSelection.Select(currentVehicleIndex);
+        TestDriveSelection.Select(currentVehicleIndex, mode);
         BeginTransition("TestTrackScene");
     }
 
     private void BeginTransition(string sceneName)
     {
         isTransitioning = true;
+        if (driveModePanel != null && driveModePanel.TryGetComponent<CanvasGroup>(out var group))
+            group.interactable = false;
         if (paintSelector != null) paintSelector.SetInteractable(false);
         foreach (var button in navigationButtons)
             if (button != null) button.interactable = false;

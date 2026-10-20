@@ -42,7 +42,8 @@ public class TestDriveSceneManager : MonoBehaviour
         followCamera.SetTarget(vehicle.transform, framingScale);
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
         minimap.SetVehicle(vehicle.transform);
-        if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(vehicle);
+        if (cleanLapChallenge != null)
+            cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
     }
 
     private void Update()

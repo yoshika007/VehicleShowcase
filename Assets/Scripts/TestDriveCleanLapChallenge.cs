@@ -40,6 +40,13 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public string Message => message;
     public bool IsAvailable => vehicle != null && vehicle.isActiveAndEnabled;
 
+    public void ConfigureMode(bool challengeMode, TestDriveMovement target)
+    {
+        BindVehicle(challengeMode ? target : null);
+        if (view != null) view.gameObject.SetActive(challengeMode);
+        gameObject.SetActive(challengeMode);
+    }
+
     public void BindVehicle(TestDriveMovement target)
     {
         if (vehicle != null) vehicle.SetChallengeInputLocked(false);
