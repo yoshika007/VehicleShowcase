@@ -242,8 +242,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     {
         if (vehicle != null)
         {
-            vehicle.SetChallengeInputLocked(true);
-            vehicle.SetChallengeStopped(true);
+            if (State == Phase.Finished) vehicle.SetChallengeCoasting();
+            else
+            {
+                vehicle.SetChallengeInputLocked(true);
+                vehicle.SetChallengeStopped(true);
+            }
         }
         if (view != null) view.Refresh(this);
         AttemptEnded?.Invoke(this);

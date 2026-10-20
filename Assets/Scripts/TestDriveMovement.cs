@@ -50,6 +50,7 @@ public class TestDriveMovement : MonoBehaviour
     private bool challengeInputLocked;
     private RigidbodyConstraints preChallengeConstraints;
     public bool IsChallengeStopped { get; private set; }
+    public bool IsChallengeCoasting { get; private set; }
     public int ResetCount { get; private set; }
     public bool IsBraking { get; private set; }
     public bool IsReversing { get; private set; }
@@ -90,6 +91,13 @@ public class TestDriveMovement : MonoBehaviour
         if (IsChallengeStopped)
         {
             ClearControls();
+            return;
+        }
+
+        if (IsChallengeCoasting)
+        {
+            moveInput = steerInput = 0f;
+            brakeInput = resetRequested = false;
             return;
         }
 
@@ -292,8 +300,27 @@ public class TestDriveMovement : MonoBehaviour
         if (locked) ClearControls();
     }
 
+    public void SetChallengeCoasting()
+    {
+        SetChallengeStopped(false);
+        IsChallengeCoasting = true;
+        challengeInputLocked = true;
+        moveInput = steerInput = currentMotorTorque = 0f;
+        brakeInput = resetRequested = false;
+        IsBraking = IsReversing = false;
+        if (touchControls != null) touchControls.ReleaseAll();
+        // Release engine/brake input without changing either velocity or snapping steering.
+        foreach (var wheel in wheels)
+        {
+            if (wheel.collider == null) continue;
+            wheel.collider.motorTorque = 0f;
+            wheel.collider.brakeTorque = coastingBrakeTorque;
+        }
+    }
+
     public void SetChallengeStopped(bool stopped)
     {
+        IsChallengeCoasting = false;
         if (IsChallengeStopped == stopped) return;
         if (vehicleBody == null) vehicleBody = GetComponent<Rigidbody>();
         if (stopped)
@@ -323,7 +350,7 @@ public class TestDriveMovement : MonoBehaviour
 
     public void RecoverOrResetVehicle()
     {
-        if (IsChallengeStopped) return;
+        if (IsChallengeStopped || IsChallengeCoasting) return;
         if (CanRecoverLocally)
         {
             Transform point = boggedSurface.RecoveryPoint;
@@ -334,7 +361,7 @@ public class TestDriveMovement : MonoBehaviour
 
     public void ResetVehicle()
     {
-        if (IsChallengeStopped) return;
+        if (IsChallengeStopped || IsChallengeCoasting) return;
         ResetAt(resetPoint != null ? resetPoint.position : initialPosition,
             resetPoint != null ? resetPoint.rotation : initialRotation);
     }
