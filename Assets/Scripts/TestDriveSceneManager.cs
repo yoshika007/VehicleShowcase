@@ -16,6 +16,8 @@ public class TestDriveSceneManager : MonoBehaviour
 
     [SerializeField] private TestDriveTouchControls touchControls;
 
+    [SerializeField] private TestDriveCleanLapChallenge cleanLapChallenge;
+
     private TestDriveMovement vehicle;
     private bool isReturning;
 
@@ -40,6 +42,7 @@ public class TestDriveSceneManager : MonoBehaviour
         followCamera.SetTarget(vehicle.transform, framingScale);
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
         minimap.SetVehicle(vehicle.transform);
+        if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(vehicle);
     }
 
     private void Update()
@@ -52,6 +55,7 @@ public class TestDriveSceneManager : MonoBehaviour
     {
         if (isReturning) return;
         isReturning = true;
+        if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(null);
         if (returnButton != null) returnButton.interactable = false;
         if (touchControls != null) touchControls.BindVehicle(null);
         if (vehicle != null) vehicle.enabled = false;

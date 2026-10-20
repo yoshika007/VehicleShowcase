@@ -47,6 +47,8 @@ public class TestDriveMovement : MonoBehaviour
     private Vector3 bogAttemptOrigin;
     private Vector3 boggedOrigin;
     private TestDriveSurface boggedSurface;
+    private bool challengeInputLocked;
+    public int ResetCount { get; private set; }
     public bool IsBraking { get; private set; }
     public bool IsReversing { get; private set; }
     public bool IsBoggedDown { get; private set; }
@@ -117,6 +119,7 @@ public class TestDriveMovement : MonoBehaviour
             return;
         }
 
+        if (challengeInputLocked) { moveInput = steerInput = 0f; brakeInput = false; }
         float speed = Vector3.Dot(vehicleBody.linearVelocity, transform.forward);
         bool changingDirection = speed * moveInput < -0.4f;
         bool braking = brakeInput || changingDirection;
@@ -267,6 +270,12 @@ public class TestDriveMovement : MonoBehaviour
 
     public void ConfigureTouchInput(TestDriveTouchControls controls) => touchControls = controls;
 
+    public void SetChallengeInputLocked(bool locked)
+    {
+        challengeInputLocked = locked;
+        if (locked) ClearControls();
+    }
+
     public void ConfigureReset(Transform spawnPoint, TestDriveCameraFollow cameraFollow)
     {
         resetPoint = spawnPoint;
@@ -291,6 +300,7 @@ public class TestDriveMovement : MonoBehaviour
 
     private void ResetAt(Vector3 position, Quaternion rotation)
     {
+        ResetCount++;
         ClearControls();
         if (TryGetComponent<TestDriveDust>(out var dust)) dust.ClearDust();
         vehicleBody.linearVelocity = Vector3.zero;

@@ -13,6 +13,7 @@ public class TestDriveTouchControls : MonoBehaviour
     [SerializeField] private RectTransform resetButton;
     [SerializeField] private TestDriveRecoveryPrompt recoveryPrompt;
     [SerializeField] private RectTransform recoveryPanel;
+    [SerializeField] private RectTransform cleanLapPanel;
     [SerializeField] private TestDriveTouchButton left;
     [SerializeField] private TestDriveTouchButton right;
     [SerializeField] private TestDriveTouchButton gas;
@@ -103,6 +104,7 @@ public class TestDriveTouchControls : MonoBehaviour
         Place(recoveryPanel, scale, new Vector2(0, margin + 200f * scale));
         Place(minimapPanel, scale, new Vector2(-margin, -margin));
         Place(backButton, scale, new Vector2(margin, -margin));
+        Place(cleanLapPanel, scale, new Vector2(margin, -margin - 92f * scale));
         if (speedPanel != null)
         {
             // The readout follows the actual scaled pedal height, with a scaled gap.
