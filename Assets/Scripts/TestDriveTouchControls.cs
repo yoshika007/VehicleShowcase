@@ -11,6 +11,8 @@ public class TestDriveTouchControls : MonoBehaviour
     [SerializeField] private RectTransform steeringGroup;
     [SerializeField] private RectTransform pedalGroup;
     [SerializeField] private RectTransform resetButton;
+    [SerializeField] private TestDriveRecoveryPrompt recoveryPrompt;
+    [SerializeField] private RectTransform recoveryPanel;
     [SerializeField] private TestDriveTouchButton left;
     [SerializeField] private TestDriveTouchButton right;
     [SerializeField] private TestDriveTouchButton gas;
@@ -44,6 +46,7 @@ public class TestDriveTouchControls : MonoBehaviour
         Initialize();
         ReleaseAll();
         vehicle = target;
+        if (recoveryPrompt != null) recoveryPrompt.BindVehicle(target);
         if (vehicle != null) vehicle.ConfigureTouchInput(this);
         Refresh();
     }
@@ -68,6 +71,7 @@ public class TestDriveTouchControls : MonoBehaviour
             controls.interactable = controls.blocksRaycasts = visible;
         }
         if (keyboardResetHint != null) keyboardResetHint.SetActive(!visible && originalHintActive);
+        if (recoveryPrompt != null) recoveryPrompt.SetTouchMode(visible);
         ApplyLayout(Screen.safeArea, new Vector2Int(Screen.width, Screen.height), visible);
     }
 
@@ -96,6 +100,7 @@ public class TestDriveTouchControls : MonoBehaviour
         Place(steeringGroup, scale, new Vector2(margin, margin));
         Place(pedalGroup, scale, new Vector2(-margin, margin));
         Place(resetButton, scale, new Vector2(0, margin));
+        Place(recoveryPanel, scale, new Vector2(0, margin + 200f * scale));
         Place(minimapPanel, scale, new Vector2(-margin, -margin));
         Place(backButton, scale, new Vector2(margin, -margin));
         if (speedPanel != null)
@@ -116,7 +121,7 @@ public class TestDriveTouchControls : MonoBehaviour
     public void ResetVehicle()
     {
         ReleaseAll();
-        if (vehicle != null && vehicle.isActiveAndEnabled) vehicle.ResetVehicle();
+        if (vehicle != null && vehicle.isActiveAndEnabled) vehicle.RecoverOrResetVehicle();
     }
     public void ReleaseAll()
     {

@@ -41,6 +41,15 @@ public class TestDriveMovement : MonoBehaviour
 
     private TestDriveTouchControls touchControls;
     private Rigidbody vehicleBody;
+    private BoxCollider chassisCollider;
+    private int configuredWheelCount;
+    private float bogAttemptTime;
+    private Vector3 bogAttemptOrigin;
+    private Vector3 boggedOrigin;
+    private TestDriveSurface boggedSurface;
+    public bool IsBoggedDown { get; private set; }
+    public float BoggingAttemptSeconds => bogAttemptTime;
+    public bool CanRecoverLocally => IsBoggedDown && boggedSurface != null && boggedSurface.RecoveryPoint != null;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
     private float moveInput;
@@ -54,11 +63,13 @@ public class TestDriveMovement : MonoBehaviour
     private void Awake()
     {
         vehicleBody = GetComponent<Rigidbody>();
+        chassisCollider = GetComponent<BoxCollider>();
         initialPosition = vehicleBody.position;
         initialRotation = vehicleBody.rotation;
         foreach (var wheel in wheels)
         {
             if (wheel.collider == null) continue;
+            configuredWheelCount++;
             if (wheel.driven) drivenWheelCount++;
             if (wheel.visual != null)
                 wheel.visualRotationOffset = Quaternion.Inverse(wheel.collider.transform.rotation) * wheel.visual.rotation;
@@ -100,7 +111,7 @@ public class TestDriveMovement : MonoBehaviour
     {
         if (resetRequested)
         {
-            ResetVehicle();
+            RecoverOrResetVehicle();
             return;
         }
 
@@ -129,6 +140,9 @@ public class TestDriveMovement : MonoBehaviour
 
         Vector3 surfaceResistance = Vector3.zero;
         int assignedWheelCount = 0;
+        int mudContacts = 0;
+        TestDriveSurface mudSurface = null;
+        float chassisBottom = chassisCollider != null ? chassisCollider.bounds.min.y : float.PositiveInfinity;
         foreach (var wheel in wheels)
         {
             if (wheel.collider == null) continue;
@@ -138,11 +152,25 @@ public class TestDriveMovement : MonoBehaviour
             if (grounded && hit.collider.TryGetComponent<TestDriveSurface>(out var surface))
             {
                 grip = surface.GripMultiplier;
+                if (surface.SurfaceKind == TestDriveSurface.Kind.Mud)
+                {
+                    mudContacts++;
+                    mudSurface = surface;
+                }
                 Vector3 planarVelocity = Vector3.ProjectOnPlane(vehicleBody.linearVelocity, hit.normal);
                 float planarSpeed = planarVelocity.magnitude;
                 if (planarSpeed > 0.001f)
                 {
                     float resistance = surface.ResistanceAcceleration + surface.VelocityResistance * planarSpeed;
+                    if (surface.SurfaceKind == TestDriveSurface.Kind.Mud && surface.MudBogResistance > 0f)
+                    {
+                        float depth = Mathf.Max(0f, surface.VisibleWetSurfaceHeight - hit.point.y);
+                        float tireBurial = Mathf.InverseLerp(.65f, 1.15f, depth / Mathf.Max(.05f, wheel.collider.radius));
+                        float chassisBurial = Mathf.InverseLerp(0f, .25f, surface.VisibleWetSurfaceHeight - chassisBottom);
+                        float drivenFraction = drivenWheelCount / (float)Mathf.Max(1, configuredWheelCount);
+                        float tractionHelp = Mathf.Lerp(1f, .35f, drivenFraction);
+                        resistance += surface.MudBogResistance * Mathf.Max(tireBurial, chassisBurial * .7f) * tractionHelp;
+                    }
                     // Limit resistance to this step's speed so it cannot reverse a slow vehicle.
                     resistance = Mathf.Min(resistance, planarSpeed / Time.fixedDeltaTime);
                     surfaceResistance -= planarVelocity / planarSpeed * resistance;
@@ -182,7 +210,43 @@ public class TestDriveMovement : MonoBehaviour
         // One wheel entering mud contributes only its share; airborne and dry wheels add no drag.
         if (assignedWheelCount > 0 && surfaceResistance.sqrMagnitude > 0f)
             vehicleBody.AddForce(surfaceResistance / assignedWheelCount, ForceMode.Acceleration);
+        UpdateBogging(mudContacts, mudSurface, braking);
         // Wheel contact forces drive and rotate the car; no velocity or rotation overrides.
+    }
+
+    private void UpdateBogging(int contacts, TestDriveSurface surface, bool braking)
+    {
+        Vector3 progress = vehicleBody.position - boggedOrigin;
+        progress.y = 0f;
+        if (contacts == 0 || (IsBoggedDown && progress.magnitude > 1f))
+        {
+            IsBoggedDown = false;
+            boggedSurface = null;
+            bogAttemptTime = 0f;
+        }
+        if (IsBoggedDown) return;
+        // Idle, braking, dry-ground obstacles and normal slow progress are not bogging.
+        if (contacts < 2 || Mathf.Abs(moveInput) < .5f || braking)
+        {
+            bogAttemptTime = 0f;
+            return;
+        }
+        if (bogAttemptTime == 0f) bogAttemptOrigin = vehicleBody.position;
+        Vector3 distance = vehicleBody.position - bogAttemptOrigin;
+        distance.y = 0f;
+        float speed = Vector3.ProjectOnPlane(vehicleBody.linearVelocity, Vector3.up).magnitude;
+        if (distance.magnitude > .6f || speed > 1f)
+        {
+            bogAttemptTime = 0f;
+            return;
+        }
+        bogAttemptTime += Time.fixedDeltaTime;
+        if (bogAttemptTime >= 3.5f && speed < .35f)
+        {
+            IsBoggedDown = true;
+            boggedSurface = surface;
+            boggedOrigin = vehicleBody.position;
+        }
     }
 
     private void LateUpdate()
@@ -203,14 +267,28 @@ public class TestDriveMovement : MonoBehaviour
         followCamera = cameraFollow;
     }
 
+    public void RecoverOrResetVehicle()
+    {
+        if (CanRecoverLocally)
+        {
+            Transform point = boggedSurface.RecoveryPoint;
+            ResetAt(point.position, point.rotation);
+        }
+        else ResetVehicle();
+    }
+
     public void ResetVehicle()
+    {
+        ResetAt(resetPoint != null ? resetPoint.position : initialPosition,
+            resetPoint != null ? resetPoint.rotation : initialRotation);
+    }
+
+    private void ResetAt(Vector3 position, Quaternion rotation)
     {
         ClearControls();
         if (TryGetComponent<TestDriveDust>(out var dust)) dust.ClearDust();
         vehicleBody.linearVelocity = Vector3.zero;
         vehicleBody.angularVelocity = Vector3.zero;
-        Vector3 position = resetPoint != null ? resetPoint.position : initialPosition;
-        Quaternion rotation = resetPoint != null ? resetPoint.rotation : initialRotation;
         vehicleBody.position = position;
         vehicleBody.rotation = rotation;
         transform.SetPositionAndRotation(position, rotation);
@@ -220,6 +298,9 @@ public class TestDriveMovement : MonoBehaviour
 
     private void ClearControls()
     {
+        IsBoggedDown = false;
+        bogAttemptTime = 0f;
+        boggedSurface = null;
         if (touchControls != null) touchControls.ReleaseAll();
         moveInput = 0f;
         steerInput = 0f;

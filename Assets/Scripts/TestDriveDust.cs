@@ -108,9 +108,11 @@ public class TestDriveDust : MonoBehaviour
                         Vector3.ProjectOnPlane(wheels[i].transform.forward, hit.normal).normalized;
                     Vector3 sideDirection = Vector3.Cross(hit.normal, travelDirection);
                     float height = surface.SurfaceKind == TestDriveSurface.Kind.Water ? 0.3f : 0.08f;
+                    Vector3 emissionPoint = hit.point + hit.normal * height;
+                    emissionPoint.y = Mathf.Max(emissionPoint.y, surface.VisibleWetSurfaceHeight + 0.025f);
                     emit = new ParticleSystem.EmitParams
                     {
-                        position = hit.point + hit.normal * height +
+                        position = emissionPoint +
                             Vector3.ProjectOnPlane(Random.insideUnitSphere, hit.normal) * 0.06f,
                         velocity = planarVelocity * 0.18f + sideDirection * Random.Range(-1.2f, 1.2f) +
                             hit.normal * Random.Range(0.9f, 2.1f),
