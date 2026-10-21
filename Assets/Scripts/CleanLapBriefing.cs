@@ -38,11 +38,11 @@ public class CleanLapBriefing : MonoBehaviour
         overlay.AddComponent<Image>().color = new Color(0, 0, 0, .8f);
         panel = Rect("BriefingPanel", cover, new Vector2(920, 780));
         panel.gameObject.AddComponent<Image>().color = new Color(.045f, .12f, .14f, 1);
-        Text("Heading", panel, "CLEAN LAP CHALLENGE", 42, 28, 72, font);
-        Text("Objective", panel, "Complete one full lap without hitting the barriers.", 30, 110, 50, font);
+        Text("Heading", panel, "CLEAN LAP CHALLENGE", 48, 28, 72, font);
+        Text("Objective", panel, "Finish one lap without hitting a barrier.", 34, 110, 60, font);
         Text("Rules", panel,
-            "AVOID THE BARRIERS\nCurbs and runoff are allowed for recovery.\nAny contact with the circuit barriers ends the attempt.\n\nFOLLOW THE CIRCUIT\nAfter the countdown, cross START / FINISH to start the clock.\nComplete the full lap in the correct direction.\nResetting the car cancels your attempt.", 26, 180, 320, font);
-        Text("Medals", panel, $"GOLD  ≤ {challenge.GoldSeconds:0}s     SILVER  ≤ {challenge.SilverSeconds:0}s\nBRONZE  Complete a clean lap at any time", 28, 510, 90, font);
+            "After the countdown, cross START / FINISH.\nFollow the circuit in the correct direction.\nCurbs and runoff are OK.\nBarrier contact or resetting ends the attempt.", 36, 180, 320, font);
+        Text("Medals", panel, $"GOLD  ≤ {challenge.GoldSeconds:0}s     SILVER  ≤ {challenge.SilverSeconds:0}s\nBRONZE  ≤ {challenge.BronzeSeconds:0}s", 34, 500, 100, font);
         var start = MakeButton("StartChallenge", panel, "START CHALLENGE", new Vector2(460, 72), font, Continue);
         ((RectTransform)start.transform).anchoredPosition = new Vector2(0, -270);
         startLabel = start.GetComponentInChildren<TMP_Text>();
@@ -85,7 +85,7 @@ public class CleanLapBriefing : MonoBehaviour
         bool success = finished.State == TestDriveCleanLapChallenge.Phase.Finished;
         resultHeading.text = success ? "LAP COMPLETE!" : "CHALLENGE FAILED";
         resultHeading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
-        resultSummary.text = success ? finished.LastMedal.ToString().ToUpperInvariant() + " MEDAL" : "ATTEMPT ENDED";
+        resultSummary.text = success ? finished.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : finished.LastMedal.ToString().ToUpperInvariant() + " MEDAL" : "ATTEMPT ENDED";
         resultTime.text = TestDriveCleanLapView.FormatTime(finished.ElapsedSeconds);
         resultTime.fontStyle = FontStyles.Bold;
         resultReason.text = success ? finished.Message.Contains("New best") ? "New personal best!" : "Clean lap complete." : finished.Message;

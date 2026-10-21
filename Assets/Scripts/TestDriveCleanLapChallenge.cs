@@ -10,8 +10,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [SerializeField] private MeshFilter circuit;
     [SerializeField, Min(0f)] private float startLineHalfWidth = 8.2f;
     [SerializeField] private Transform startLine;
-    [SerializeField, Min(1f)] private float goldSeconds = 35f;
-    [SerializeField, Min(1f)] private float silverSeconds = 50f;
+    [SerializeField, Min(1f)] private float goldSeconds = 18f;
+    [SerializeField, Min(1f)] private float silverSeconds = 20f;
+    [SerializeField, Min(1f)] private float bronzeSeconds = 22f;
     [SerializeField] private TestDriveCleanLapView view;
     [SerializeField] private CleanLapChallengeAudio challengeAudio;
     private TestDriveMovement vehicle;
@@ -35,6 +36,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public int CheckpointsPassed { get; private set; }
     public float GoldSeconds => goldSeconds;
     public float SilverSeconds => silverSeconds;
+    public float BronzeSeconds => bronzeSeconds;
     public int CountdownNumber => Mathf.Max(1, Mathf.CeilToInt((float)(countdownEnd - Time.timeAsDouble)));
     public string Message => message;
     public bool IsAvailable => vehicle != null && vehicle.isActiveAndEnabled;
@@ -123,7 +125,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public Medal EvaluateMedal(float seconds)
     {
         if (seconds <= 0 || float.IsNaN(seconds) || float.IsInfinity(seconds)) return Medal.None;
-        return seconds <= goldSeconds ? Medal.Gold : seconds <= silverSeconds ? Medal.Silver : Medal.Bronze;
+        return seconds <= goldSeconds ? Medal.Gold : seconds <= silverSeconds ? Medal.Silver : seconds <= bronzeSeconds ? Medal.Bronze : Medal.None;
     }
     public void HandleAction()
     {

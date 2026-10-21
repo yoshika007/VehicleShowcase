@@ -20,7 +20,7 @@ public class TestDriveCleanLapView : MonoBehaviour
         var phase = challenge.State;
         bool showBest = phase == TestDriveCleanLapChallenge.Phase.Ready && challenge.BestSeconds > 0;
         heading.text = phase == TestDriveCleanLapChallenge.Phase.Finished
-            ? challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL"
+            ? challenge.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL"
             : showBest ? "CLEAN LAP / BEST" : "CLEAN LAP";
         heading.color = phase == TestDriveCleanLapChallenge.Phase.Finished
             ? challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Gold ? Gold
