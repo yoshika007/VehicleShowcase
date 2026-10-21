@@ -18,6 +18,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [Header("Checkpoint Sprint")]
     [SerializeField, Min(1f)] private float sprintStartSeconds = 10f;
     [SerializeField, Min(1f)] private float sprintBonusSeconds = 6f;
+    public bool IsNightLap => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.NightLap;
     private HillClimbCourse hillCourse;
     public bool IsHill => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HillClimb;
     private OffroadTrailCourse trailCourse;
@@ -96,7 +97,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
         string id = paint != null && paint.Palette != null ? paint.Palette.Id : target.name.Replace("(Clone)", "");
-        saveKey = (IsHill ? "VehicleShowcase.HillClimb.v1." : IsTrail ? "VehicleShowcase.OffroadTrail.v1." : IsSlalom ? "VehicleShowcase.Slalom.v1." : IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
+        saveKey = (IsNightLap ? "VehicleShowcase.NightLap.v1." : IsHill ? "VehicleShowcase.HillClimb.v1." : IsTrail ? "VehicleShowcase.OffroadTrail.v1." : IsSlalom ? "VehicleShowcase.Slalom.v1." : IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
         float saved = PlayerPrefs.GetFloat(saveKey, 0f);
         BestSeconds = saved > 0 && !float.IsInfinity(saved) && !float.IsNaN(saved) ? saved : 0f;
         message = ReadyMessage;
@@ -374,7 +375,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             PlayerPrefs.SetFloat(saveKey, BestSeconds);
             PlayerPrefs.Save();
         }
-        message = IsHill ? (improved ? "Summit reached. New best!" : "Summit reached.")
+        message = IsNightLap ? (improved ? "Night lap complete. New best!" : "Night lap complete.")
+            : IsHill ? (improved ? "Summit reached. New best!" : "Summit reached.")
             : IsTrail ? (improved ? "Trail complete. New best!" : "Trail complete.")
             : IsSlalom ? (improved ? "Slalom complete. New best!" : "Slalom complete.")
             : IsSprint ? (improved ? "Sprint complete. New best!" : "Sprint complete.")

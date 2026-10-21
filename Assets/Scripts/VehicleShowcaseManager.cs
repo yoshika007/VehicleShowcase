@@ -170,6 +170,9 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void HillClimb() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.HillClimb); }
 
+    public void NightLap() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
+        TestDriveSelection.TimeOfDay.Night, TestDriveSelection.ChallengeKind.NightLap); }
+
     private void BeginDrive(TestDriveSelection.DriveMode mode, TestDriveSelection.TimeOfDay lighting = TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind challenge = TestDriveSelection.ChallengeKind.CleanLap)
     {
         if (isTransitioning || !ModeMenuOpen) return;

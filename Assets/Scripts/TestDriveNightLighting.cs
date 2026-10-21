@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-// Only overrides this scene's lighting for a selected night Free Run.
+// Only overrides this scene's lighting for a selected night drive or Night Lap challenge.
 public class TestDriveNightLighting : MonoBehaviour
 {
     [SerializeField] private Light sun;

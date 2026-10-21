@@ -21,7 +21,7 @@ public class TestDriveCleanLapView : MonoBehaviour
         bool showBest = phase == TestDriveCleanLapChallenge.Phase.Ready && challenge.BestSeconds > 0;
         heading.text = phase == TestDriveCleanLapChallenge.Phase.Finished
             ? challenge.IsHill ? "SUMMIT REACHED" : challenge.IsTrail ? "TRAIL COMPLETE" : challenge.IsSlalom ? "SLALOM COMPLETE" : challenge.IsSprint ? "SPRINT COMPLETE" : challenge.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL"
-            : challenge.IsHill ? (showBest ? "HILL CLIMB / BEST" : "HILL CLIMB") : challenge.IsTrail ? (showBest ? "OFF-ROAD / BEST" : "OFF-ROAD TRAIL") : challenge.IsSlalom ? (showBest ? "SLALOM / BEST" : "SLALOM") : challenge.IsSprint ? "CHECKPOINT SPRINT" : showBest ? "CLEAN LAP / BEST" : "CLEAN LAP";
+            : challenge.IsNightLap ? (showBest ? "NIGHT LAP / BEST" : "NIGHT LAP") : challenge.IsHill ? (showBest ? "HILL CLIMB / BEST" : "HILL CLIMB") : challenge.IsTrail ? (showBest ? "OFF-ROAD / BEST" : "OFF-ROAD TRAIL") : challenge.IsSlalom ? (showBest ? "SLALOM / BEST" : "SLALOM") : challenge.IsSprint ? "CHECKPOINT SPRINT" : showBest ? "CLEAN LAP / BEST" : "CLEAN LAP";
         heading.color = phase == TestDriveCleanLapChallenge.Phase.Finished
             ? challenge.IsHill || challenge.IsTrail || challenge.IsSlalom || challenge.IsSprint || challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Gold ? Gold
             : challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Silver ? new Color(.8f, .86f, .92f)
@@ -46,7 +46,7 @@ public class TestDriveCleanLapView : MonoBehaviour
             : phase == TestDriveCleanLapChallenge.Phase.Armed ? "Cross the start line"
             : phase == TestDriveCleanLapChallenge.Phase.Running ? challenge.IsHill ? $"Climb gate {challenge.CheckpointsPassed + 1}/3" : challenge.IsTrail ? $"Trail gate {challenge.CheckpointsPassed + 1}/8" : challenge.IsSlalom ? $"{(challenge.CheckpointsPassed < 6 ? "Gate " + (challenge.CheckpointsPassed + 1) + "/6" : "Finish")} · +{challenge.PenaltySeconds:0}s penalties" : challenge.IsSprint ? challenge.CheckpointsPassed == 3 ? "Finish 4/4 · Beat the clock" : $"Gate {challenge.CheckpointsPassed + 1}/4 · +{challenge.SprintBonusSeconds:0}s per gate" : "Lap in progress"
             : phase == TestDriveCleanLapChallenge.Phase.Finished
-                ? challenge.Message.Contains("New best") ? "New best!" : challenge.IsHill ? "Summit reached" : challenge.IsTrail ? "Trail complete" : challenge.IsSlalom ? "Slalom complete" : challenge.IsSprint ? "Sprint complete" : "Lap complete"
+                ? challenge.Message.Contains("New best") ? "New best!" : challenge.IsNightLap ? "Night lap complete" : challenge.IsHill ? "Summit reached" : challenge.IsTrail ? "Trail complete" : challenge.IsSlalom ? "Slalom complete" : challenge.IsSprint ? "Sprint complete" : "Lap complete"
             : challenge.Message;
         status.color = phase == TestDriveCleanLapChallenge.Phase.Failed ? new Color(1f, .66f, .58f) : Color.white;
         actionLabel.text = phase == TestDriveCleanLapChallenge.Phase.Countdown || phase == TestDriveCleanLapChallenge.Phase.Armed
