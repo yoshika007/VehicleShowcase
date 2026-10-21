@@ -167,6 +167,9 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void OffroadTrail() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.OffroadTrail); }
 
+    public void HillClimb() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
+        TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.HillClimb); }
+
     private void BeginDrive(TestDriveSelection.DriveMode mode, TestDriveSelection.TimeOfDay lighting = TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind challenge = TestDriveSelection.ChallengeKind.CleanLap)
     {
         if (isTransitioning || !ModeMenuOpen) return;

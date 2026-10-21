@@ -71,6 +71,11 @@ public class SprintCheckpointGates : MonoBehaviour
             labels[i].text = titles[i];
         }
     }
+    public void SetLabel(int index, string text)
+    {
+        titles[index] = text;
+        labels[index].text = text;
+    }
     public void ShowStart()
     {
         ShowNext(-1);
