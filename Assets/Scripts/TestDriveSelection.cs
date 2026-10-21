@@ -4,14 +4,18 @@ using UnityEngine;
 public static class TestDriveSelection
 {
     public enum DriveMode { FreeRun, Challenge }
+    public enum TimeOfDay { Day, Night }
+    public static TimeOfDay Lighting { get; private set; }
+    public static bool IsNight => Mode == DriveMode.FreeRun && Lighting == TimeOfDay.Night;
     public static DriveMode Mode { get; private set; }
     public static int VehicleIndex { get; private set; }
     public static bool HasSelection { get; private set; }
 
-    public static void Select(int index, DriveMode mode = DriveMode.FreeRun)
+    public static void Select(int index, DriveMode mode = DriveMode.FreeRun, TimeOfDay lighting = TimeOfDay.Day)
     {
         VehicleIndex = index;
         Mode = mode;
+        Lighting = mode == DriveMode.Challenge ? TimeOfDay.Day : lighting;
         HasSelection = true;
     }
 
@@ -20,6 +24,7 @@ public static class TestDriveSelection
     {
         VehicleIndex = 0;
         Mode = DriveMode.FreeRun;
+        Lighting = TimeOfDay.Day;
         HasSelection = false;
     }
 }

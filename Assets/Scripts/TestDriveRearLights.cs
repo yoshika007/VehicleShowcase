@@ -27,9 +27,14 @@ public class TestDriveRearLights : MonoBehaviour
     {
         if (rearLamps == null || displayedState == state) return;
         if (properties == null) properties = new MaterialPropertyBlock();
+        bool night = TestDriveSelection.IsNight;
         Color color = state == 2 ? new Color(.92f, .97f, 1f)
-            : state == 1 ? new Color(1f, .015f, .005f) : new Color(.28f, .008f, .004f);
-        Color emission = state == 2 ? color * 3f : state == 1 ? color * 6f : color * .3f;
+            : state == 1 ? new Color(1f, .015f, .005f)
+            : night ? new Color(.6f, .008f, .004f) : new Color(.28f, .008f, .004f);
+        // Night running lamps stay softly red; braking adds a restrained increase.
+        Color emission = state == 2 ? color * 3f
+            : state == 1 ? color * (night ? 1.6f : 6f)
+            : night ? new Color(.8f, .012f, .006f) : color * .3f;
         rearLamps.GetPropertyBlock(properties);
         properties.SetColor(BaseColor, color);
         properties.SetColor(EmissionColor, emission);

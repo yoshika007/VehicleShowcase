@@ -30,9 +30,11 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private VehiclePaintSelector paintSelector;
 
     [SerializeField] private GameObject driveModePanel;
+    [SerializeField] private GameObject timeOfDayPanel;
     private bool[] navigationAvailability;
     private bool dragWasEnabled;
-    private bool ModeMenuOpen => driveModePanel != null && driveModePanel.activeSelf;
+    private bool TimeMenuOpen => timeOfDayPanel != null && timeOfDayPanel.activeSelf;
+    private bool ModeMenuOpen => (driveModePanel != null && driveModePanel.activeSelf) || TimeMenuOpen;
 
     private bool isTransitioning;
     private int currentVehicleIndex;
@@ -42,6 +44,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     void Start()
     {
         if (driveModePanel != null) driveModePanel.SetActive(false);
+        if (timeOfDayPanel != null) timeOfDayPanel.SetActive(false);
         currentVehicleIndex = Mathf.Clamp(TestDriveSelection.VehicleIndex, 0, vehiclePrefabs.Length - 1);
         ShowVehicle();
     }
@@ -83,7 +86,10 @@ public class VehicleShowcaseManager : MonoBehaviour
     private void Update()
     {
         if (ModeMenuOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            CloseDriveMenu();
+        {
+            if (TimeMenuOpen) BackToDriveModes();
+            else CloseDriveMenu();
+        }
     }
 
     public void OpenDriveMenu()
@@ -112,16 +118,35 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (isTransitioning || !ModeMenuOpen) return;
         PlayButtonSound(navigationSound);
         driveModePanel.SetActive(false);
+        if (timeOfDayPanel != null) timeOfDayPanel.SetActive(false);
         for (int i = 0; i < navigationButtons.Length; i++)
             if (navigationButtons[i] != null) navigationButtons[i].interactable = navigationAvailability[i];
         if (paintSelector != null) paintSelector.SetInteractable(true);
         if (vehicleDragRotation != null) vehicleDragRotation.enabled = dragWasEnabled;
     }
 
-    public void FreeRun() => BeginDrive(TestDriveSelection.DriveMode.FreeRun);
+    public void FreeRun()
+    {
+        if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || timeOfDayPanel == null) return;
+        PlayButtonSound(navigationSound);
+        driveModePanel.SetActive(false);
+        timeOfDayPanel.SetActive(true);
+        if (timeOfDayPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
+    }
+
+    public void BackToDriveModes()
+    {
+        if (isTransitioning || !TimeMenuOpen) return;
+        PlayButtonSound(navigationSound);
+        timeOfDayPanel.SetActive(false);
+        driveModePanel.SetActive(true);
+    }
+
+    public void DayDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Day); }
+    public void NightDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Night); }
     public void Challenge() => BeginDrive(TestDriveSelection.DriveMode.Challenge);
 
-    private void BeginDrive(TestDriveSelection.DriveMode mode)
+    private void BeginDrive(TestDriveSelection.DriveMode mode, TestDriveSelection.TimeOfDay lighting = TestDriveSelection.TimeOfDay.Day)
     {
         if (isTransitioning || !ModeMenuOpen) return;
         if (testDriveCatalog == null || currentVehicleIndex >= testDriveCatalog.drivingPrefabs.Length ||
@@ -130,13 +155,15 @@ public class VehicleShowcaseManager : MonoBehaviour
             Debug.LogError("No driving prefab is configured for this vehicle.", this);
             return;
         }
-        TestDriveSelection.Select(currentVehicleIndex, mode);
+        TestDriveSelection.Select(currentVehicleIndex, mode, lighting);
         BeginTransition("TestTrackScene", driveStartSound != null ? driveStartSound : backSound);
     }
 
     private void BeginTransition(string sceneName, AudioClip transitionSound)
     {
         isTransitioning = true;
+        if (timeOfDayPanel != null && timeOfDayPanel.TryGetComponent<CanvasGroup>(out var timeGroup))
+            timeGroup.interactable = false;
         if (driveModePanel != null && driveModePanel.TryGetComponent<CanvasGroup>(out var group))
             group.interactable = false;
         if (paintSelector != null) paintSelector.SetInteractable(false);
