@@ -20,10 +20,10 @@ public class TestDriveCleanLapView : MonoBehaviour
         var phase = challenge.State;
         bool showBest = phase == TestDriveCleanLapChallenge.Phase.Ready && challenge.BestSeconds > 0;
         heading.text = phase == TestDriveCleanLapChallenge.Phase.Finished
-            ? challenge.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL"
-            : showBest ? "CLEAN LAP / BEST" : "CLEAN LAP";
+            ? challenge.IsSprint ? "SPRINT COMPLETE" : challenge.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : challenge.LastMedal.ToString().ToUpperInvariant() + " MEDAL"
+            : challenge.IsSprint ? "CHECKPOINT SPRINT" : showBest ? "CLEAN LAP / BEST" : "CLEAN LAP";
         heading.color = phase == TestDriveCleanLapChallenge.Phase.Finished
-            ? challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Gold ? Gold
+            ? challenge.IsSprint || challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Gold ? Gold
             : challenge.LastMedal == TestDriveCleanLapChallenge.Medal.Silver ? new Color(.8f, .86f, .92f)
             : new Color(.88f, .58f, .3f) : Gold;
         clock.fontSize = 64;
@@ -31,7 +31,12 @@ public class TestDriveCleanLapView : MonoBehaviour
         clock.color = phase == TestDriveCleanLapChallenge.Phase.Finished ? Gold
             : phase == TestDriveCleanLapChallenge.Phase.Running ? new Color(.64f, 1f, .88f) : Color.white;
         // Fixed cells and left alignment prevent changing glyph bounds from shifting the row.
-        string time = FormatTime(showBest ? challenge.BestSeconds : challenge.ElapsedSeconds);
+        float displayedSeconds = showBest ? challenge.BestSeconds : challenge.ElapsedSeconds;
+        if (challenge.IsSprint)
+            displayedSeconds = phase == TestDriveCleanLapChallenge.Phase.Running ? challenge.RemainingSeconds
+                : phase == TestDriveCleanLapChallenge.Phase.Finished || phase == TestDriveCleanLapChallenge.Phase.Failed
+                    ? challenge.ElapsedSeconds : challenge.SprintStartSeconds;
+        string time = FormatTime(displayedSeconds);
         clock.fontFeatures.Clear();
         clock.alignment = TextAlignmentOptions.Left;
         clock.margin = new Vector4(Mathf.Max(0, (clock.rectTransform.rect.width - 64f * .58f * time.Length) * .5f), 0, 0, 0);
@@ -39,14 +44,14 @@ public class TestDriveCleanLapView : MonoBehaviour
         status.text = phase == TestDriveCleanLapChallenge.Phase.Ready ? "Ready to start"
             : phase == TestDriveCleanLapChallenge.Phase.Countdown ? "Get ready"
             : phase == TestDriveCleanLapChallenge.Phase.Armed ? "Cross the start line"
-            : phase == TestDriveCleanLapChallenge.Phase.Running ? "Lap in progress"
+            : phase == TestDriveCleanLapChallenge.Phase.Running ? challenge.IsSprint ? challenge.CheckpointsPassed == 3 ? "Finish 4/4 · Beat the clock" : $"Gate {challenge.CheckpointsPassed + 1}/4 · +{challenge.SprintBonusSeconds:0}s per gate" : "Lap in progress"
             : phase == TestDriveCleanLapChallenge.Phase.Finished
-                ? challenge.Message.Contains("New best") ? "New best!" : "Lap complete"
+                ? challenge.Message.Contains("New best") ? "New best!" : challenge.IsSprint ? "Sprint complete" : "Lap complete"
             : challenge.Message;
         status.color = phase == TestDriveCleanLapChallenge.Phase.Failed ? new Color(1f, .66f, .58f) : Color.white;
         actionLabel.text = phase == TestDriveCleanLapChallenge.Phase.Countdown || phase == TestDriveCleanLapChallenge.Phase.Armed
-            ? "CANCEL" : phase == TestDriveCleanLapChallenge.Phase.Running ? "RESTART LAP"
-            : phase == TestDriveCleanLapChallenge.Phase.Ready ? "START LAP" : "TRY AGAIN";
+            ? "CANCEL" : phase == TestDriveCleanLapChallenge.Phase.Running ? challenge.IsSprint ? "RESTART SPRINT" : "RESTART LAP"
+            : phase == TestDriveCleanLapChallenge.Phase.Ready ? challenge.IsSprint ? "START SPRINT" : "START LAP" : "TRY AGAIN";
         action.interactable = challenge.IsAvailable
             && phase != TestDriveCleanLapChallenge.Phase.Finished && phase != TestDriveCleanLapChallenge.Phase.Failed;
         RefreshCountdown(challenge);

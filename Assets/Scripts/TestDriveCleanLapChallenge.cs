@@ -15,6 +15,15 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [SerializeField, Min(1f)] private float bronzeSeconds = 22f;
     [SerializeField] private TestDriveCleanLapView view;
     [SerializeField] private CleanLapChallengeAudio challengeAudio;
+    [Header("Checkpoint Sprint")]
+    [SerializeField, Min(1f)] private float sprintStartSeconds = 10f;
+    [SerializeField, Min(1f)] private float sprintBonusSeconds = 6f;
+    private float sprintBudget;
+    private SprintCheckpointGates sprintGates;
+    public bool IsSprint => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.CheckpointSprint;
+    public float SprintStartSeconds => sprintStartSeconds;
+    public float SprintBonusSeconds => sprintBonusSeconds;
+    public float RemainingSeconds => Mathf.Max(0, sprintBudget - ElapsedSeconds);
     private TestDriveMovement vehicle;
     private Rigidbody body;
     private WheelCollider[] wheels;
@@ -77,11 +86,30 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
         string id = paint != null && paint.Palette != null ? paint.Palette.Id : target.name.Replace("(Clone)", "");
-        saveKey = "VehicleShowcase.CleanLap.v1." + id + ".BestSeconds";
+        saveKey = (IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
         float saved = PlayerPrefs.GetFloat(saveKey, 0f);
         BestSeconds = saved > 0 && !float.IsInfinity(saved) && !float.IsNaN(saved) ? saved : 0f;
-        message = "Avoid barriers. No resets.";
+        message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
         CacheRoute();
+        if (sprintGates != null) Destroy(sprintGates.gameObject);
+        if (IsSprint)
+        {
+            sprintGates = new GameObject("Sprint Checkpoint Gates").AddComponent<SprintCheckpointGates>();
+            sprintGates.transform.SetParent(transform, false);
+            var points = new Vector3[4]; var directions = new Vector3[4];
+            float startDistance = RouteDistance(startLine.position);
+            for (int i = 0; i < 4; i++)
+            {
+                float d = Mathf.Repeat(startDistance + length * (i + 1) / 4f, length);
+                int row = 0;
+                while (row < distances.Length - 2 && distances[row + 1] < d) row++;
+                points[i] = Vector3.Lerp(route[row], route[row + 1], Mathf.InverseLerp(distances[row], distances[row + 1], d));
+                directions[i] = (route[row + 1] - route[row]).normalized;
+            }
+            points[3] = startLine.position; directions[3] = startLine.forward;
+            sprintGates.Initialize(points, directions, gateHalfWidth);
+        }
+        sprintBudget = sprintStartSeconds;
     }
     private void CacheRoute()
     {
@@ -136,7 +164,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             vehicle.SetChallengeStopped(true);
             vehicle.SetChallengeInputLocked(true);
             State = Phase.Ready;
-            message = "Avoid barriers. No resets.";
+            message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
             if (view != null) view.Refresh(this);
             return;
         }
@@ -154,6 +182,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         ElapsedSeconds = travelled = 0;
         CheckpointsPassed = 0;
         LastMedal = Medal.None;
+        sprintBudget = sprintStartSeconds;
+        if (sprintGates != null) sprintGates.ShowNext(0);
         message = "Get ready";
         previousPosition = body.position;
         if (view != null) view.Refresh(this);
@@ -200,22 +230,39 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             State = Phase.Running;
             startedAt = Time.fixedTimeAsDouble;
             lastDistance = distance;
-            message = "Avoid barriers. No resets.";
+            message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
         }
         else if (State == Phase.Running)
         {
             float delta = Mathf.DeltaAngle(lastDistance / length * 360f, distance / length * 360f) * length / 360f;
             travelled = Mathf.Max(0f, travelled + delta);
             lastDistance = distance;
-            CheckpointsPassed = Mathf.Clamp(Mathf.FloorToInt(travelled / length * 8f), 0, 7);
             ElapsedSeconds = (float)(Time.fixedTimeAsDouble - startedAt);
-            if (crossed && travelled >= length - 2f) Finish();
+            if (IsSprint)
+            {
+                if (RemainingSeconds <= 0f) { Fail("Time ran out. Try again."); return; }
+                if (CheckpointsPassed < 3 && travelled >= length * (CheckpointsPassed + 1) / 4f - 3f
+                    && sprintGates.Crossed(CheckpointsPassed, previousPosition, position))
+                {
+                    CheckpointsPassed++;
+                    sprintBudget += sprintBonusSeconds;
+                    sprintGates.ShowNext(CheckpointsPassed);
+                    message = $"Checkpoint {CheckpointsPassed}/4  +{sprintBonusSeconds:0}s";
+                    if (challengeAudio != null) challengeAudio.PlayCheckpoint();
+                }
+                if (CheckpointsPassed == 3 && crossed && travelled >= length - 2f) Finish();
+            }
+            else
+            {
+                CheckpointsPassed = Mathf.Clamp(Mathf.FloorToInt(travelled / length * 8f), 0, 7);
+                if (crossed && travelled >= length - 2f) Finish();
+            }
         }
         previousPosition = position;
     }
     private void ReportBarrierContact(Collider surface)
     {
-        if (!isActiveAndEnabled || !IsAvailable || surface == null) return;
+        if (IsSprint || !isActiveAndEnabled || !IsAvailable || surface == null) return;
         if (State != Phase.Countdown && State != Phase.Armed && State != Phase.Running) return;
         if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
             Fail("Barrier hit. Try again.");
@@ -231,8 +278,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         // A completed attempt can award only once; another award requires a retry.
         if (State != Phase.Running) return;
         State = Phase.Finished;
-        CheckpointsPassed = 8;
-        LastMedal = EvaluateMedal(ElapsedSeconds);
+        CheckpointsPassed = IsSprint ? 4 : 8;
+        if (sprintGates != null) sprintGates.ShowNext(4);
+        LastMedal = IsSprint ? Medal.None : EvaluateMedal(ElapsedSeconds);
         bool improved = BestSeconds <= 0 || ElapsedSeconds < BestSeconds;
         if (improved)
         {
@@ -240,7 +288,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             PlayerPrefs.SetFloat(saveKey, BestSeconds);
             PlayerPrefs.Save();
         }
-        message = improved ? "Clean lap complete. New best!" : "Clean lap complete.";
+        message = IsSprint ? (improved ? "Sprint complete. New best!" : "Sprint complete.")
+            : improved ? "Clean lap complete. New best!" : "Clean lap complete.";
         EndAttempt();
     }
     private void Fail(string reason)

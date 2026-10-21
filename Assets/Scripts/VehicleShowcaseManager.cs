@@ -31,10 +31,12 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     [SerializeField] private GameObject driveModePanel;
     [SerializeField] private GameObject timeOfDayPanel;
+    [SerializeField] private GameObject challengePanel;
+    private bool ChallengeMenuOpen => challengePanel != null && challengePanel.activeSelf;
     private bool[] navigationAvailability;
     private bool dragWasEnabled;
     private bool TimeMenuOpen => timeOfDayPanel != null && timeOfDayPanel.activeSelf;
-    private bool ModeMenuOpen => (driveModePanel != null && driveModePanel.activeSelf) || TimeMenuOpen;
+    private bool ModeMenuOpen => (driveModePanel != null && driveModePanel.activeSelf) || TimeMenuOpen || ChallengeMenuOpen;
 
     private bool isTransitioning;
     private int currentVehicleIndex;
@@ -45,6 +47,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     {
         if (driveModePanel != null) driveModePanel.SetActive(false);
         if (timeOfDayPanel != null) timeOfDayPanel.SetActive(false);
+        if (challengePanel != null) challengePanel.SetActive(false);
         currentVehicleIndex = Mathf.Clamp(TestDriveSelection.VehicleIndex, 0, vehiclePrefabs.Length - 1);
         ShowVehicle();
     }
@@ -87,7 +90,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     {
         if (ModeMenuOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (TimeMenuOpen) BackToDriveModes();
+            if (TimeMenuOpen || ChallengeMenuOpen) BackToDriveModes();
             else CloseDriveMenu();
         }
     }
@@ -119,6 +122,7 @@ public class VehicleShowcaseManager : MonoBehaviour
         PlayButtonSound(navigationSound);
         driveModePanel.SetActive(false);
         if (timeOfDayPanel != null) timeOfDayPanel.SetActive(false);
+        if (challengePanel != null) challengePanel.SetActive(false);
         for (int i = 0; i < navigationButtons.Length; i++)
             if (navigationButtons[i] != null) navigationButtons[i].interactable = navigationAvailability[i];
         if (paintSelector != null) paintSelector.SetInteractable(true);
@@ -127,7 +131,7 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void FreeRun()
     {
-        if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || timeOfDayPanel == null) return;
+        if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || ChallengeMenuOpen || timeOfDayPanel == null) return;
         PlayButtonSound(navigationSound);
         driveModePanel.SetActive(false);
         timeOfDayPanel.SetActive(true);
@@ -136,17 +140,28 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void BackToDriveModes()
     {
-        if (isTransitioning || !TimeMenuOpen) return;
+        if (isTransitioning || (!TimeMenuOpen && !ChallengeMenuOpen)) return;
         PlayButtonSound(navigationSound);
         timeOfDayPanel.SetActive(false);
+        if (challengePanel != null) challengePanel.SetActive(false);
         driveModePanel.SetActive(true);
     }
 
     public void DayDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Day); }
     public void NightDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Night); }
-    public void Challenge() => BeginDrive(TestDriveSelection.DriveMode.Challenge);
+    public void Challenge()
+    {
+        if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || ChallengeMenuOpen || challengePanel == null) return;
+        PlayButtonSound(navigationSound);
+        driveModePanel.SetActive(false);
+        challengePanel.SetActive(true);
+        if (challengePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
+    }
+    public void CleanLap() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge); }
+    public void CheckpointSprint() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
+        TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.CheckpointSprint); }
 
-    private void BeginDrive(TestDriveSelection.DriveMode mode, TestDriveSelection.TimeOfDay lighting = TestDriveSelection.TimeOfDay.Day)
+    private void BeginDrive(TestDriveSelection.DriveMode mode, TestDriveSelection.TimeOfDay lighting = TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind challenge = TestDriveSelection.ChallengeKind.CleanLap)
     {
         if (isTransitioning || !ModeMenuOpen) return;
         if (testDriveCatalog == null || currentVehicleIndex >= testDriveCatalog.drivingPrefabs.Length ||
@@ -155,13 +170,15 @@ public class VehicleShowcaseManager : MonoBehaviour
             Debug.LogError("No driving prefab is configured for this vehicle.", this);
             return;
         }
-        TestDriveSelection.Select(currentVehicleIndex, mode, lighting);
+        TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge);
         BeginTransition("TestTrackScene", driveStartSound != null ? driveStartSound : backSound);
     }
 
     private void BeginTransition(string sceneName, AudioClip transitionSound)
     {
         isTransitioning = true;
+        if (challengePanel != null && challengePanel.TryGetComponent<CanvasGroup>(out var challengeGroup))
+            challengeGroup.interactable = false;
         if (timeOfDayPanel != null && timeOfDayPanel.TryGetComponent<CanvasGroup>(out var timeGroup))
             timeGroup.interactable = false;
         if (driveModePanel != null && driveModePanel.TryGetComponent<CanvasGroup>(out var group))
