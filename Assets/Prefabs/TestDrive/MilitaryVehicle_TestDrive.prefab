@@ -601,8 +601,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveAudio
   engineLoop: {fileID: 8300000, guid: 4292d7ac4ebb6429db131cfe8b19d5ce, type: 3}
   asphaltLoop: {fileID: 8300000, guid: 028ba1677c35340b1a28531ec9fce5d8, type: 3}
-  dirtLoop: {fileID: 8300000, guid: 785484d4211704943828017f102793f3, type: 3}
-  gravelLoop: {fileID: 8300000, guid: 06bbf96c555e9438db1e63de1a91d96d, type: 3}
+  dirtLoop: {fileID: 8300000, guid: 267e74fcb02b74056aec0d356bb60d03, type: 3}
+  gravelLoop: {fileID: 8300000, guid: a00f91b7f651a482da1b276da2f8ddf1, type: 3}
   engineVolume: 0.48
   roadVolume: 0.55
   engineTone: 0.72

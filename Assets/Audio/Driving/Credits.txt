@@ -24,3 +24,11 @@ GravelLoop.wav / DirtLoop.wav
 Dirt is an adapted gravel recording, rather than a separate dirt recording.
 Runtime cosmetic engine gearing and per-vehicle pitch variation do not change physics.
 No recordings from the evaluated Stunt Rally pack are included.
+
+DirtWheelTrial.wav / GravelWheelTrial.wav (alternate off-road trial)
+  Car driving on a gravel dirt road, close recording of front wheel from outside
+  by felix.blume, CC0 1.0
+  https://freesound.org/people/felix.blume/sounds/685231/
+  Source: https://cdn.freesound.org/previews/685/685231_1661766-hq.mp3
+  Changes: 35-47 second excerpt, mono, 100 Hz high-pass, dirt 1800 Hz / gravel 5500 Hz low-pass, normalized level, 250 ms loop crossfade.
+  Original DirtLoop.wav and GravelLoop.wav retained for comparison.
