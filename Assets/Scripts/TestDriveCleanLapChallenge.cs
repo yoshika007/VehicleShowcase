@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-// Shared countdown, reset guards, and results for the three circuit challenges.
+// Shared countdown, reset guards, and results for the driving challenges.
 [DefaultExecutionOrder(100)]
 public class TestDriveCleanLapChallenge : MonoBehaviour
 {
@@ -18,6 +18,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [Header("Checkpoint Sprint")]
     [SerializeField, Min(1f)] private float sprintStartSeconds = 10f;
     [SerializeField, Min(1f)] private float sprintBonusSeconds = 6f;
+    private OffroadTrailCourse trailCourse;
+    public bool IsTrail => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.OffroadTrail;
+    private string ReadyMessage => IsTrail ? "Follow the dirt loop through all eight gates." : IsSlalom ? "Weave through six gates. Cone hits add 2 seconds." : IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
     private SlalomCourse slalomCourse;
     public bool IsSlalom => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.Slalom;
     public float PenaltySeconds => slalomCourse != null ? slalomCourse.PenaltySeconds : 0f;
@@ -58,12 +61,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public void ConfigureMode(bool challengeMode, TestDriveMovement target)
     {
         BindVehicle(challengeMode ? target : null);
-        if (challengeMode && circuitBarrier == null)
+        if (challengeMode && !IsTrail && circuitBarrier == null)
         {
             circuitBarrier = CleanLapCircuitBarrier.Create(circuit);
             if (circuitBarrier != null) circuitBarrier.transform.SetParent(transform, true);
         }
-        if (circuitBarrier != null) circuitBarrier.SetActive(challengeMode);
+        if (circuitBarrier != null) circuitBarrier.SetActive(challengeMode && !IsTrail);
         if (view != null) view.gameObject.SetActive(challengeMode);
         gameObject.SetActive(challengeMode);
     }
@@ -91,10 +94,15 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
         string id = paint != null && paint.Palette != null ? paint.Palette.Id : target.name.Replace("(Clone)", "");
-        saveKey = (IsSlalom ? "VehicleShowcase.Slalom.v1." : IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
+        saveKey = (IsTrail ? "VehicleShowcase.OffroadTrail.v1." : IsSlalom ? "VehicleShowcase.Slalom.v1." : IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
         float saved = PlayerPrefs.GetFloat(saveKey, 0f);
         BestSeconds = saved > 0 && !float.IsInfinity(saved) && !float.IsNaN(saved) ? saved : 0f;
-        message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
+        message = ReadyMessage;
+        if (IsTrail)
+        {
+            trailCourse = FindAnyObjectByType<OffroadTrailCourse>();
+            startLine = trailCourse.StartLine;
+        }
         CacheRoute();
         if (sprintGates != null) Destroy(sprintGates.gameObject);
         if (IsSprint)
@@ -126,6 +134,15 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     private void CacheRoute()
     {
         if (route != null) return;
+        if (IsTrail)
+        {
+            route = trailCourse.Route;
+            distances = new float[route.Length];
+            for (int i = 1; i < route.Length; i++) distances[i] = distances[i - 1] + Vector3.Distance(route[i - 1], route[i]);
+            length = distances[distances.Length - 1];
+            gateHalfWidth = trailCourse.HalfWidth;
+            return;
+        }
         var vertices = circuit.sharedMesh.vertices;
         route = new Vector3[vertices.Length / 2];
         distances = new float[route.Length];
@@ -176,7 +193,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             vehicle.SetChallengeStopped(true);
             vehicle.SetChallengeInputLocked(true);
             State = Phase.Ready;
-            message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
+            message = ReadyMessage;
             if (view != null) view.Refresh(this);
             return;
         }
@@ -197,6 +214,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         sprintBudget = sprintStartSeconds;
         if (sprintGates != null) sprintGates.ShowNext(0);
         if (slalomCourse != null) slalomCourse.ResetAttempt();
+        if (trailCourse != null) trailCourse.ShowStart();
         message = "Get ready";
         previousPosition = body.position;
         if (view != null) view.Refresh(this);
@@ -242,8 +260,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         {
             State = Phase.Running;
             startedAt = Time.fixedTimeAsDouble;
+            if (trailCourse != null) trailCourse.ShowNext(0);
             lastDistance = distance;
-            message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
+            message = ReadyMessage;
         }
         else if (State == Phase.Running)
         {
@@ -251,7 +270,20 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             travelled = Mathf.Max(0f, travelled + delta);
             lastDistance = distance;
             ElapsedSeconds = (float)(Time.fixedTimeAsDouble - startedAt);
-            if (IsSlalom)
+            if (IsTrail)
+            {
+                if (CheckpointsPassed < OffroadTrailCourse.GateCount
+                    && travelled >= length * (CheckpointsPassed + 1) / OffroadTrailCourse.GateCount - 3f
+                    && trailCourse.Crossed(CheckpointsPassed, previousPosition, position))
+                {
+                    CheckpointsPassed++;
+                    trailCourse.ShowNext(CheckpointsPassed);
+                    message = $"Trail gate {CheckpointsPassed}/8";
+                    if (challengeAudio != null) challengeAudio.PlayCheckpoint();
+                    if (CheckpointsPassed == OffroadTrailCourse.GateCount) Finish();
+                }
+            }
+            else if (IsSlalom)
             {
                 if (CheckpointsPassed < SlalomCourse.GateCount && slalomCourse.Crossed(CheckpointsPassed, previousPosition, position))
                 {
@@ -293,7 +325,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
 
     private void ReportBarrierContact(Collider surface)
     {
-        if (IsSprint || IsSlalom || !isActiveAndEnabled || !IsAvailable || surface == null) return;
+        if (IsTrail || IsSprint || IsSlalom || !isActiveAndEnabled || !IsAvailable || surface == null) return;
         if (State != Phase.Countdown && State != Phase.Armed && State != Phase.Running) return;
         if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
             Fail("Barrier hit. Try again.");
@@ -309,10 +341,10 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         // A completed attempt can award only once; another award requires a retry.
         if (State != Phase.Running) return;
         State = Phase.Finished;
-        CheckpointsPassed = IsSlalom ? SlalomCourse.GateCount : IsSprint ? 4 : 8;
+        CheckpointsPassed = IsTrail ? OffroadTrailCourse.GateCount : IsSlalom ? SlalomCourse.GateCount : IsSprint ? 4 : 8;
         if (slalomCourse != null) slalomCourse.ShowNext(SlalomCourse.GateCount + 1);
         if (sprintGates != null) sprintGates.ShowNext(4);
-        LastMedal = IsSprint || IsSlalom ? Medal.None : EvaluateMedal(ElapsedSeconds);
+        LastMedal = IsTrail || IsSprint || IsSlalom ? Medal.None : EvaluateMedal(ElapsedSeconds);
         bool improved = BestSeconds <= 0 || ScoreSeconds < BestSeconds;
         if (improved)
         {
@@ -320,7 +352,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             PlayerPrefs.SetFloat(saveKey, BestSeconds);
             PlayerPrefs.Save();
         }
-        message = IsSlalom ? (improved ? "Slalom complete. New best!" : "Slalom complete.")
+        message = IsTrail ? (improved ? "Trail complete. New best!" : "Trail complete.")
+            : IsSlalom ? (improved ? "Slalom complete. New best!" : "Slalom complete.")
             : IsSprint ? (improved ? "Sprint complete. New best!" : "Sprint complete.")
             : improved ? "Clean lap complete. New best!" : "Clean lap complete.";
         EndAttempt();

@@ -8,12 +8,14 @@ public class SprintCheckpointGates : MonoBehaviour
     private float halfWidth;
     private Renderer[][] frames;
     private TextMeshPro[] labels;
+    private string[] titles;
     private Material frameMaterial;
-    public void Initialize(Vector3[] positions, Vector3[] forwards, float width)
+    public void Initialize(Vector3[] positions, Vector3[] forwards, float width, string title = "CHECKPOINT")
     {
         points = positions; directions = forwards; halfWidth = width;
         frames = new Renderer[points.Length][];
         labels = new TextMeshPro[points.Length];
+        titles = new string[points.Length];
         frameMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         frameMaterial.SetColor("_BaseColor", Color.white);
         frameMaterial.SetFloat("_Smoothness", .1f);
@@ -28,7 +30,8 @@ public class SprintCheckpointGates : MonoBehaviour
             frames[i][2] = Bar(gate, new Vector3(0, 4.8f, 0), new Vector3(halfWidth * 2 + 1f, .22f, .25f));
             var sign = new GameObject("Checkpoint Number").transform; sign.SetParent(gate, false); sign.localPosition = new Vector3(0, 5.8f, 0);
             labels[i] = sign.gameObject.AddComponent<TextMeshPro>();
-            labels[i].text = i == 3 ? "FINISH  4 / 4" : "CHECKPOINT  " + (i + 1) + " / 4";
+            labels[i].text = i == points.Length - 1 ? "FINISH  " + points.Length + " / " + points.Length : title + "  " + (i + 1) + " / " + points.Length;
+            titles[i] = labels[i].text;
             labels[i].fontSize = 9; labels[i].alignment = TextAlignmentOptions.Center;
             labels[i].rectTransform.sizeDelta = new Vector2(18, 2);
             labels[i].GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -65,7 +68,18 @@ public class SprintCheckpointGates : MonoBehaviour
             var block = new MaterialPropertyBlock(); block.SetColor("_BaseColor", color);
             foreach (var renderer in frames[i]) renderer.SetPropertyBlock(block);
             labels[i].color = color;
+            labels[i].text = titles[i];
         }
+    }
+    public void ShowStart()
+    {
+        ShowNext(-1);
+        int index = frames.Length - 1;
+        Color gold = new Color(1f, .74f, .12f);
+        var block = new MaterialPropertyBlock(); block.SetColor("_BaseColor", gold);
+        foreach (var renderer in frames[index]) renderer.SetPropertyBlock(block);
+        labels[index].color = gold;
+        labels[index].text = "START / FINISH";
     }
     private void LateUpdate()
     {

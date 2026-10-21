@@ -35,8 +35,17 @@ public class TestDriveSceneManager : MonoBehaviour
             Debug.LogError("The selected driving prefab is missing.", this);
             return;
         }
-        vehicle = Instantiate(catalog.drivingPrefabs[index], spawnPoint.position, spawnPoint.rotation);
-        vehicle.ConfigureReset(spawnPoint, followCamera);
+        Transform selectedSpawn = spawnPoint;
+        if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge
+            && TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.OffroadTrail)
+        {
+            var trail = new GameObject("Off-road Trail Course").AddComponent<OffroadTrailCourse>();
+            trail.transform.SetParent(transform, false);
+            trail.Initialize();
+            selectedSpawn = trail.Spawn;
+        }
+        vehicle = Instantiate(catalog.drivingPrefabs[index], selectedSpawn.position, selectedSpawn.rotation);
+        vehicle.ConfigureReset(selectedSpawn, followCamera);
         if (touchControls != null) touchControls.BindVehicle(vehicle);
         float framingScale = Mathf.Max(1f, vehicle.GetComponent<BoxCollider>().size.z / 4.74f);
         followCamera.SetTarget(vehicle.transform, framingScale);

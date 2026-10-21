@@ -4,7 +4,7 @@ using UnityEngine;
 public static class TestDriveSelection
 {
     public enum DriveMode { FreeRun, Challenge }
-    public enum ChallengeKind { CleanLap, CheckpointSprint, Slalom }
+    public enum ChallengeKind { CleanLap, CheckpointSprint, Slalom, OffroadTrail }
     public static ChallengeKind SelectedChallenge { get; private set; }
     public enum TimeOfDay { Day, Night }
     public static TimeOfDay Lighting { get; private set; }
