@@ -161,6 +161,9 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void CheckpointSprint() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.CheckpointSprint); }
 
+    public void Slalom() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
+        TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.Slalom); }
+
     private void BeginDrive(TestDriveSelection.DriveMode mode, TestDriveSelection.TimeOfDay lighting = TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind challenge = TestDriveSelection.ChallengeKind.CleanLap)
     {
         if (isTransitioning || !ModeMenuOpen) return;

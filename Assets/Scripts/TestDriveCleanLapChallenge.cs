@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-// Tracks the enclosed circuit: barrier contact fails a lap; runoff recovery is allowed.
+// Shared countdown, reset guards, and results for the three circuit challenges.
 [DefaultExecutionOrder(100)]
 public class TestDriveCleanLapChallenge : MonoBehaviour
 {
@@ -18,6 +18,11 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [Header("Checkpoint Sprint")]
     [SerializeField, Min(1f)] private float sprintStartSeconds = 10f;
     [SerializeField, Min(1f)] private float sprintBonusSeconds = 6f;
+    private SlalomCourse slalomCourse;
+    public bool IsSlalom => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.Slalom;
+    public float PenaltySeconds => slalomCourse != null ? slalomCourse.PenaltySeconds : 0f;
+    public int ConesHit => slalomCourse != null ? slalomCourse.ConesHit : 0;
+    public float ScoreSeconds => ElapsedSeconds + (IsSlalom ? PenaltySeconds : 0f);
     private float sprintBudget;
     private SprintCheckpointGates sprintGates;
     public bool IsSprint => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.CheckpointSprint;
@@ -86,7 +91,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
         string id = paint != null && paint.Palette != null ? paint.Palette.Id : target.name.Replace("(Clone)", "");
-        saveKey = (IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
+        saveKey = (IsSlalom ? "VehicleShowcase.Slalom.v1." : IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
         float saved = PlayerPrefs.GetFloat(saveKey, 0f);
         BestSeconds = saved > 0 && !float.IsInfinity(saved) && !float.IsNaN(saved) ? saved : 0f;
         message = IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
@@ -108,6 +113,13 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             }
             points[3] = startLine.position; directions[3] = startLine.forward;
             sprintGates.Initialize(points, directions, gateHalfWidth);
+        }
+        if (slalomCourse != null) Destroy(slalomCourse.gameObject);
+        if (IsSlalom)
+        {
+            slalomCourse = new GameObject("Slalom Course").AddComponent<SlalomCourse>();
+            slalomCourse.transform.SetParent(transform, false);
+            slalomCourse.Initialize(this, target, startLine, gateHalfWidth);
         }
         sprintBudget = sprintStartSeconds;
     }
@@ -184,6 +196,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         LastMedal = Medal.None;
         sprintBudget = sprintStartSeconds;
         if (sprintGates != null) sprintGates.ShowNext(0);
+        if (slalomCourse != null) slalomCourse.ResetAttempt();
         message = "Get ready";
         previousPosition = body.position;
         if (view != null) view.Refresh(this);
@@ -238,7 +251,18 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             travelled = Mathf.Max(0f, travelled + delta);
             lastDistance = distance;
             ElapsedSeconds = (float)(Time.fixedTimeAsDouble - startedAt);
-            if (IsSprint)
+            if (IsSlalom)
+            {
+                if (CheckpointsPassed < SlalomCourse.GateCount && slalomCourse.Crossed(CheckpointsPassed, previousPosition, position))
+                {
+                    CheckpointsPassed++;
+                    slalomCourse.ShowNext(CheckpointsPassed);
+                    message = $"Gate {CheckpointsPassed}/6 · +{PenaltySeconds:0}s penalties";
+                    if (challengeAudio != null) challengeAudio.PlayCheckpoint();
+                }
+                if (CheckpointsPassed == SlalomCourse.GateCount && slalomCourse.Crossed(SlalomCourse.GateCount, previousPosition, position)) Finish();
+            }
+            else if (IsSprint)
             {
                 if (RemainingSeconds <= 0f) { Fail("Time ran out. Try again."); return; }
                 if (CheckpointsPassed < 3 && travelled >= length * (CheckpointsPassed + 1) / 4f - 3f
@@ -260,9 +284,16 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         }
         previousPosition = position;
     }
+    public void ReportSlalomPenalty()
+    {
+        if (!IsSlalom || State != Phase.Running) return;
+        message = $"Cone hit: +2s · {PenaltySeconds:0}s total penalties";
+        if (challengeAudio != null) challengeAudio.PlayPenalty();
+    }
+
     private void ReportBarrierContact(Collider surface)
     {
-        if (IsSprint || !isActiveAndEnabled || !IsAvailable || surface == null) return;
+        if (IsSprint || IsSlalom || !isActiveAndEnabled || !IsAvailable || surface == null) return;
         if (State != Phase.Countdown && State != Phase.Armed && State != Phase.Running) return;
         if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
             Fail("Barrier hit. Try again.");
@@ -278,17 +309,19 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         // A completed attempt can award only once; another award requires a retry.
         if (State != Phase.Running) return;
         State = Phase.Finished;
-        CheckpointsPassed = IsSprint ? 4 : 8;
+        CheckpointsPassed = IsSlalom ? SlalomCourse.GateCount : IsSprint ? 4 : 8;
+        if (slalomCourse != null) slalomCourse.ShowNext(SlalomCourse.GateCount + 1);
         if (sprintGates != null) sprintGates.ShowNext(4);
-        LastMedal = IsSprint ? Medal.None : EvaluateMedal(ElapsedSeconds);
-        bool improved = BestSeconds <= 0 || ElapsedSeconds < BestSeconds;
+        LastMedal = IsSprint || IsSlalom ? Medal.None : EvaluateMedal(ElapsedSeconds);
+        bool improved = BestSeconds <= 0 || ScoreSeconds < BestSeconds;
         if (improved)
         {
-            BestSeconds = ElapsedSeconds;
+            BestSeconds = ScoreSeconds;
             PlayerPrefs.SetFloat(saveKey, BestSeconds);
             PlayerPrefs.Save();
         }
-        message = IsSprint ? (improved ? "Sprint complete. New best!" : "Sprint complete.")
+        message = IsSlalom ? (improved ? "Slalom complete. New best!" : "Slalom complete.")
+            : IsSprint ? (improved ? "Sprint complete. New best!" : "Sprint complete.")
             : improved ? "Clean lap complete. New best!" : "Clean lap complete.";
         EndAttempt();
     }
