@@ -9,6 +9,16 @@ public class VehicleDragRotation : MonoBehaviour, IBeginDragHandler, IDragHandle
     [SerializeField] private float minimumVerticalAngle = -2f;
     [SerializeField] private float maximumVerticalAngle = 6f;
 
+    [Header("Showroom camera motion")]
+    [SerializeField, Range(0f, 8f)] private float idleOrbitDegrees = 3f;
+    [SerializeField, Min(4f)] private float idleOrbitPeriod = 22f;
+    [SerializeField, Min(0f)] private float idleResumeDelay = 1.5f;
+
+    private float idlePhase;
+    private float idleYaw;
+    private float idleMotionSpeed;
+    private float resumeIdleAt;
+
     private Vector3 initialCameraPosition;
     private Quaternion initialCameraRotation;
     private Vector3 orbitCenter;
@@ -84,20 +94,48 @@ public class VehicleDragRotation : MonoBehaviour, IBeginDragHandler, IDragHandle
         verticalAngle = Mathf.Clamp(verticalAngle + eventData.delta.y /
             Mathf.Max(1, Screen.height) * verticalDegreesPerScreenHeight,
             minimumVerticalAngle, maximumVerticalAngle);
-        var orbit = Quaternion.AngleAxis(verticalAngle, initialCameraRotation * Vector3.right);
+        ApplyCameraPose();
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (activePointer == eventData.pointerId)
+        {
+            activePointer = null;
+            resumeIdleAt = Time.unscaledTime + idleResumeDelay;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (vehicle == null || viewCamera == null) return;
+        // Freeze the orbit at its current pose while inspecting the car.
+        if (activePointer.HasValue || Time.unscaledTime < resumeIdleAt)
+        {
+            idleMotionSpeed = 0f;
+            return;
+        }
+        idleMotionSpeed = Mathf.MoveTowards(idleMotionSpeed, 1f, Time.unscaledDeltaTime);
+        idlePhase = Mathf.Repeat(idlePhase + Time.unscaledDeltaTime * idleMotionSpeed *
+            Mathf.PI * 2f / Mathf.Max(4f, idleOrbitPeriod), Mathf.PI * 2f);
+        idleYaw = Mathf.Sin(idlePhase) * idleOrbitDegrees;
+        ApplyCameraPose();
+    }
+
+    private void ApplyCameraPose()
+    {
+        var orbit = Quaternion.AngleAxis(idleYaw, Vector3.up) *
+            Quaternion.AngleAxis(verticalAngle, initialCameraRotation * Vector3.right);
         viewCamera.transform.SetPositionAndRotation(
             orbitCenter + orbit * (initialCameraPosition - orbitCenter),
             orbit * initialCameraRotation);
     }
 
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (activePointer == eventData.pointerId) activePointer = null;
-    }
-
     private void ResetCamera()
     {
         verticalAngle = 0f;
+        idlePhase = idleYaw = idleMotionSpeed = 0f;
+        resumeIdleAt = Time.unscaledTime + idleResumeDelay;
         if (viewCamera != null)
             viewCamera.transform.SetPositionAndRotation(initialCameraPosition, initialCameraRotation);
     }
@@ -109,6 +147,10 @@ public class VehicleDragRotation : MonoBehaviour, IBeginDragHandler, IDragHandle
     }
     private void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus) activePointer = null;
+        if (!hasFocus)
+        {
+            activePointer = null;
+            resumeIdleAt = Time.unscaledTime + idleResumeDelay;
+        }
     }
 }
