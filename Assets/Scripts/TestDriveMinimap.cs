@@ -70,12 +70,29 @@ public class TestDriveMinimap : UnityEngine.UI.MaskableGraphic
 
         Vector2 position = WorldToMapPosition(vehicle.position);
         Rect rect = rectTransform.rect;
-        position.x = Mathf.Clamp(position.x, rect.xMin + 13f, rect.xMax - 13f);
-        position.y = Mathf.Clamp(position.y, rect.yMin + 13f, rect.yMax - 13f);
+        position.x = Mathf.Clamp(position.x, rect.xMin + 22f, rect.xMax - 22f);
+        position.y = Mathf.Clamp(position.y, rect.yMin + 22f, rect.yMax - 22f);
         Vector2 forward = new Vector2(vehicle.forward.x, vehicle.forward.z).normalized;
         if (forward.sqrMagnitude < 0.01f) forward = Vector2.up;
-        DrawArrow(mesh, position, forward, 1.25f, new Color(0.02f, 0.025f, 0.03f));
-        DrawArrow(mesh, position, forward, 1f, markerColor);
+        // A contrasting locator stays readable over both road lines and the dark map background.
+        DrawDisc(mesh, position, 20f, new Color(1f, 1f, 1f, .95f));
+        DrawDisc(mesh, position, 17f, new Color(.02f, .025f, .03f, .96f));
+        DrawArrow(mesh, position, forward, 1.65f, Color.white);
+        DrawArrow(mesh, position, forward, 1.4f, markerColor);
+    }
+
+    private static void DrawDisc(UnityEngine.UI.VertexHelper mesh, Vector2 center, float radius, Color tint)
+    {
+        const int segments = 32;
+        int first = mesh.currentVertCount;
+        mesh.AddVert(center, tint, Vector2.zero);
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = i * Mathf.PI * 2f / segments;
+            mesh.AddVert(center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius, tint, Vector2.zero);
+        }
+        for (int i = 0; i < segments; i++)
+            mesh.AddTriangle(first, first + 1 + i, first + 1 + (i + 1) % segments);
     }
 
     private static void DrawLine(UnityEngine.UI.VertexHelper mesh, Vector2 a, Vector2 b, float width, Color tint)
