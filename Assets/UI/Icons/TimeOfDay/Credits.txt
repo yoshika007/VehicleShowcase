@@ -1,0 +1,5 @@
+Sun and MoonStar icons: Lucide Icons and Contributors.
+Source: https://github.com/lucide-icons/lucide
+Icons: icons/sun.svg and icons/moon-star.svg (retrieved 2026-10-22).
+License: ISC. Full license and inherited Feather notice in Lucide-LICENSE.txt.
+Adaptation: rasterized to white 256 x 256 transparent PNG sprites; tinted in Unity.
