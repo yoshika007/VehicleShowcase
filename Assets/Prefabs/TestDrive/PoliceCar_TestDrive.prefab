@@ -671,6 +671,37 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!1 &8981389637941825985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5216807593086222008}
+  m_Layer: 0
+  m_Name: Exhaust Outlet 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5216807593086222008
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981389637941825985}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.9972303, z: -0.07437623, w: 0}
+  m_LocalPosition: {x: -0.5929, y: 0.331, z: -2.604}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6811543674808020697}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9021132934058615218
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +862,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2444248516289830994, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 952007147058914137}
+    - targetCorrespondingSourceObject: {fileID: 2444248516289830994, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5216807593086222008}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3071569019502557928, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
       insertIndex: -1
@@ -850,6 +884,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3071569019502557928, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8396171821727581715}
+    - targetCorrespondingSourceObject: {fileID: 3071569019502557928, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3739865712171272608}
   m_SourcePrefab: {fileID: 100100000, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}
 --- !u!4 &55434470774356588 stripped
 Transform:
@@ -1013,6 +1050,21 @@ MonoBehaviour:
   beams:
   - {fileID: 8412604944496605746}
   - {fileID: 7616498078520712278}
+--- !u!114 &3739865712171272608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6182499244797981795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c508ac830d244b5bbd9965acbdc003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveExhaust
+  outlets:
+  - {fileID: 5216807593086222008}
+  exhaustMaterial: {fileID: 2100000, guid: 5bfd360cd3529480abb2f8b5e06ef81e, type: 2}
 --- !u!4 &6225776087119476483 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2957360465772427656, guid: 5b2efb17de3a8419dbca832c6828919f, type: 3}

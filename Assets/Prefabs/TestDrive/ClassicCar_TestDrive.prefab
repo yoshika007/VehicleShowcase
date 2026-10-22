@@ -503,6 +503,37 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &4938739340747266496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6574268848186606843}
+  m_Layer: 0
+  m_Name: Exhaust Outlet 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6574268848186606843
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4938739340747266496}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.9972303, z: -0.07437623, w: 0}
+  m_LocalPosition: {x: -0.5, y: 0.453, z: -2.65}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3453000760205972122}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6287933354626616071
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,6 +631,37 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &8213542139894904873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2653451432723308537}
+  m_Layer: 0
+  m_Name: Exhaust Outlet 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2653451432723308537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8213542139894904873}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.9972303, z: -0.07437623, w: 0}
+  m_LocalPosition: {x: 0.5, y: 0.453, z: -2.65}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3453000760205972122}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8819958484623769229
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +893,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8541331576161898660, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6414988511795033464}
+    - targetCorrespondingSourceObject: {fileID: 8541331576161898660, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6574268848186606843}
+    - targetCorrespondingSourceObject: {fileID: 8541331576161898660, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2653451432723308537}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 9062147881238350366, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
       insertIndex: -1
@@ -850,6 +918,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9062147881238350366, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3387910665386178313}
+    - targetCorrespondingSourceObject: {fileID: 9062147881238350366, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8981750674958938267}
   m_SourcePrefab: {fileID: 100100000, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}
 --- !u!4 &255134506438287683 stripped
 Transform:
@@ -1003,6 +1074,22 @@ MonoBehaviour:
   beams:
   - {fileID: 1620590069297794671}
   - {fileID: 429633638113208914}
+--- !u!114 &8981750674958938267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2639203153987979296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c508ac830d244b5bbd9965acbdc003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveExhaust
+  outlets:
+  - {fileID: 6574268848186606843}
+  - {fileID: 2653451432723308537}
+  exhaustMaterial: {fileID: 2100000, guid: 5bfd360cd3529480abb2f8b5e06ef81e, type: 2}
 --- !u!23 &2858611138930104929 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9135747120952334431, guid: 7ea5485f4e7cc4f6bba681ccff845f93, type: 3}

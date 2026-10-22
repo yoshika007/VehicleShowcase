@@ -645,6 +645,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7679423826281757723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9147766464929299145}
+  m_Layer: 0
+  m_Name: Exhaust Outlet 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9147766464929299145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7679423826281757723}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.9972303, z: -0.07437623, w: 0}
+  m_LocalPosition: {x: -0.6489, y: 0.403, z: -2.155}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4705775187883119266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8802424272464229594
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +862,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2132981272074634559, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1862349385355589480}
+    - targetCorrespondingSourceObject: {fileID: 2132981272074634559, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9147766464929299145}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1644393885903986565, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       insertIndex: -1
@@ -850,6 +884,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1644393885903986565, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4312358448164357671}
+    - targetCorrespondingSourceObject: {fileID: 1644393885903986565, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8645384526773556329}
   m_SourcePrefab: {fileID: 100100000, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
 --- !u!23 &1959892801232420885 stripped
 MeshRenderer:
@@ -1013,6 +1050,21 @@ MonoBehaviour:
   beams:
   - {fileID: 7620687911263556033}
   - {fileID: 8015434343829408768}
+--- !u!114 &8645384526773556329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5333833390572341272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c508ac830d244b5bbd9965acbdc003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveExhaust
+  outlets:
+  - {fileID: 9147766464929299145}
+  exhaustMaterial: {fileID: 2100000, guid: 5bfd360cd3529480abb2f8b5e06ef81e, type: 2}
 --- !u!4 &5449734643851172330 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1690752544850873975, guid: bb72ad6b49e2e4f94a98574abd491c80, type: 3}
