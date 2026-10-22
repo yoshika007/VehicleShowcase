@@ -156,10 +156,13 @@ public class TestDriveMovement : MonoBehaviour
         float speedInRequestedDirection = speed * moveInput;
         // Ease engine torque near the limit; never clamp the Rigidbody's velocity.
         float availableTorque = Mathf.Clamp01((speedLimit - speedInRequestedDirection) / 2f);
-        float requestedTorque = !braking && moveInput != 0f ? moveInput * motorTorque * availableTorque : 0f;
-        // Smooth power application, but release the throttle immediately: residual drive
-        // torque otherwise overpowers the light coasting brakes after the pedal is released.
-        currentMotorTorque = braking || moveInput == 0f || speedInRequestedDirection >= speedLimit
+        float requestedTorque = !brakeInput && moveInput != 0f ? moveInput * motorTorque * availableTorque : 0f;
+        // A direction change starts a fresh ramp in the requested direction.
+        if (moveInput * currentMotorTorque < 0f) currentMotorTorque = 0f;
+        // Keep building engine torque through automatic direction-change braking:
+        // slight rollback on a hill must not reset the launch ramp every time.
+        // Explicit braking and lifting off still cut power immediately.
+        currentMotorTorque = brakeInput || moveInput == 0f || speedInRequestedDirection >= speedLimit
             ? 0f
             : Mathf.MoveTowards(currentMotorTorque, requestedTorque, torqueResponse * Time.fixedDeltaTime);
 
@@ -221,7 +224,7 @@ public class TestDriveMovement : MonoBehaviour
                 wheel.surfaceGrip = grip;
             }
             wheel.collider.steerAngle = wheel.steering ? currentSteerAngle : 0f;
-            wheel.collider.motorTorque = wheel.driven ? currentMotorTorque / Mathf.Max(1, drivenWheelCount) : 0f;
+            wheel.collider.motorTorque = wheel.driven && !braking ? currentMotorTorque / Mathf.Max(1, drivenWheelCount) : 0f;
             float wheelBrake = appliedBrake;
             if (!braking && moveInput == 0f && wheel.driven && grounded)
             {
