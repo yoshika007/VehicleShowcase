@@ -5,6 +5,7 @@ using UnityEngine;
 public class TestDriveRearLights : MonoBehaviour
 {
     [SerializeField] private Renderer rearLamps;
+    [SerializeField] private Renderer[] auxiliaryBrakeLamps;
     private TestDriveMovement movement;
     private MaterialPropertyBlock properties;
     private int displayedState = -1;
@@ -39,6 +40,16 @@ public class TestDriveRearLights : MonoBehaviour
         properties.SetColor(BaseColor, color);
         properties.SetColor(EmissionColor, emission);
         rearLamps.SetPropertyBlock(properties);
+        // High-mounted auxiliary lamps are red brake/running lights, never reverse lights.
+        if (auxiliaryBrakeLamps != null)
+        {
+            properties.SetColor(BaseColor, state == 1 ? new Color(1f, .015f, .005f)
+                : night ? new Color(.6f, .008f, .004f) : new Color(.28f, .008f, .004f));
+            properties.SetColor(EmissionColor, state == 1 ? new Color(1f, .015f, .005f) * (night ? 1.6f : 6f)
+                : night ? new Color(.8f, .012f, .006f) : new Color(.084f, .0024f, .0012f));
+            foreach (var lamp in auxiliaryBrakeLamps)
+                if (lamp != null) lamp.SetPropertyBlock(properties);
+        }
         displayedState = state;
     }
 

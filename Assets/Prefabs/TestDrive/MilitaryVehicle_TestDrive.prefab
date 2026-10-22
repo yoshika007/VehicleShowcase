@@ -440,7 +440,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7141636256858164958}
-  m_Mesh: {fileID: 4300000, guid: 84af3a0b543e249768b0d0cfb000f4ef, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 117a3eb79d7a9423a8f962ba1aacabeb, type: 2}
 --- !u!23 &116332808217864954
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -756,7 +756,7 @@ PrefabInstance:
     - target: {fileID: 8527635495328053849, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: 3ff72dc029cae48b490131154dc1f8ec, type: 2}
+      objectReference: {fileID: 4300000, guid: 3b09aed894f7044f3b462bfcce5d66e9, type: 2}
     m_RemovedComponents:
     - {fileID: 9178884638193650662, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
     m_RemovedGameObjects:
@@ -919,6 +919,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveRearLights
   rearLamps: {fileID: 7362094403282211973}
+  auxiliaryBrakeLamps:
+  - {fileID: 2147729607665986325}
 --- !u!114 &4316767652268403155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -935,6 +937,8 @@ MonoBehaviour:
   beams:
   - {fileID: 1967956675045658967}
   - {fileID: 7641170254275068008}
+  - {fileID: 6414256177742109812}
+  - {fileID: 6539322636399128054}
 --- !u!4 &577291794652998382 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4753519550207981052, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
@@ -945,6 +949,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5966267893261105945, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
   m_PrefabInstance: {fileID: 5329191075964739346}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &2147729607665986325 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6069537001232299015, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3831097866029884171 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8998152723576175641, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
@@ -953,6 +962,16 @@ Transform:
 --- !u!4 &4876500400839027305 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 745865031081538939, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &6414256177742109812 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 1220777925710906214, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &6539322636399128054 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 1384083130435171044, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
   m_PrefabInstance: {fileID: 5329191075964739346}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6704016768254067787 stripped
