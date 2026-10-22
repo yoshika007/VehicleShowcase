@@ -11035,8 +11035,8 @@ MonoBehaviour:
   verticalDegreesPerScreenHeight: 40
   minimumVerticalAngle: -6
   maximumVerticalAngle: 12
-  idleOrbitDegrees: 3
-  idleOrbitPeriod: 22
+  idleOrbitDegrees: 8
+  idleOrbitPeriod: 12
   idleResumeDelay: 1.5
 --- !u!114 &1769842591
 MonoBehaviour:
