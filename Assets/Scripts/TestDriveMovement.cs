@@ -66,6 +66,8 @@ public class TestDriveMovement : MonoBehaviour
     private float currentMotorTorque;
     private int drivenWheelCount;
     private bool brakeInput;
+    private float previousMoveInput;
+    private bool directionChangeBraking;
     private bool resetRequested;
 
     private void Awake()
@@ -146,8 +148,15 @@ public class TestDriveMovement : MonoBehaviour
 
         if (challengeInputLocked) { moveInput = steerInput = 0f; brakeInput = false; }
         float speed = Vector3.Dot(vehicleBody.linearVelocity, transform.forward);
-        bool changingDirection = speed * moveInput < -0.4f;
-        bool braking = brakeInput || changingDirection;
+        // A held pedal is a launch request, even if gravity causes rollback.
+        // Direction-change braking runs once per new pedal request and releases
+        // near rest instead of repeatedly cutting power on an uphill start.
+        if (moveInput != previousMoveInput)
+            directionChangeBraking = speed * moveInput < -0.4f;
+        if (moveInput == 0f || speed * moveInput >= -0.4f)
+            directionChangeBraking = false;
+        previousMoveInput = moveInput;
+        bool braking = brakeInput || directionChangeBraking;
         IsBraking = braking;
         // BRAKE / REV first slows forward travel, then selects reverse. Keep white
         // lamps on while coasting backward, with active braking taking priority.
@@ -177,6 +186,8 @@ public class TestDriveMovement : MonoBehaviour
 
         Vector3 surfaceResistance = Vector3.zero;
         int assignedWheelCount = 0;
+        int launchContacts = 0;
+        Vector3 launchNormal = Vector3.zero;
         int mudContacts = 0;
         TestDriveSurface mudSurface = null;
         float chassisBottom = chassisCollider != null ? chassisCollider.bounds.min.y : float.PositiveInfinity;
@@ -213,6 +224,12 @@ public class TestDriveMovement : MonoBehaviour
                     surfaceResistance -= planarVelocity / planarSpeed * resistance;
                 }
             }
+            if (grounded && (!hit.collider.TryGetComponent<TestDriveSurface>(out var launchSurface)
+                || launchSurface.SurfaceKind != TestDriveSurface.Kind.Mud))
+            {
+                launchContacts++;
+                launchNormal += hit.normal;
+            }
             if (!Mathf.Approximately(grip, wheel.surfaceGrip))
             {
                 var forward = wheel.forwardFriction;
@@ -247,6 +264,15 @@ public class TestDriveMovement : MonoBehaviour
         // One wheel entering mud contributes only its share; airborne and dry wheels add no drag.
         if (assignedWheelCount > 0 && surfaceResistance.sqrMagnitude > 0f)
             vehicleBody.AddForce(surfaceResistance / assignedWheelCount, ForceMode.Acceleration);
+        // Low-speed hill-start assistance counters the downhill component of
+        // gravity while the tires provide propulsion. Fade it out as speed builds.
+        if (!braking && moveInput != 0f && launchContacts >= 2 && mudContacts == 0)
+        {
+            Vector3 downhill = Vector3.ProjectOnPlane(Physics.gravity, launchNormal.normalized);
+            if (Vector3.Dot(downhill, transform.forward * moveInput) < -.5f)
+                vehicleBody.AddForce(-downhill * (1f - Mathf.InverseLerp(1f, 3f,
+                    Mathf.Abs(speed))), ForceMode.Acceleration);
+        }
         UpdateBogging(mudContacts, mudSurface, braking);
         // Wheel contact forces drive and rotate the car; no velocity or rotation overrides.
     }
@@ -401,6 +427,8 @@ public class TestDriveMovement : MonoBehaviour
         resetRequested = false;
         currentSteerAngle = 0f;
         currentMotorTorque = 0f;
+        previousMoveInput = 0f;
+        directionChangeBraking = false;
         foreach (var wheel in wheels)
         {
             if (wheel.collider == null) continue;
