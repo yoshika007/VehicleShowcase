@@ -65,24 +65,9 @@ public class VehicleDragRotation : MonoBehaviour, IBeginDragHandler, IDragHandle
             eventData.button != PointerEventData.InputButton.Left)
             return;
 
-        // Begin only over the displayed car. Foreground UI receives its own pointer events.
-        var renderers = vehicle.GetComponentsInChildren<Renderer>();
-        if (renderers.Length == 0) return;
-        vehicleBounds = renderers[0].bounds;
-        foreach (var renderer in renderers) vehicleBounds.Encapsulate(renderer.bounds);
-        var min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
-        var max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
-        for (int i = 0; i < 8; i++)
-        {
-            var corner = vehicleBounds.center + Vector3.Scale(vehicleBounds.extents,
-                new Vector3((i & 1) == 0 ? -1 : 1, (i & 2) == 0 ? -1 : 1, (i & 4) == 0 ? -1 : 1));
-            Vector3 screen = viewCamera.WorldToScreenPoint(corner);
-            if (screen.z <= 0) return;
-            min = Vector2.Min(min, screen);
-            max = Vector2.Max(max, screen);
-        }
-        if (Rect.MinMaxRect(min.x, min.y, max.x, max.y).Contains(eventData.pressPosition))
-            activePointer = eventData.pointerId;
+        // The full-screen drag surface receives background gestures; foreground
+        // buttons and panels keep their own EventSystem raycasts.
+        activePointer = eventData.pointerId;
     }
 
     public void OnDrag(PointerEventData eventData)
