@@ -17,7 +17,7 @@ public class CleanLapChallengeAudio : MonoBehaviour
     public void BeginCountdown()
     {
         lastCountdown = 0;
-        PlayCountdown(3);
+        PlayCountdown(4);
     }
     public void PlayCountdown(int number)
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 // Shared countdown, reset guards, and results for the driving challenges.
@@ -42,7 +43,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     private float[] distances;
     private float length, lastDistance, travelled, gateHalfWidth;
     private Vector3 previousPosition;
-    private double countdownEnd, startedAt;
+    private const int StartLightCount = 5;
+    private const int CountdownSeconds = 4;
+    private double countdownStartedAt, countdownEnd, startedAt;
+    private Renderer[] timingLights;
+    private int displayedStartLights = -1;
+    private MaterialPropertyBlock timingLightProperties;
     private int resetCount;
     private string saveKey, message;
     private bool briefingOpen;
@@ -57,7 +63,10 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public float GoldSeconds => goldSeconds;
     public float SilverSeconds => silverSeconds;
     public float BronzeSeconds => bronzeSeconds;
-    public int CountdownNumber => Mathf.Max(1, Mathf.CeilToInt((float)(countdownEnd - Time.timeAsDouble)));
+    public int CountdownNumber => Mathf.Clamp(Mathf.CeilToInt((float)(CountdownSeconds - (Time.timeAsDouble - countdownStartedAt))), 1, CountdownSeconds);
+    public int StartLightsLit => State == Phase.Countdown ? Mathf.CeilToInt((CountdownSeconds - CountdownNumber + 1) * StartLightCount / (float)CountdownSeconds) : 0;
+    public bool ShowStartGo => IsAvailable && (State == Phase.Armed || State == Phase.Running)
+        && Time.timeAsDouble >= countdownEnd && Time.timeAsDouble < countdownEnd + .8;
     public string Message => message;
     public bool IsAvailable => vehicle != null && vehicle.isActiveAndEnabled;
 
@@ -89,6 +98,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         LastMedal = Medal.None;
         ElapsedSeconds = 0;
         CheckpointsPassed = 0;
+        RefreshTimingLights();
         if (target == null) return;
         target.SetChallengeStopped(true);
         target.SetChallengeInputLocked(true);
@@ -112,6 +122,14 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             startLine = hillCourse.StartLine;
         }
         CacheRoute();
+        if (timingLights == null)
+        {
+            timingLights = FindObjectsByType<MeshRenderer>().Where(r => r.name == "Timing light")
+                .OrderBy(r => Vector3.Dot(r.transform.position, startLine.right))
+                .ThenByDescending(r => r.transform.position.y).Cast<Renderer>().ToArray();
+            displayedStartLights = -1;
+            RefreshTimingLights();
+        }
         if (sprintGates != null) Destroy(sprintGates.gameObject);
         if (IsSprint)
         {
@@ -215,7 +233,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         resetCount = vehicle.ResetCount;
         vehicle.SetChallengeInputLocked(true);
         State = Phase.Countdown;
-        countdownEnd = Time.timeAsDouble + 3;
+        countdownStartedAt = Time.timeAsDouble;
+        countdownEnd = countdownStartedAt + CountdownSeconds;
+        RefreshTimingLights();
         ElapsedSeconds = travelled = 0;
         CheckpointsPassed = 0;
         LastMedal = Medal.None;
@@ -244,7 +264,24 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             }
             else if (challengeAudio != null) challengeAudio.PlayCountdown(CountdownNumber);
         }
+        RefreshTimingLights();
         if (view != null) view.Refresh(this);
+    }
+    private void RefreshTimingLights()
+    {
+        int count = isActiveAndEnabled ? StartLightsLit : 0;
+        if (timingLights == null || displayedStartLights == count) return;
+        displayedStartLights = count;
+        if (timingLightProperties == null) timingLightProperties = new MaterialPropertyBlock();
+        for (int i = 0; i < timingLights.Length; i++)
+        {
+            if (timingLights[i] == null) continue;
+            timingLights[i].GetPropertyBlock(timingLightProperties);
+            bool lit = i / 2 < count;
+            timingLightProperties.SetColor("_BaseColor", lit ? new Color(1f, .025f, .008f) : new Color(.055f, .012f, .012f));
+            timingLightProperties.SetColor("_EmissionColor", lit ? new Color(6f, .03f, .008f) : Color.black);
+            timingLights[i].SetPropertyBlock(timingLightProperties);
+        }
     }
     private void FixedUpdate()
     {
@@ -356,6 +393,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (timingLights != null)
+            foreach (var light in timingLights) if (light != null) light.SetPropertyBlock(null);
         if (vehicle != null) vehicle.ColliderContact -= ReportBarrierContact;
     }
 
@@ -408,6 +447,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     }
     private void OnDisable()
     {
+        RefreshTimingLights();
         if (challengeAudio != null) challengeAudio.Stop();
         if (circuitBarrier != null) circuitBarrier.SetActive(false);
         if (vehicle != null)

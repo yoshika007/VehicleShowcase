@@ -42,7 +42,7 @@ public class TestDriveCleanLapView : MonoBehaviour
         clock.margin = new Vector4(Mathf.Max(0, (clock.rectTransform.rect.width - 64f * .58f * time.Length) * .5f), 0, 0, 0);
         clock.text = "<mspace=0.58em>" + time + "</mspace>";
         status.text = phase == TestDriveCleanLapChallenge.Phase.Ready ? "Ready to start"
-            : phase == TestDriveCleanLapChallenge.Phase.Countdown ? "Get ready"
+            : phase == TestDriveCleanLapChallenge.Phase.Countdown ? "Red lights · get ready"
             : phase == TestDriveCleanLapChallenge.Phase.Armed ? "Cross the start line"
             : phase == TestDriveCleanLapChallenge.Phase.Running ? challenge.IsHill ? $"Climb gate {challenge.CheckpointsPassed + 1}/3" : challenge.IsTrail ? $"Trail gate {challenge.CheckpointsPassed + 1}/8" : challenge.IsSlalom ? $"{(challenge.CheckpointsPassed < 6 ? "Gate " + (challenge.CheckpointsPassed + 1) + "/6" : "Finish")} · +{challenge.PenaltySeconds:0}s penalties" : challenge.IsSprint ? challenge.CheckpointsPassed == 3 ? "Finish 4/4 · Beat the clock" : $"Gate {challenge.CheckpointsPassed + 1}/4 · +{challenge.SprintBonusSeconds:0}s per gate" : "Lap in progress"
             : phase == TestDriveCleanLapChallenge.Phase.Finished
@@ -58,8 +58,9 @@ public class TestDriveCleanLapView : MonoBehaviour
     }
     private void RefreshCountdown(TestDriveCleanLapChallenge challenge)
     {
-        bool counting = challenge.State == TestDriveCleanLapChallenge.Phase.Countdown && challenge.IsAvailable;
-        if (!counting)
+        bool counting = challenge.State == TestDriveCleanLapChallenge.Phase.Countdown
+            && challenge.IsAvailable && challenge.CountdownNumber <= 3;
+        if (!counting && !challenge.ShowStartGo)
         {
             if (centerCountdown != null) centerCountdown.gameObject.SetActive(false);
             return;
@@ -70,7 +71,7 @@ public class TestDriveCleanLapView : MonoBehaviour
             var rect = (RectTransform)new GameObject("CleanLapCountdown", typeof(RectTransform)).transform;
             rect.SetParent(canvas.transform, false);
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
-            rect.sizeDelta = new Vector2(420, 280);
+            rect.sizeDelta = new Vector2(660, 280);
             centerCountdown = rect.gameObject.AddComponent<TextMeshProUGUI>();
             centerCountdown.font = clock.font;
             centerCountdown.fontSize = 180;
@@ -81,7 +82,9 @@ public class TestDriveCleanLapView : MonoBehaviour
             centerCountdown.outlineWidth = .2f;
             centerCountdown.raycastTarget = false;
         }
-        centerCountdown.text = challenge.CountdownNumber.ToString();
+        centerCountdown.text = challenge.ShowStartGo ? "GO!" : challenge.CountdownNumber.ToString();
+        centerCountdown.fontSize = challenge.ShowStartGo ? 120 : 180;
+        centerCountdown.color = challenge.ShowStartGo ? new Color(.55f, 1f, .65f) : new Color(1f, .23f, .32f, 1f);
         centerCountdown.gameObject.SetActive(true);
         centerCountdown.transform.SetAsLastSibling();
         // Match the visible safe area, including Simulator values outside the current view.
