@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &188352145519679779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4125360718562779354}
+  - component: {fileID: 6486644915174457677}
+  m_Layer: 0
+  m_Name: DriverView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4125360718562779354
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188352145519679779}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.55, y: 2.26, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 577291794652998382}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6486644915174457677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188352145519679779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba771d0a97c1e4f728d3f23dda79af12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveDriverView
+  hiddenInDriverView:
+  - {fileID: 2104935293404953659}
+  - {fileID: 9069710776109901118}
+  - {fileID: 7844504520201725697}
+  - {fileID: 5376884037518572059}
 --- !u!1 &1461831272777629137
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +828,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4753519550207981052, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6327604264333997833}
+    - targetCorrespondingSourceObject: {fileID: 4753519550207981052, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4125360718562779354}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5385236931102977862, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
       insertIndex: -1
@@ -949,6 +1001,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5966267893261105945, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
   m_PrefabInstance: {fileID: 5329191075964739346}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &2104935293404953659 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6107774393849144105, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &2147729607665986325 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6069537001232299015, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
@@ -964,6 +1021,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 745865031081538939, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
   m_PrefabInstance: {fileID: 5329191075964739346}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &5376884037518572059 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 246449514415416585, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
 --- !u!108 &6414256177742109812 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 1220777925710906214, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
@@ -977,5 +1039,15 @@ Light:
 --- !u!4 &6704016768254067787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1512194313759791961, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7844504520201725697 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2677478217679288339, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
+  m_PrefabInstance: {fileID: 5329191075964739346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9069710776109901118 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3759101516382698028, guid: ebc8b599b3a174df6a9daae42eb9e82b, type: 3}
   m_PrefabInstance: {fileID: 5329191075964739346}
   m_PrefabAsset: {fileID: 0}

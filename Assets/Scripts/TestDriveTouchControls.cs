@@ -8,6 +8,7 @@ public class TestDriveTouchControls : MonoBehaviour
     [SerializeField] private RectTransform hudSafeArea;
     [SerializeField] private RectTransform minimapPanel;
     [SerializeField] private RectTransform backButton;
+    [SerializeField] private RectTransform cameraButton;
     [SerializeField] private RectTransform steeringGroup;
     [SerializeField] private RectTransform pedalGroup;
     [SerializeField] private RectTransform resetButton;
@@ -105,6 +106,15 @@ public class TestDriveTouchControls : MonoBehaviour
         float backHeight = backButton != null ? backButton.rect.height : 68f;
         Place(minimapPanel, scale, new Vector2(margin, -margin - (backHeight + 24f) * scale));
         Place(backButton, scale, new Vector2(margin, -margin));
+        if (cameraButton != null)
+        {
+            float sideWidth = Mathf.Max(backButton != null ? backButton.rect.width : 0f,
+                cleanLapPanel != null ? cleanLapPanel.rect.width : 0f);
+            bool fitsTopRow = bounds.rect.width >= 2f * (margin + (sideWidth + 24f) * scale)
+                + cameraButton.rect.width * scale;
+            float cameraY = -margin - (fitsTopRow ? 0f : (backHeight + 24f) * scale);
+            Place(cameraButton, scale, new Vector2(0, cameraY));
+        }
         Place(cleanLapPanel, scale, new Vector2(-margin, -margin));
         if (speedPanel != null)
         {

@@ -8,18 +8,77 @@ public class TestDriveCameraFollow : MonoBehaviour
     [SerializeField, Min(0.01f)] private float followSharpness = 10f;
     [SerializeField, Min(0.01f)] private float lookSharpness = 12f;
 
+    [SerializeField] private UnityEngine.UI.Button viewButton;
+    [SerializeField] private TMPro.TMP_Text viewLabel;
+    [SerializeField] private AudioSource buttonAudio;
+    [SerializeField] private AudioClip switchSound;
+    [SerializeField, Range(40f, 100f)] private float driverFieldOfView = 70f;
+    private Transform driverView;
+    private TestDriveDriverView driverProfile;
+    private Camera viewCamera;
+    private float chaseFieldOfView, chaseNearClip;
     private float framingScale = 1f;
+    private bool canSwitchView = true;
+    public bool IsDriverView { get; private set; }
+
+    private void Initialize()
+    {
+        if (viewCamera != null) return;
+        viewCamera = GetComponent<Camera>();
+        if (viewCamera == null) return;
+        chaseFieldOfView = viewCamera.fieldOfView;
+        chaseNearClip = viewCamera.nearClipPlane;
+    }
+
+    public void ToggleView()
+    {
+        if (!canSwitchView || target == null || driverView == null) return;
+        IsDriverView = !IsDriverView;
+        if (buttonAudio != null && switchSound != null) buttonAudio.PlayOneShot(switchSound);
+        RefreshView();
+        SnapToTarget();
+    }
+
+    public void DisableViewSwitching()
+    {
+        canSwitchView = false;
+        if (viewButton != null) viewButton.interactable = false;
+    }
+
+    private void RefreshView()
+    {
+        Initialize();
+        if (viewCamera != null)
+        {
+            viewCamera.fieldOfView = IsDriverView ? driverFieldOfView : chaseFieldOfView;
+            viewCamera.nearClipPlane = IsDriverView ? .03f : chaseNearClip;
+        }
+        if (driverProfile != null) driverProfile.SetDriverView(IsDriverView);
+        if (viewLabel != null) viewLabel.text = IsDriverView ? "CHASE VIEW" : "DRIVER VIEW";
+        if (viewButton != null) viewButton.interactable = canSwitchView && target != null && driverView != null;
+    }
 
     public void SetTarget(Transform vehicle, float scale = 1f)
     {
+        if (driverProfile != null) driverProfile.SetDriverView(false);
         target = vehicle;
+        driverView = target != null ? target.Find("DriverView") : null;
+        driverProfile = driverView != null ? driverView.GetComponent<TestDriveDriverView>() : null;
+        IsDriverView = false;
+        canSwitchView = target != null;
         framingScale = scale;
+        RefreshView();
         SnapToTarget();
     }
 
     public void SnapToTarget()
     {
         if (target == null) return;
+        if (IsDriverView && driverView != null)
+        {
+            transform.SetPositionAndRotation(driverView.position, driverView.rotation);
+            return;
+        }
         Vector3 position = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (followOffset * framingScale);
         Vector3 lookPoint = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (lookOffset * framingScale);
         transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookPoint - position, Vector3.up));
@@ -28,6 +87,12 @@ public class TestDriveCameraFollow : MonoBehaviour
     private void LateUpdate()
     {
         if (target == null) return;
+        if (IsDriverView && driverView != null)
+        {
+            // Follow the seat directly so bumps and turns never put the camera through the body.
+            transform.SetPositionAndRotation(driverView.position, driverView.rotation);
+            return;
+        }
 
         // Rotate the offset with the car so the camera stays behind it through turns.
         Vector3 desiredPosition = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (followOffset * framingScale);

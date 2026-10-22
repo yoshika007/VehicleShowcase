@@ -232,6 +232,55 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2679032390269339787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4078302122069586684}
+  - component: {fileID: 2654158522339749890}
+  m_Layer: 0
+  m_Name: DriverView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4078302122069586684
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2679032390269339787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.42, y: 1.72, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6230857723966081932}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2654158522339749890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2679032390269339787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba771d0a97c1e4f728d3f23dda79af12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveDriverView
+  hiddenInDriverView:
+  - {fileID: 7994556338007775038}
+  - {fileID: 3892536308278854630}
+  - {fileID: 3104023905007226435}
+  - {fileID: 1856990327195524522}
 --- !u!1 &3054958004797791620
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +828,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8785273668666591217, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4365000818675473896}
+    - targetCorrespondingSourceObject: {fileID: 8785273668666591217, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4078302122069586684}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8259706678782942539, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
       insertIndex: -1
@@ -799,14 +851,29 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6318384467265137803}
   m_SourcePrefab: {fileID: 100100000, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
+--- !u!23 &1856990327195524522 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3915494023424053719, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
+  m_PrefabInstance: {fileID: 3428360597392608381}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2727408581437419606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 741484713396780075, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
   m_PrefabInstance: {fileID: 3428360597392608381}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &3104023905007226435 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 324345515599626814, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
+  m_PrefabInstance: {fileID: 3428360597392608381}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3188106275021169010 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 265032916828744975, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
+  m_PrefabInstance: {fileID: 3428360597392608381}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3892536308278854630 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1843919390543564699, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
   m_PrefabInstance: {fileID: 3428360597392608381}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6230857723966081932 stripped
@@ -939,6 +1006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveRearLights
   rearLamps: {fileID: 5070738004090482995}
+  auxiliaryBrakeLamps: []
 --- !u!114 &6318384467265137803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -955,6 +1023,11 @@ MonoBehaviour:
   beams:
   - {fileID: 2988811991874289105}
   - {fileID: 823971174785153746}
+--- !u!23 &7994556338007775038 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4711228574760524611, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}
+  m_PrefabInstance: {fileID: 3428360597392608381}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8937549093172704139 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6024538946416164854, guid: f01794b7acfae4122bdae5fc76909f7b, type: 3}

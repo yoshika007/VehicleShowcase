@@ -81,6 +81,7 @@ public class TestDriveSceneManager : MonoBehaviour
     {
         if (isReturning) return;
         isReturning = true;
+        if (followCamera != null) followCamera.DisableViewSwitching();
         if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(null);
         if (returnButton != null) returnButton.interactable = false;
         if (touchControls != null) touchControls.BindVehicle(null);

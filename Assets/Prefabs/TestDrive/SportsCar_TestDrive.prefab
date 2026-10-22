@@ -435,6 +435,55 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!1 &6948373766114511342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3657532326715010115}
+  - component: {fileID: 3338585556648039431}
+  m_Layer: 0
+  m_Name: DriverView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3657532326715010115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6948373766114511342}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.33, y: 1.16, z: 0.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4629208512595238753}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3338585556648039431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6948373766114511342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba771d0a97c1e4f728d3f23dda79af12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveDriverView
+  hiddenInDriverView:
+  - {fileID: 8529563266884934681}
+  - {fileID: 7798517984296292673}
+  - {fileID: 4691654085972247315}
+  - {fileID: 8925506844400215973}
 --- !u!1 &8033067396189944183
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +828,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4494641402958919763, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1195816425906198373}
+    - targetCorrespondingSourceObject: {fileID: 4494641402958919763, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3657532326715010115}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3831433149264519913, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
       insertIndex: -1
@@ -812,6 +864,11 @@ Transform:
 --- !u!4 &4629208512595238753 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4494641402958919763, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+  m_PrefabInstance: {fileID: 9105834343709091634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4691654085972247315 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4558336201936331809, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
   m_PrefabInstance: {fileID: 9105834343709091634}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &5437410665293956571 stripped
@@ -934,6 +991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveRearLights
   rearLamps: {fileID: 7603979735781163988}
+  auxiliaryBrakeLamps: []
 --- !u!114 &322810991714096831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -955,8 +1013,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1444396837470267357, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
   m_PrefabInstance: {fileID: 9105834343709091634}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &7798517984296292673 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1326181303857247859, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+  m_PrefabInstance: {fileID: 9105834343709091634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8529563266884934681 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 576870383797451563, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+  m_PrefabInstance: {fileID: 9105834343709091634}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8921178095434336007 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400829306207019061, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
+  m_PrefabInstance: {fileID: 9105834343709091634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8925506844400215973 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 397347253420802199, guid: 83bd2ac85a7224226ae67e3efe28a6a5, type: 3}
   m_PrefabInstance: {fileID: 9105834343709091634}
   m_PrefabAsset: {fileID: 0}

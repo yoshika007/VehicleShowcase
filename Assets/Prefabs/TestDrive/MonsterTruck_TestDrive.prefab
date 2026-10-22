@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1346880045996909200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 483320553624252298}
+  - component: {fileID: 9206926007666298413}
+  m_Layer: 0
+  m_Name: DriverView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &483320553624252298
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346880045996909200}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.42, y: 2.62, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6841644246791179764}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9206926007666298413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346880045996909200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba771d0a97c1e4f728d3f23dda79af12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDriveDriverView
+  hiddenInDriverView:
+  - {fileID: 887400961584798932}
+  - {fileID: 3688948008998771581}
+  - {fileID: 4234911942992068270}
+  - {fileID: 6946070608841054721}
 --- !u!1 &1628626262058827272
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +828,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8938264638945966085, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4130966792470736076}
+    - targetCorrespondingSourceObject: {fileID: 8938264638945966085, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 483320553624252298}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8593089063253140159, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
       insertIndex: -1
@@ -804,9 +856,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2796794142524441428, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
   m_PrefabInstance: {fileID: 2520185536805238257}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &887400961584798932 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3362448522409437477, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
+  m_PrefabInstance: {fileID: 2520185536805238257}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2232486119442307979 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4324050652180459130, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
+  m_PrefabInstance: {fileID: 2520185536805238257}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3688948008998771581 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1281478396959518348, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
+  m_PrefabInstance: {fileID: 2520185536805238257}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4234911942992068270 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1746291221707590495, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
   m_PrefabInstance: {fileID: 2520185536805238257}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &6177170249845380942 stripped
@@ -929,6 +996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveRearLights
   rearLamps: {fileID: 5129276539215065568}
+  auxiliaryBrakeLamps: []
 --- !u!114 &4014434966036320156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -953,6 +1021,11 @@ Transform:
 --- !u!4 &6899624524187723254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9023274760168148999, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
+  m_PrefabInstance: {fileID: 2520185536805238257}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6946070608841054721 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4799738851085709296, guid: dd2249e47106c4322bc5eccb63c9be3a, type: 3}
   m_PrefabInstance: {fileID: 2520185536805238257}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &8908637832624398269 stripped
