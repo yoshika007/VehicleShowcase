@@ -4253,6 +4253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DriveModeMenu
   dialog: {fileID: 895375848}
+  preferredScale: 1.1
 --- !u!225 &735159271
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6779,6 +6780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DriveModeMenu
   dialog: {fileID: 112224603}
+  preferredScale: 1.2
 --- !u!225 &1177441725
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6882,6 +6884,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DriveModeMenu
   dialog: {fileID: 201438906}
+  preferredScale: 1.2
 --- !u!225 &1186346667
 CanvasGroup:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 public class DriveModeMenu : MonoBehaviour
 {
     [SerializeField] private RectTransform dialog;
+    [SerializeField, Range(1f, 1.5f)] private float preferredScale = 1f;
     private void OnEnable() => Fit();
     private void LateUpdate() => Fit();
     private void Fit() => ApplyLayout(Screen.safeArea, new Vector2Int(Screen.width, Screen.height));
@@ -15,7 +16,7 @@ public class DriveModeMenu : MonoBehaviour
             new Vector2(Mathf.Clamp01(area.xMin / screen.x), Mathf.Clamp01(area.yMin / screen.y)));
         Vector2 max = root.rect.min + Vector2.Scale(root.rect.size,
             new Vector2(Mathf.Clamp01(area.xMax / screen.x), Mathf.Clamp01(area.yMax / screen.y)));
-        float scale = Mathf.Min(1f, (max.x - min.x) / (dialog.rect.width + 48f),
+        float scale = Mathf.Min(preferredScale, (max.x - min.x) / (dialog.rect.width + 48f),
             (max.y - min.y) / (dialog.rect.height + 48f));
         if (scale <= 0f) return;
         dialog.localScale = Vector3.one * scale;
