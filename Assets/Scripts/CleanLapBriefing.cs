@@ -12,6 +12,7 @@ public class CleanLapBriefing : MonoBehaviour
     private TMP_Text startLabel;
     private RectTransform panel, helpRect;
     private bool firstEntry = true;
+    private bool helpPlacedByHud;
     private GameObject resultOverlay;
     private RectTransform resultPanel;
     private TMP_Text resultHeading, resultSummary, resultTime, resultReason;
@@ -29,8 +30,10 @@ public class CleanLapBriefing : MonoBehaviour
         scaler.matchWidthOrHeight = .5f;
         gameObject.AddComponent<GraphicRaycaster>();
         var font = Object.FindAnyObjectByType<TestDriveCleanLapView>().GetComponentInChildren<TMP_Text>(true).font;
-        help = MakeButton("ChallengeHelp", transform, "?", new Vector2(72, 64), font, Open);
+        help = MakeButton("ChallengeHelp", transform, "?", new Vector2(88, 88), font, Open);
         helpRect = (RectTransform)help.transform;
+        var hudLayout = Object.FindAnyObjectByType<TestDriveTouchControls>();
+        helpPlacedByHud = hudLayout != null && hudLayout.BindChallengeHelp(helpRect);
         overlay = Rect("ChallengeBriefing", transform, Vector2.zero).gameObject;
         var cover = (RectTransform)overlay.transform;
         cover.anchorMin = Vector2.zero; cover.anchorMax = Vector2.one;
@@ -141,7 +144,8 @@ public class CleanLapBriefing : MonoBehaviour
             resultPanel.localScale = Vector3.one * Mathf.Min(1, (max.x-min.x-40)/760, (max.y-min.y-40)/560);
             resultPanel.anchoredPosition = (min+max)*.5f;
         }
-        helpRect.anchoredPosition = new Vector2((min.x+max.x)*.5f, max.y-48);
+        if (!helpPlacedByHud)
+            helpRect.anchoredPosition = new Vector2((min.x+max.x)*.5f, max.y-48);
     }
     private static RectTransform Rect(string name, Transform parent, Vector2 size)
     {

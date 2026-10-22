@@ -23,6 +23,7 @@ public class TestDriveTouchControls : MonoBehaviour
     [SerializeField] private GameObject keyboardResetHint;
     [SerializeField] private bool showInEditor = true;
 
+    private RectTransform challengeHelpButton;
     private bool initialized;
     private TestDriveMovement vehicle;
     private Vector2 originalSpeedPosition;
@@ -51,6 +52,13 @@ public class TestDriveTouchControls : MonoBehaviour
         if (recoveryPrompt != null) recoveryPrompt.BindVehicle(target);
         if (vehicle != null) vehicle.ConfigureTouchInput(this);
         Refresh();
+    }
+    public bool BindChallengeHelp(RectTransform button)
+    {
+        if (cameraButton == null || button == null) return false;
+        challengeHelpButton = button;
+        Refresh();
+        return true;
     }
     // Run after CanvasScaler so rotation and Simulator device changes use the new canvas size.
     private void LateUpdate() => Refresh();
@@ -110,10 +118,29 @@ public class TestDriveTouchControls : MonoBehaviour
         {
             float sideWidth = Mathf.Max(backButton != null ? backButton.rect.width : 0f,
                 cleanLapPanel != null ? cleanLapPanel.rect.width : 0f);
+            float helpWidth = challengeHelpButton != null ? challengeHelpButton.rect.width + 24f : 0f;
+            float groupWidth = cameraButton.rect.width + helpWidth;
             bool fitsTopRow = bounds.rect.width >= 2f * (margin + (sideWidth + 24f) * scale)
-                + cameraButton.rect.width * scale;
-            float cameraY = -margin - (fitsTopRow ? 0f : (backHeight + 24f) * scale);
-            Place(cameraButton, scale, new Vector2(0, cameraY));
+                + groupWidth * scale;
+            float groupScale = scale;
+            float cameraY = -margin;
+            if (!fitsTopRow)
+            {
+                cameraY -= (backHeight + 24f) * scale;
+                float rowSideWidth = Mathf.Max(minimapPanel != null ? minimapPanel.rect.width : 0f,
+                    cleanLapPanel != null ? cleanLapPanel.rect.width : 0f);
+                float available = bounds.rect.width - 2f * (margin + (rowSideWidth + 24f) * scale);
+                float compactScale = Mathf.Min(scale, Mathf.Max(0f, available) / groupWidth);
+                if (cameraButton.rect.height * compactScale >= 44f) groupScale = compactScale;
+                else
+                {
+                    float mapBottom = backHeight + 24f + (minimapPanel != null ? minimapPanel.rect.height : 0f);
+                    float hudBottom = Mathf.Max(mapBottom, cleanLapPanel != null ? cleanLapPanel.rect.height : 0f);
+                    cameraY = -margin - (hudBottom + 24f) * scale;
+                }
+            }
+            Place(cameraButton, groupScale, new Vector2(-helpWidth * .5f * groupScale, cameraY));
+            PlaceChallengeHelp();
         }
         Place(cleanLapPanel, scale, new Vector2(-margin, -margin));
         if (speedPanel != null)
@@ -123,6 +150,32 @@ public class TestDriveTouchControls : MonoBehaviour
             float speedY = margin + (touchVisible ? pedalHeight + 24f * scale : 0f);
             Place(speedPanel, scale, new Vector2(-margin, speedY));
         }
+    }
+
+    private void PlaceChallengeHelp()
+    {
+        if (challengeHelpButton == null || cameraButton == null) return;
+        var parent = challengeHelpButton.parent as RectTransform;
+        if (parent == null) return;
+        // Both canvases keep their own scaler and sorting order. Convert between them
+        // so the help button follows the camera row on rotation and safe-area changes.
+        Vector3 point = cameraButton.TransformPoint(new Vector3(
+            cameraButton.rect.xMax + 24f + challengeHelpButton.rect.width * .5f,
+            cameraButton.rect.yMax - challengeHelpButton.rect.height * .5f, 0f));
+        var cameraCanvas = cameraButton.GetComponentInParent<Canvas>().rootCanvas;
+        var helpCanvas = challengeHelpButton.GetComponentInParent<Canvas>().rootCanvas;
+        Camera fromCamera = cameraCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : cameraCanvas.worldCamera;
+        Camera toCamera = helpCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : helpCanvas.worldCamera;
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(fromCamera, point);
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, screenPoint, toCamera, out var local))
+            challengeHelpButton.localPosition = new Vector3(local.x, local.y, 0f);
+        float cameraUnit = Vector2.Distance(
+            RectTransformUtility.WorldToScreenPoint(fromCamera, cameraButton.TransformPoint(Vector3.zero)),
+            RectTransformUtility.WorldToScreenPoint(fromCamera, cameraButton.TransformPoint(Vector3.up)));
+        float helpUnit = Vector2.Distance(
+            RectTransformUtility.WorldToScreenPoint(toCamera, parent.TransformPoint(Vector3.zero)),
+            RectTransformUtility.WorldToScreenPoint(toCamera, parent.TransformPoint(Vector3.up)));
+        if (helpUnit > .0001f) challengeHelpButton.localScale = Vector3.one * (cameraUnit / helpUnit);
     }
 
     private static void Place(RectTransform target, float scale, Vector2 position)
