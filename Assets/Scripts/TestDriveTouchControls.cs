@@ -114,8 +114,11 @@ public class TestDriveTouchControls : MonoBehaviour
         float backHeight = backButton != null ? backButton.rect.height : 68f;
         Place(minimapPanel, scale, new Vector2(margin, -margin - (backHeight + 24f) * scale));
         Place(backButton, scale, new Vector2(margin, -margin));
-        if (cameraButton != null)
+        if (cameraButton != null && challengeHelpButton != null)
         {
+            cameraButton.anchorMin = cameraButton.anchorMax = new Vector2(.5f, 1f);
+            cameraButton.pivot = new Vector2(.5f, 1f);
+            // Keep challenge help in its existing HUD position before moving the camera control.
             float sideWidth = Mathf.Max(backButton != null ? backButton.rect.width : 0f,
                 cleanLapPanel != null ? cleanLapPanel.rect.width : 0f);
             float helpWidth = challengeHelpButton != null ? challengeHelpButton.rect.width + 24f : 0f;
@@ -141,6 +144,14 @@ public class TestDriveTouchControls : MonoBehaviour
             }
             Place(cameraButton, groupScale, new Vector2(-helpWidth * .5f * groupScale, cameraY));
             PlaceChallengeHelp();
+        }
+        if (cameraButton != null && steeringGroup != null)
+        {
+            cameraButton.anchorMin = cameraButton.anchorMax = Vector2.zero;
+            cameraButton.pivot = new Vector2(.5f, 0f);
+            Place(cameraButton, scale, new Vector2(
+                margin + steeringGroup.rect.width * scale * .5f,
+                margin + (steeringGroup.rect.height + 24f) * scale));
         }
         Place(cleanLapPanel, scale, new Vector2(-margin, -margin));
         if (speedPanel != null)
