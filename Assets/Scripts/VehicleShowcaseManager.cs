@@ -154,6 +154,8 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || ChallengeMenuOpen || challengePanel == null) return;
         PlayButtonSound(navigationSound);
         driveModePanel.SetActive(false);
+        var dialog = challengePanel.transform.Find("Dialog");
+        if (dialog != null) dialog.gameObject.SetActive(true);
         challengePanel.SetActive(true);
         if (challengePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
