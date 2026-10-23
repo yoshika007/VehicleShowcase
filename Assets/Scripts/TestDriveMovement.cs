@@ -56,6 +56,7 @@ public class TestDriveMovement : MonoBehaviour
     public bool IsBraking { get; private set; }
     public bool IsReversing { get; private set; }
     public bool IsBoggedDown { get; private set; }
+    public bool IsRecoveryInputLocked { get; private set; }
     public float BoggingAttemptSeconds => bogAttemptTime;
     public bool CanRecoverLocally => IsBoggedDown && boggedSurface != null && boggedSurface.RecoveryPoint != null;
     private Vector3 initialPosition;
@@ -104,6 +105,14 @@ public class TestDriveMovement : MonoBehaviour
             return;
         }
 
+        if (IsRecoveryInputLocked)
+        {
+            bool recover = resetRequested || (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame);
+            ClearControls();
+            resetRequested = recover;
+            return;
+        }
+
         moveInput = 0f;
         steerInput = 0f;
         brakeInput = false;
@@ -143,6 +152,12 @@ public class TestDriveMovement : MonoBehaviour
         if (resetRequested)
         {
             RecoverOrResetVehicle();
+            return;
+        }
+
+        if (IsRecoveryInputLocked)
+        {
+            ClearControls();
             return;
         }
 
@@ -327,6 +342,13 @@ public class TestDriveMovement : MonoBehaviour
 
     public void ConfigureTouchInput(TestDriveTouchControls controls) => touchControls = controls;
 
+    public void SetRecoveryInputLocked(bool locked)
+    {
+        if (IsRecoveryInputLocked == locked) return;
+        IsRecoveryInputLocked = locked;
+        ClearControls();
+    }
+
     public void SetChallengeInputLocked(bool locked)
     {
         challengeInputLocked = locked;
@@ -401,6 +423,7 @@ public class TestDriveMovement : MonoBehaviour
 
     private void ResetAt(Vector3 position, Quaternion rotation)
     {
+        IsRecoveryInputLocked = false;
         ResetCount++;
         ClearControls();
         if (TryGetComponent<TestDriveDust>(out var dust)) dust.ClearDust();
@@ -440,6 +463,7 @@ public class TestDriveMovement : MonoBehaviour
 
     private void OnDisable()
     {
+        IsRecoveryInputLocked = false;
         ClearControls();
     }
 }

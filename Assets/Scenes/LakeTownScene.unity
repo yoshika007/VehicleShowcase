@@ -51115,6 +51115,7 @@ GameObject:
   - component: {fileID: 838438814}
   - component: {fileID: 838438816}
   - component: {fileID: 838438815}
+  - component: {fileID: 838438817}
   m_Layer: 0
   m_Name: Lake
   m_TagString: Untagged
@@ -51194,6 +51195,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 838438813}
   m_Mesh: {fileID: 4300000, guid: 3b39d1c1036dc4062824bc01e5601b62, type: 2}
+--- !u!114 &838438817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 838438813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20fe6b0cc281a43b68f76c19c1f67dfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LakeTownWaterHazard
+  waterOutline: {fileID: 4300000, guid: 3b39d1c1036dc4062824bc01e5601b62, type: 2}
 --- !u!1 &838834408
 GameObject:
   m_ObjectHideFlags: 0
@@ -115465,6 +115479,7 @@ MonoBehaviour:
   resetFace: {fileID: 268147044}
   resetLabel: {fileID: 1483661789}
   resetOutline: {fileID: 268147042}
+  lakeWarningDelay: 3
 --- !u!1 &1859879640
 GameObject:
   m_ObjectHideFlags: 0
@@ -116643,7 +116658,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: DRIVER VIEW
+  m_text: CHANGE VIEW
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
   m_sharedMaterial: {fileID: -6265614645810339613, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}

@@ -119413,6 +119413,7 @@ MonoBehaviour:
   resetFace: {fileID: 268147044}
   resetLabel: {fileID: 1483661789}
   resetOutline: {fileID: 268147042}
+  lakeWarningDelay: 3
 --- !u!1 &1856739653
 GameObject:
   m_ObjectHideFlags: 0
@@ -120989,7 +120990,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: DRIVER VIEW
+  m_text: CHANGE VIEW
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
   m_sharedMaterial: {fileID: -6265614645810339613, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}

@@ -54,7 +54,7 @@ public class TestDriveCameraFollow : MonoBehaviour
             viewCamera.nearClipPlane = IsDriverView ? .03f : chaseNearClip;
         }
         if (driverProfile != null) driverProfile.SetDriverView(IsDriverView);
-        if (viewLabel != null) viewLabel.text = IsDriverView ? "CHASE VIEW" : "DRIVER VIEW";
+        if (viewLabel != null) viewLabel.text = "CHANGE VIEW";
         if (viewButton != null) viewButton.interactable = canSwitchView && target != null && driverView != null;
     }
 

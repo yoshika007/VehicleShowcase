@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-// A non-blocking HUD hint; it never pauses the car or changes steering/pedal input.
+// Mud remains a hint; a delayed lake warning locks driving until recovery.
 public class TestDriveRecoveryPrompt : MonoBehaviour
 {
     [SerializeField] private CanvasGroup panel;
@@ -9,7 +9,13 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image resetFace;
     [SerializeField] private TMP_Text resetLabel;
     [SerializeField] private UnityEngine.UI.Outline resetOutline;
+    [SerializeField, Min(0f)] private float lakeWarningDelay = 3f;
+    private float lakeStruggleTime;
+    private int lastResetCount;
     private TestDriveMovement vehicle;
+    private LakeTownWaterHazard lake;
+    private TMP_Text heading, advice;
+    private string originalHeading, originalAdvice;
     private RectTransform resetRect;
     private Color faceColor, labelColor, outlineColor;
     private Vector2 resetSize;
@@ -21,6 +27,10 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
     {
         if (initialized) return;
         initialized = true;
+        heading = transform.Find("Heading")?.GetComponent<TMP_Text>();
+        advice = transform.Find("VehicleAdvice")?.GetComponent<TMP_Text>();
+        if (heading != null) originalHeading = heading.text;
+        if (advice != null) originalAdvice = advice.text;
         if (resetFace != null)
         {
             resetRect = resetFace.rectTransform;
@@ -40,12 +50,25 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
         Initialize();
         Restore();
         vehicle = target;
+        lakeStruggleTime = 0f;
+        lastResetCount = target != null ? target.ResetCount : 0;
+        lake = FindAnyObjectByType<LakeTownWaterHazard>();
+        if (lake != null) lake.BindVehicle(target);
     }
     public void SetTouchMode(bool visible) => touchMode = visible;
     private void Update()
     {
         Initialize();
-        bool show = vehicle != null && vehicle.isActiveAndEnabled && vehicle.IsBoggedDown;
+        bool inLake = lake != null && lake.IsSubmerged;
+        if (vehicle != null && vehicle.ResetCount != lastResetCount)
+        {
+            lakeStruggleTime = 0f;
+            lastResetCount = vehicle.ResetCount;
+        }
+        lakeStruggleTime = inLake ? lakeStruggleTime + Time.deltaTime : 0f;
+        bool lakeWarning = inLake && lakeStruggleTime >= lakeWarningDelay;
+        if (vehicle != null) vehicle.SetRecoveryInputLocked(lakeWarning);
+        bool show = vehicle != null && vehicle.isActiveAndEnabled && (vehicle.IsBoggedDown || lakeWarning);
         if (panel != null)
         {
             panel.alpha = show ? 1f : 0f;
@@ -57,8 +80,12 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
             return;
         }
         highlighted = true;
+        if (heading != null) heading.text = inLake ? "NOT A SUBMARINE!" : originalHeading;
+        if (advice != null) advice.text = inLake ? "The fish are judging you." : originalAdvice;
         if (message != null)
-            message.text = touchMode ? "Try reversing to escape.\nOr tap RECOVER for dry ground."
+            message.text = inLake
+                ? (touchMode ? "Your car can't swim!\nTap RECOVER to return safely." : "Your car can't swim!\nPress R to return safely.")
+                : touchMode ? "Try reversing to escape.\nOr tap RECOVER for dry ground."
                 : "Try reversing to escape.\nOr press R for dry ground.";
         float pulse = .92f + .08f * Mathf.Sin(Time.unscaledTime * 4f);
         if (resetFace != null)
@@ -76,12 +103,19 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
     }
     private void Restore()
     {
+        if (vehicle != null) vehicle.SetRecoveryInputLocked(false);
         highlighted = false;
+        if (heading != null) heading.text = originalHeading;
+        if (advice != null) advice.text = originalAdvice;
         if (panel != null) panel.alpha = 0f;
         if (!initialized) return;
         if (resetFace != null) { resetFace.color = faceColor; resetRect.sizeDelta = resetSize; }
         if (resetLabel != null) { resetLabel.text = resetText; resetLabel.color = labelColor; resetLabel.fontSize = labelSize; }
         if (resetOutline != null) resetOutline.effectColor = outlineColor;
     }
-    private void OnDisable() => Restore();
+    private void OnDisable()
+    {
+        lakeStruggleTime = 0f;
+        Restore();
+    }
 }
