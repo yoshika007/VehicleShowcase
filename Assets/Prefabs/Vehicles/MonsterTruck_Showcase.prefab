@@ -475,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterTruck
   displayName: TRAILMASTER
   category: Off-Road
+  layout: 4
 --- !u!114 &960975464129868402
 MonoBehaviour:
   m_ObjectHideFlags: 0

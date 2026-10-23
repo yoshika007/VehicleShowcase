@@ -772,6 +772,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PoliceCar
   displayName: INTERCEPTOR
   category: Emergency
+  layout: 1
 --- !u!114 &5975511752230043980
 MonoBehaviour:
   m_ObjectHideFlags: 0

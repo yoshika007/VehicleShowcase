@@ -480,6 +480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Van
   displayName: WAYFARER
   category: Van
+  layout: 0
 --- !u!114 &5156302505590503225
 MonoBehaviour:
   m_ObjectHideFlags: 0

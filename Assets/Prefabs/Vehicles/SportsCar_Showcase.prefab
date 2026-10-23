@@ -475,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SportsCar
   displayName: APEX GT
   category: Sports Car
+  layout: 1
 --- !u!114 &6730483760617128522
 MonoBehaviour:
   m_ObjectHideFlags: 0

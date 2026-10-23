@@ -480,6 +480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClassicCar
   displayName: REGENT S
   category: Classic
+  layout: 1
 --- !u!114 &4902919117454094338
 MonoBehaviour:
   m_ObjectHideFlags: 0

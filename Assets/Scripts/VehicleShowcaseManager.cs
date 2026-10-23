@@ -14,6 +14,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private TMP_Text vehicleNameText;
     [SerializeField] private TMP_Text categoryText;
     [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private TMP_Text layoutText;
     [SerializeField] private TMP_Text vehicleCounterText;
 
     [SerializeField] private VehicleDragRotation vehicleDragRotation;
@@ -278,6 +279,8 @@ public class VehicleShowcaseManager : MonoBehaviour
         vehicleNameText.text = currentVehicle.DisplayName;
         categoryText.text = currentVehicle.Category;
         descriptionText.text = currentVehicle.GetDiscription();
+        if (layoutText != null)
+            layoutText.text = $"LAYOUT: {currentVehicle.LayoutCode}";
         vehicleCounterText.text = $"{currentVehicleIndex + 1} / {vehiclePrefabs.Length}";
     }
 

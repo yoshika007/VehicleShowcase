@@ -5,6 +5,12 @@ public abstract class Vehicle : MonoBehaviour
     [SerializeField] private string displayName;
     [SerializeField] private string category;
 
+    public enum VehicleLayout { FF, FR, MR, RR, FourWheelDrive }
+    [SerializeField] private VehicleLayout layout;
+
+    public VehicleLayout Layout => layout;
+    public string LayoutCode => layout == VehicleLayout.FourWheelDrive ? "4WD" : layout.ToString();
+
     // ENCAPSULATION
     public string DisplayName
     {

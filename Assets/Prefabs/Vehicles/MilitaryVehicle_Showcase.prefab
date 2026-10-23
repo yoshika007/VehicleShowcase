@@ -828,6 +828,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MilitaryVehicle
   displayName: SENTINEL
   category: Military
+  layout: 4
 --- !u!114 &2748809197643865023
 MonoBehaviour:
   m_ObjectHideFlags: 0

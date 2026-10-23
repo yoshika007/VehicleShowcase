@@ -475,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PickupTruck
   displayName: WORKHORSE
   category: Pickup
+  layout: 1
 --- !u!114 &4535943407891559431
 MonoBehaviour:
   m_ObjectHideFlags: 0

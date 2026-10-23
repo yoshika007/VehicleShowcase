@@ -475,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hatchback
   displayName: CITYLINE
   category: Hatchback
+  layout: 0
 --- !u!114 &4594033638597036175
 MonoBehaviour:
   m_ObjectHideFlags: 0

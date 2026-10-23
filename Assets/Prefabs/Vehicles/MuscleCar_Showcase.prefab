@@ -480,6 +480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MuscleCar
   displayName: VORTEX V8
   category: Muscle Car
+  layout: 1
 --- !u!114 &1950537911981518578
 MonoBehaviour:
   m_ObjectHideFlags: 0
