@@ -104,11 +104,18 @@ public class TestDriveTouchControls : MonoBehaviour
             bounds.offsetMin = bounds.offsetMax = Vector2.zero;
         }
         // Reserve room for the top HUD, speed readout and controls even on short screens.
-        float scale = Mathf.Min(1f, bounds.rect.width / 1100f, bounds.rect.height / 760f);
+        float steeringWidth = steeringGroup != null ? steeringGroup.rect.width : 0f;
+        float pedalWidth = pedalGroup != null ? pedalGroup.rect.width : 0f;
+        float resetWidth = resetButton != null ? resetButton.rect.width : 0f;
+        float requiredWidth = Mathf.Max(1100f, steeringWidth + pedalWidth + resetWidth + 120f);
+        float scale = Mathf.Min(1f, bounds.rect.width / requiredWidth, bounds.rect.height / 760f);
         if (scale <= 0f) return;
         float margin = 36f * scale;
-        Place(steeringGroup, scale, new Vector2(margin, margin));
-        Place(pedalGroup, scale, new Vector2(-margin, margin));
+        // Move the enlarged pairs inward, but reserve a clear gap around Reset.
+        float maximumInset = (bounds.rect.width - (steeringWidth + pedalWidth + resetWidth + 48f) * scale) * .5f;
+        float controlsInset = Mathf.Clamp(100f * scale, margin, Mathf.Max(margin, maximumInset));
+        Place(steeringGroup, scale, new Vector2(controlsInset, margin));
+        Place(pedalGroup, scale, new Vector2(-controlsInset, margin));
         Place(resetButton, scale, new Vector2(0, margin));
         Place(recoveryPanel, scale, new Vector2(0, margin + 200f * scale));
         float backHeight = backButton != null ? backButton.rect.height : 68f;
@@ -150,7 +157,7 @@ public class TestDriveTouchControls : MonoBehaviour
             cameraButton.anchorMin = cameraButton.anchorMax = Vector2.zero;
             cameraButton.pivot = new Vector2(.5f, 0f);
             Place(cameraButton, scale, new Vector2(
-                margin + steeringGroup.rect.width * scale * .5f,
+                controlsInset + steeringGroup.rect.width * scale * .5f,
                 margin + (steeringGroup.rect.height + 24f) * scale));
         }
         Place(cleanLapPanel, scale, new Vector2(-margin, -margin));
@@ -159,7 +166,7 @@ public class TestDriveTouchControls : MonoBehaviour
             // The readout follows the actual scaled pedal height, with a scaled gap.
             float pedalHeight = pedalGroup != null ? pedalGroup.rect.height * scale : 0f;
             float speedY = margin + (touchVisible ? pedalHeight + 24f * scale : 0f);
-            Place(speedPanel, scale, new Vector2(-margin, speedY));
+            Place(speedPanel, scale, new Vector2(-controlsInset, speedY));
         }
     }
 
