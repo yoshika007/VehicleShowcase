@@ -44,7 +44,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     private float length, lastDistance, travelled, gateHalfWidth;
     private Vector3 previousPosition;
     private const int StartLightCount = 5;
-    private const int CountdownSeconds = 4;
+    private const int CountdownSeconds = 3;
     private double countdownStartedAt, countdownEnd, startedAt;
     private Renderer[] timingLights;
     private int displayedStartLights = -1;
@@ -247,7 +247,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         message = "Get ready";
         previousPosition = body.position;
         if (view != null) view.Refresh(this);
-        if (challengeAudio != null) challengeAudio.BeginCountdown();
+        if (challengeAudio != null) challengeAudio.BeginCountdown(CountdownNumber);
     }
     private void Update()
     {

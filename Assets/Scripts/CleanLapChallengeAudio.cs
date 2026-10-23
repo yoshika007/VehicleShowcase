@@ -14,10 +14,10 @@ public class CleanLapChallengeAudio : MonoBehaviour
 
     private void Awake() => source = GetComponent<AudioSource>();
 
-    public void BeginCountdown()
+    public void BeginCountdown(int number)
     {
         lastCountdown = 0;
-        PlayCountdown(4);
+        PlayCountdown(number);
     }
     public void PlayCountdown(int number)
     {

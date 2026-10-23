@@ -31,6 +31,7 @@ public class CleanLapBriefing : MonoBehaviour
         gameObject.AddComponent<GraphicRaycaster>();
         var font = Object.FindAnyObjectByType<TestDriveCleanLapView>().GetComponentInChildren<TMP_Text>(true).font;
         help = MakeButton("ChallengeHelp", transform, "?", new Vector2(88, 88), font, Open);
+        help.gameObject.SetActive(false);
         helpRect = (RectTransform)help.transform;
         var hudLayout = Object.FindAnyObjectByType<TestDriveTouchControls>();
         helpPlacedByHud = hudLayout != null && hudLayout.BindChallengeHelp(helpRect);
