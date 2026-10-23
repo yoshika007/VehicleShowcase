@@ -3,6 +3,8 @@ using UnityEngine;
 // Keeps the chosen vehicle during scene changes in the current play session.
 public static class TestDriveSelection
 {
+    public enum CourseKind { TestCircuit, LakeTown }
+    public static CourseKind Course { get; private set; }
     public enum DriveMode { FreeRun, Challenge }
     public enum ChallengeKind { CleanLap, CheckpointSprint, Slalom, OffroadTrail, HillClimb, NightLap }
     public static ChallengeKind SelectedChallenge { get; private set; }
@@ -13,8 +15,9 @@ public static class TestDriveSelection
     public static int VehicleIndex { get; private set; }
     public static bool HasSelection { get; private set; }
 
-    public static void Select(int index, DriveMode mode = DriveMode.FreeRun, TimeOfDay lighting = TimeOfDay.Day, ChallengeKind challenge = ChallengeKind.CleanLap)
+    public static void Select(int index, DriveMode mode = DriveMode.FreeRun, TimeOfDay lighting = TimeOfDay.Day, ChallengeKind challenge = ChallengeKind.CleanLap, CourseKind course = CourseKind.TestCircuit)
     {
+        Course = mode == DriveMode.FreeRun ? course : CourseKind.TestCircuit;
         VehicleIndex = index;
         Mode = mode;
         SelectedChallenge = mode == DriveMode.Challenge ? challenge : ChallengeKind.CleanLap;
@@ -26,6 +29,7 @@ public static class TestDriveSelection
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     public static void Clear()
     {
+        Course = CourseKind.TestCircuit;
         VehicleIndex = 0;
         Mode = DriveMode.FreeRun;
         Lighting = TimeOfDay.Day;
