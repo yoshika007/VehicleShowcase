@@ -35,6 +35,8 @@ public class VehicleShowcaseManager : MonoBehaviour
     [SerializeField] private GameObject courseSelectionPanel;
     private TestDriveSelection.TimeOfDay freeRideLighting;
     public TestDriveSelection.TimeOfDay FreeRideLighting => freeRideLighting;
+    private TestDriveSelection.CourseKind freeRideCourse;
+    public TestDriveSelection.CourseKind FreeRideCourse => freeRideCourse;
     private bool CourseMenuOpen => courseSelectionPanel != null && courseSelectionPanel.activeSelf;
     private bool ChallengeMenuOpen => challengePanel != null && challengePanel.activeSelf;
     private bool[] navigationAvailability;
@@ -143,6 +145,7 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (courseSelectionPanel != null)
         {
             freeRideLighting = TestDriveSelection.TimeOfDay.Day;
+            freeRideCourse = TestDriveSelection.CourseKind.TestCircuit;
             courseSelectionPanel.SetActive(true);
             if (courseSelectionPanel.TryGetComponent<CanvasGroup>(out var courseGroup)) courseGroup.interactable = true;
             return;
@@ -163,8 +166,19 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void SetFreeRideDay() { if (CourseMenuOpen && !isTransitioning) { freeRideLighting = TestDriveSelection.TimeOfDay.Day; PlayButtonSound(navigationSound); } }
     public void SetFreeRideNight() { if (CourseMenuOpen && !isTransitioning) { freeRideLighting = TestDriveSelection.TimeOfDay.Night; PlayButtonSound(navigationSound); } }
-    public void TestCircuitRide() { if (CourseMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, freeRideLighting); }
-    public void LakeTownRide() { if (CourseMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, freeRideLighting, course: TestDriveSelection.CourseKind.LakeTown); }
+    public void TestCircuitRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.TestCircuit);
+    public void LakeTownRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.LakeTown);
+    private void SelectFreeRideCourse(TestDriveSelection.CourseKind course)
+    {
+        if (!CourseMenuOpen || isTransitioning) return;
+        freeRideCourse = course;
+        PlayButtonSound(navigationSound);
+    }
+    public void StartFreeRide()
+    {
+        if (CourseMenuOpen && !isTransitioning)
+            BeginDrive(TestDriveSelection.DriveMode.FreeRun, freeRideLighting, course: freeRideCourse);
+    }
     public void DayDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Day); }
     public void NightDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Night); }
     public void Challenge()
