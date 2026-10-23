@@ -11031,8 +11031,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77af7c54162fe4f49ba8be40522440f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleDragRotation
-  degreesPerScreenWidth: 240
-  verticalDegreesPerScreenHeight: 40
+  degreesPerScreenWidth: 720
+  verticalDegreesPerScreenHeight: -40
   minimumVerticalAngle: -6
   maximumVerticalAngle: 12
   idleOrbitDegrees: 8
