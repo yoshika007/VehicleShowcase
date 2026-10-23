@@ -3345,6 +3345,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 44710313}
+  - component: {fileID: 44710314}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -3367,6 +3368,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &44710314
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44710312}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &47153872
 GameObject:
   m_ObjectHideFlags: 0
@@ -5353,6 +5375,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 86387223}
+  - component: {fileID: 86387224}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -5375,6 +5398,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &86387224
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86387222}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &87419804
 GameObject:
   m_ObjectHideFlags: 0
@@ -6363,6 +6407,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 105069577}
+  - component: {fileID: 105069578}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -6385,6 +6430,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &105069578
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105069576}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &106512601
 GameObject:
   m_ObjectHideFlags: 0
@@ -8363,6 +8429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 141725100}
+  - component: {fileID: 141725101}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -8385,6 +8452,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &141725101
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141725099}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &142916139
 GameObject:
   m_ObjectHideFlags: 0
@@ -12680,6 +12768,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 218851814}
+  - component: {fileID: 218851815}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -12702,6 +12791,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &218851815
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218851813}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &221153251
 GameObject:
   m_ObjectHideFlags: 0
@@ -18252,6 +18362,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 292421360}
+  - component: {fileID: 292421361}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -18274,6 +18385,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &292421361
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292421359}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &292690991
 GameObject:
   m_ObjectHideFlags: 0
@@ -21449,6 +21581,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 342487545}
+  - component: {fileID: 342487546}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -21471,6 +21604,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &342487546
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342487544}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &344005685
 GameObject:
   m_ObjectHideFlags: 0
@@ -22925,6 +23079,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 377541743}
+  - component: {fileID: 377541744}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -22947,6 +23102,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &377541744
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377541742}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &379810018
 GameObject:
   m_ObjectHideFlags: 0
@@ -28279,6 +28455,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 453339412}
+  - component: {fileID: 453339413}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -28301,6 +28478,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &453339413
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453339411}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &454064992
 GameObject:
   m_ObjectHideFlags: 0
@@ -32796,6 +32994,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 528496393}
+  - component: {fileID: 528496394}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -32818,6 +33017,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &528496394
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528496392}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &529678946
 GameObject:
   m_ObjectHideFlags: 0
@@ -33923,6 +34143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 540921679}
+  - component: {fileID: 540921680}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -33945,6 +34166,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &540921680
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540921678}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &541650786
 GameObject:
   m_ObjectHideFlags: 0
@@ -34707,6 +34949,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 546313613}
+  - component: {fileID: 546313614}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -34729,6 +34972,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &546313614
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546313612}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &547025979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35707,6 +35971,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 569263374}
+  - component: {fileID: 569263375}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -35729,6 +35994,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &569263375
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569263373}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &570129109
 GameObject:
   m_ObjectHideFlags: 0
@@ -37250,6 +37536,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 600356254}
+  - component: {fileID: 600356255}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -37272,6 +37559,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &600356255
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600356253}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &601167978
 GameObject:
   m_ObjectHideFlags: 0
@@ -41100,6 +41408,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 671941050}
+  - component: {fileID: 671941051}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -41122,6 +41431,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &671941051
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671941049}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &672648821
 GameObject:
   m_ObjectHideFlags: 0
@@ -45162,6 +45492,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 737476228}
+  - component: {fileID: 737476229}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -45184,6 +45515,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &737476229
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737476227}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &738571152
 GameObject:
   m_ObjectHideFlags: 0
@@ -47844,6 +48196,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 784392818}
+  - component: {fileID: 784392819}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -47866,6 +48219,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &784392819
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784392817}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &786932710
 GameObject:
   m_ObjectHideFlags: 0
@@ -52408,6 +52782,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 855969826}
+  - component: {fileID: 855969827}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -52430,6 +52805,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &855969827
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855969825}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &856025865
 GameObject:
   m_ObjectHideFlags: 0
@@ -53645,6 +54041,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 872642994}
+  - component: {fileID: 872642995}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -53667,6 +54064,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &872642995
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872642993}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &873009743
 GameObject:
   m_ObjectHideFlags: 0
@@ -55993,6 +56411,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 899011757}
+  - component: {fileID: 899011758}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -56015,6 +56434,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &899011758
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899011756}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &901550848
 GameObject:
   m_ObjectHideFlags: 0
@@ -56972,6 +57412,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 911076015}
+  - component: {fileID: 911076016}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -56994,6 +57435,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &911076016
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911076014}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &911439928
 GameObject:
   m_ObjectHideFlags: 0
@@ -62735,6 +63197,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 976603516}
+  - component: {fileID: 976603517}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -62757,6 +63220,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &976603517
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976603515}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &978302857
 GameObject:
   m_ObjectHideFlags: 0
@@ -62811,6 +63295,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 981209041}
+  - component: {fileID: 981209042}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -62833,6 +63318,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &981209042
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981209040}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &981473452
 GameObject:
   m_ObjectHideFlags: 0
@@ -68697,6 +69203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1087396878}
+  - component: {fileID: 1087396879}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -68719,6 +69226,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1087396879
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087396877}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1088680854
 GameObject:
   m_ObjectHideFlags: 0
@@ -69256,6 +69784,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1097255713}
+  - component: {fileID: 1097255714}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -69278,6 +69807,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1097255714
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097255712}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1097414307
 GameObject:
   m_ObjectHideFlags: 0
@@ -71327,6 +71877,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1125542532}
+  - component: {fileID: 1125542533}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -71349,6 +71900,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1125542533
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125542531}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1126071830
 GameObject:
   m_ObjectHideFlags: 0
@@ -71978,6 +72550,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1143062272}
+  - component: {fileID: 1143062273}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -72000,6 +72573,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1143062273
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143062271}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1143140437
 GameObject:
   m_ObjectHideFlags: 0
@@ -73809,6 +74403,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1169096829}
+  - component: {fileID: 1169096830}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -73831,6 +74426,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1169096830
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1169096828}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1169276163
 GameObject:
   m_ObjectHideFlags: 0
@@ -74290,6 +74906,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1177581600}
+  - component: {fileID: 1177581601}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -74312,6 +74929,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1177581601
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177581599}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1177743386
 GameObject:
   m_ObjectHideFlags: 0
@@ -76161,6 +76799,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1214620077}
+  - component: {fileID: 1214620078}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -76183,6 +76822,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1214620078
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214620076}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1215423764
 GameObject:
   m_ObjectHideFlags: 0
@@ -77238,6 +77898,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1229602411}
+  - component: {fileID: 1229602412}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -77260,6 +77921,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1229602412
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229602410}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1230098099
 GameObject:
   m_ObjectHideFlags: 0
@@ -78635,6 +79317,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1245157070}
+  - component: {fileID: 1245157071}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -78657,6 +79340,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1245157071
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245157069}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1247011519
 GameObject:
   m_ObjectHideFlags: 0
@@ -78756,6 +79460,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1247993688}
+  - component: {fileID: 1247993689}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -78778,6 +79483,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1247993689
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247993687}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1248799698
 GameObject:
   m_ObjectHideFlags: 0
@@ -80772,6 +81498,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1280457123}
+  - component: {fileID: 1280457124}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -80794,6 +81521,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1280457124
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280457122}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1283327902
 GameObject:
   m_ObjectHideFlags: 0
@@ -84726,6 +85474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1353246217}
+  - component: {fileID: 1353246218}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -84748,6 +85497,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1353246218
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353246216}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1355242639
 GameObject:
   m_ObjectHideFlags: 0
@@ -86832,6 +87602,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1386330697}
+  - component: {fileID: 1386330698}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -86854,6 +87625,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1386330698
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386330696}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1388480666
 GameObject:
   m_ObjectHideFlags: 0
@@ -88163,6 +88955,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1404566472}
+  - component: {fileID: 1404566473}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -88185,6 +88978,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1404566473
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404566471}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1405049083
 GameObject:
   m_ObjectHideFlags: 0
@@ -88458,6 +89272,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1407505005}
+  - component: {fileID: 1407505006}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -88480,6 +89295,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1407505006
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407505004}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1408586034
 GameObject:
   m_ObjectHideFlags: 0
@@ -90320,6 +91156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1439424980}
+  - component: {fileID: 1439424981}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -90342,6 +91179,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1439424981
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439424979}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1439826705
 GameObject:
   m_ObjectHideFlags: 0
@@ -91435,6 +92293,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1455674832}
+  - component: {fileID: 1455674833}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -91457,6 +92316,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1455674833
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455674831}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1456288852
 GameObject:
   m_ObjectHideFlags: 0
@@ -91559,6 +92439,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1460624044}
+  - component: {fileID: 1460624045}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -91581,6 +92462,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1460624045
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460624043}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1460684648
 GameObject:
   m_ObjectHideFlags: 0
@@ -100021,6 +100923,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1599500301}
+  - component: {fileID: 1599500302}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -100043,6 +100946,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1599500302
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1599500300}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1599984231
 GameObject:
   m_ObjectHideFlags: 0
@@ -100453,6 +101377,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1607882807}
+  - component: {fileID: 1607882808}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -100475,6 +101400,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1607882808
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607882806}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1609419893
 GameObject:
   m_ObjectHideFlags: 0
@@ -105778,6 +106724,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1698429660}
+  - component: {fileID: 1698429661}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -105800,6 +106747,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1698429661
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698429659}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1698649417
 GameObject:
   m_ObjectHideFlags: 0
@@ -106635,6 +107603,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1712789230}
+  - component: {fileID: 1712789231}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -106657,6 +107626,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1712789231
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1712789229}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1714191688
 GameObject:
   m_ObjectHideFlags: 0
@@ -108558,6 +109548,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1735021193}
+  - component: {fileID: 1735021194}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -108580,6 +109571,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1735021194
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735021192}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1735783141
 GameObject:
   m_ObjectHideFlags: 0
@@ -109541,6 +110553,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1748279986}
+  - component: {fileID: 1748279987}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -109563,6 +110576,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1748279987
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748279985}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1749940143
 GameObject:
   m_ObjectHideFlags: 0
@@ -112726,6 +113760,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1802076224}
+  - component: {fileID: 1802076225}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -112748,6 +113783,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1802076225
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802076223}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1802667890
 GameObject:
   m_ObjectHideFlags: 0
@@ -113126,6 +114182,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1810578977}
+  - component: {fileID: 1810578978}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -113148,6 +114205,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1810578978
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810578976}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1811237643
 GameObject:
   m_ObjectHideFlags: 0
@@ -113219,6 +114297,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1812713458}
+  - component: {fileID: 1812713459}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -113241,6 +114320,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1812713459
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812713457}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1813229011
 GameObject:
   m_ObjectHideFlags: 0
@@ -119675,6 +120775,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1922739031}
+  - component: {fileID: 1922739032}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -119697,6 +120798,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1922739032
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922739030}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1925234033
 GameObject:
   m_ObjectHideFlags: 0
@@ -122844,6 +123966,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1973559687}
+  - component: {fileID: 1973559688}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -122866,6 +123989,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1973559688
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973559686}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1973602666
 GameObject:
   m_ObjectHideFlags: 0
@@ -129481,6 +130625,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2074118158}
+  - component: {fileID: 2074118159}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -129503,6 +130648,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2074118159
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074118157}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2074727977
 GameObject:
   m_ObjectHideFlags: 0
@@ -131776,6 +132942,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2105109010}
+  - component: {fileID: 2105109011}
   m_Layer: 0
   m_Name: Lakeside railing
   m_TagString: Untagged
@@ -131798,6 +132965,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 971476620}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2105109011
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105109009}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2109209085
 GameObject:
   m_ObjectHideFlags: 0
