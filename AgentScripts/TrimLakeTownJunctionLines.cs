@@ -1,6 +1,6 @@
 using System;using System.Linq;using System.Collections.Generic;using UnityEngine;using UnityEditor;using UnityEngine.SceneManagement;
 
-// Cut only the outer loop's white edge markings where actual inner-road asphalt overlaps.
+// Cut only the outer loop's inner-facing white edge where side roads join.
 // Existing road colliders, scene objects, and all unaffected line triangles stay intact.
 public static class TrimLakeTownJunctionLines
 {
@@ -88,7 +88,7 @@ public static class TrimLakeTownJunctionLines
    if(!Mathf.Approximately(Mathf.Min(xMax-xMin,zMax-zMin),12f))throw new Exception("Unexpected inner-road width");
    return Rect.MinMaxRect(xMin,zMin,xMax,zMax);
   }).ToArray();
-  var filters=new[]{"Road left edge","Road right edge"}.Select(name=>town.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name==name)).ToArray();
+  var filters=new[]{"Road right edge"}.Select(name=>town.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name==name)).ToArray();
   foreach(var filter in filters)
    if(filter.GetComponent<Collider>()!=null||AssetDatabase.GetAssetPath(filter.sharedMesh)!="Assets/Environments/LakeTownTrial/"+filter.name+".asset")throw new Exception("Unexpected road-edge target");
   var plans=filters.Select(f=>Prepare(f,roads)).ToArray();

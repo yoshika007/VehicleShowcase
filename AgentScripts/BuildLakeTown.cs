@@ -50,7 +50,11 @@ public static class BuildLakeTown
         var v=new List<Vector3>();var t=new List<int>();int count=points.Length+(loop?1:0);
         for(int i=0;i<count;i++)
         {
-            int k=i%points.Length;var direction=(points[(k+1)%points.Length]-points[(k+points.Length-1)%points.Length]).normalized;var side=Vector3.Cross(Vector3.up,direction);
+            int k=i%points.Length;
+            // Open streets use endpoint tangents; wrapping flips road and walk ends.
+            int previous=loop?(k+points.Length-1)%points.Length:Mathf.Max(0,k-1);
+            int next=loop?(k+1)%points.Length:Mathf.Min(points.Length-1,k+1);
+            var direction=(points[next]-points[previous]).normalized;var side=Vector3.Cross(Vector3.up,direction);
             v.Add(points[k]+side*(offset-width*.5f)+Vector3.up*height);v.Add(points[k]+side*(offset+width*.5f)+Vector3.up*height);
             if(i>0){int n=i*2;t.AddRange(new[]{n-2,n,n-1,n-1,n,n+1});}
         }
