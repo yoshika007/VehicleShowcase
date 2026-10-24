@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-// Mud remains a hint; a delayed lake warning locks driving until recovery.
+// Mud remains a hint; confirmed lake entry stays locked until recovery.
 public class TestDriveRecoveryPrompt : MonoBehaviour
 {
     [SerializeField] private CanvasGroup panel;
@@ -9,8 +9,9 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image resetFace;
     [SerializeField] private TMP_Text resetLabel;
     [SerializeField] private UnityEngine.UI.Outline resetOutline;
-    [SerializeField, Min(0f)] private float lakeWarningDelay = 3f;
+    [SerializeField, Min(0f)] private float lakeWarningDelay = .5f;
     private float lakeStruggleTime;
+    private bool lakeRecoveryRequired;
     private int lastResetCount;
     private TestDriveMovement vehicle;
     private LakeTownWaterHazard lake;
@@ -51,6 +52,7 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
         Restore();
         vehicle = target;
         lakeStruggleTime = 0f;
+        lakeRecoveryRequired = false;
         lastResetCount = target != null ? target.ResetCount : 0;
         lake = FindAnyObjectByType<LakeTownWaterHazard>();
         if (lake != null) lake.BindVehicle(target);
@@ -59,14 +61,21 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
     private void Update()
     {
         Initialize();
-        bool inLake = lake != null && lake.IsSubmerged;
-        if (vehicle != null && vehicle.ResetCount != lastResetCount)
+        bool validVehicle = vehicle != null && vehicle.isActiveAndEnabled;
+        if (!validVehicle || vehicle.ResetCount != lastResetCount)
         {
             lakeStruggleTime = 0f;
-            lastResetCount = vehicle.ResetCount;
+            lakeRecoveryRequired = false;
+            lastResetCount = vehicle != null ? vehicle.ResetCount : 0;
         }
+        var submersion = validVehicle && lake != null
+            ? lake.GetSubmersion() : LakeTownWaterHazard.Submersion.Dry;
+        bool inLake = submersion != LakeTownWaterHazard.Submersion.Dry;
         lakeStruggleTime = inLake ? lakeStruggleTime + Time.deltaTime : 0f;
-        bool lakeWarning = inLake && lakeStruggleTime >= lakeWarningDelay;
+        if (submersion == LakeTownWaterHazard.Submersion.Deep ||
+            (inLake && lakeStruggleTime >= lakeWarningDelay)) lakeRecoveryRequired = true;
+        bool lakeWarning = lakeRecoveryRequired;
+        bool lakeMessage = inLake || lakeWarning;
         if (vehicle != null) vehicle.SetRecoveryInputLocked(lakeWarning);
         bool show = vehicle != null && vehicle.isActiveAndEnabled && (vehicle.IsBoggedDown || lakeWarning);
         if (panel != null)
@@ -80,10 +89,10 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
             return;
         }
         highlighted = true;
-        if (heading != null) heading.text = inLake ? "NOT A SUBMARINE!" : originalHeading;
-        if (advice != null) advice.text = inLake ? "The fish are judging you." : originalAdvice;
+        if (heading != null) heading.text = lakeMessage ? "NOT A SUBMARINE!" : originalHeading;
+        if (advice != null) advice.text = lakeMessage ? "The fish are judging you." : originalAdvice;
         if (message != null)
-            message.text = inLake
+            message.text = lakeMessage
                 ? (touchMode ? "Your car can't swim!\nTap RECOVER to return safely." : "Your car can't swim!\nPress R to return safely.")
                 : touchMode ? "Try reversing to escape.\nOr tap RECOVER for dry ground."
                 : "Try reversing to escape.\nOr press R for dry ground.";
@@ -116,6 +125,7 @@ public class TestDriveRecoveryPrompt : MonoBehaviour
     private void OnDisable()
     {
         lakeStruggleTime = 0f;
+        lakeRecoveryRequired = false;
         Restore();
     }
 }
