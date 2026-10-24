@@ -74,7 +74,11 @@ public static class BuildLakeTown
         Box("Town house "+index,p+Vector3.up*h*.5f,new Vector3(w,h,d),wall,true);
         var r=MeshObject("Gabled roof "+index,roofMesh,roof);r.transform.position=p+Vector3.up*h;r.transform.localScale=new Vector3(w+1,3,d+1);
         for(int side=-1;side<=1;side+=2) for(int x=0;x<3;x++) for(int floor=0;floor<(h>7?2:1);floor++)
+        {
+            // Leave the centered front entrance clear; keep its upstairs window.
+            if(side==-1 && x==1 && floor==0)continue;
             Box("Window",p+new Vector3((x-1)*w*.27f,2.6f+floor*3.1f,side*(d*.5f+.03f)),new Vector3(1.9f,1.7f,.08f),glass);
+        }
         Box("Front door",p+new Vector3(0,1.3f,-d*.5f-.08f),new Vector3(1.7f,2.6f,.14f),wood);
         Box("House foundation",p+Vector3.up*.15f,new Vector3(w+.5f,.3f,d+.5f),stone);
     }
