@@ -9,7 +9,22 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button night;
     [SerializeField] private UnityEngine.UI.Button circuit;
     [SerializeField] private UnityEngine.UI.Button lakeTown;
-    private void OnEnable() => Refresh();
+    private void OnEnable()
+    {
+        MatchActionButtonColors();
+        Refresh();
+    }
+    private void MatchActionButtonColors()
+    {
+        var back = transform.Find("Dialog/Back")?.GetComponent<UnityEngine.UI.Button>();
+        var go = transform.Find("Dialog/Go")?.GetComponent<UnityEngine.UI.Button>();
+        if (back == null || go == null) return;
+        if (back.targetGraphic != null && go.targetGraphic != null)
+            go.targetGraphic.color = back.targetGraphic.color;
+        var backLabel = back.GetComponentInChildren<TMP_Text>(true);
+        var goLabel = go.GetComponentInChildren<TMP_Text>(true);
+        if (backLabel != null && goLabel != null) goLabel.color = backLabel.color;
+    }
     private void LateUpdate() => Refresh();
     private void Refresh()
     {
