@@ -11,11 +11,32 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button lakeTown;
     private void OnEnable()
     {
+        ArrangeWithoutSubtitle();
         MatchButtonSizes();
         UpdateActionLabels();
+        UpdateLakeTownDescription();
         MatchActionButtonColors();
         AddToonButtonIcons();
         Refresh();
+    }
+    private void ArrangeWithoutSubtitle()
+    {
+        var subtitle = transform.Find("Dialog/Subtitle");
+        if (subtitle == null || subtitle.gameObject.activeSelf) return;
+        var dialog = transform.Find("Dialog") as RectTransform;
+        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 620f);
+        SetRowPosition("Heading", 245f);
+        SetRowPosition("TestCircuitCourse", 65f);
+        SetRowPosition("LakeTownCourse", 65f);
+        SetRowPosition("Day", -125f);
+        SetRowPosition("Night", -125f);
+        SetRowPosition("Back", -225f);
+        SetRowPosition("Go", -225f);
+    }
+    private void SetRowPosition(string name, float y)
+    {
+        var rect = transform.Find("Dialog/" + name) as RectTransform;
+        if (rect != null) rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, y);
     }
     private void MatchButtonSizes()
     {
@@ -40,6 +61,14 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (driveLabel != null) driveLabel.text = "DRIVE";
         var subtitle = transform.Find("Dialog/Subtitle")?.GetComponent<TMP_Text>();
         if (subtitle != null) subtitle.text = "FREE RUN  /  Choose course and lighting, then DRIVE";
+    }
+    private void UpdateLakeTownDescription()
+    {
+        if (lakeTown == null) return;
+        var details = lakeTown.transform.Find("Details")?.GetComponent<TMP_Text>();
+        if (details != null) details.text = "Lakeside town + winding roads";
+        var trial = lakeTown.transform.Find("Trial");
+        if (trial != null) trial.gameObject.SetActive(false);
     }
     private void MatchActionButtonColors()
     {
