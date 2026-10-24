@@ -1,0 +1,5 @@
+Sun, MoonStar, ArrowLeft and ArrowRight: Lucide Icons and Contributors.
+Source: https://github.com/lucide-icons/lucide
+Icons: icons/sun.svg, moon-star.svg, arrow-left.svg, arrow-right.svg.
+License: ISC; see Lucide-LICENSE.txt.
+Adaptation: white transparent 256 x 256 PNG sprites, tinted in Unity.

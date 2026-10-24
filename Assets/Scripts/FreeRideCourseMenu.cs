@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-// Reflects course and lighting selections before GO starts the drive.
+// Reflects course and lighting selections before DRIVE starts the drive.
 public class FreeRideCourseMenu : MonoBehaviour
 {
     [SerializeField] private VehicleShowcaseManager manager;
@@ -11,8 +11,35 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button lakeTown;
     private void OnEnable()
     {
+        MatchButtonSizes();
+        UpdateActionLabels();
         MatchActionButtonColors();
+        AddToonButtonIcons();
         Refresh();
+    }
+    private void MatchButtonSizes()
+    {
+        if (circuit == null || lakeTown == null) return;
+        var leftColumn = (RectTransform)circuit.transform;
+        var rightColumn = (RectTransform)lakeTown.transform;
+        MatchButtonWidth(day, leftColumn);
+        MatchButtonWidth(night, rightColumn);
+        MatchButtonWidth(transform.Find("Dialog/Back")?.GetComponent<UnityEngine.UI.Button>(), leftColumn);
+        MatchButtonWidth(transform.Find("Dialog/Go")?.GetComponent<UnityEngine.UI.Button>(), rightColumn);
+    }
+    private static void MatchButtonWidth(UnityEngine.UI.Button button, RectTransform column)
+    {
+        if (button == null) return;
+        var rect = (RectTransform)button.transform;
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, column.rect.width);
+        rect.anchoredPosition = new Vector2(column.anchoredPosition.x, rect.anchoredPosition.y);
+    }
+    private void UpdateActionLabels()
+    {
+        var driveLabel = transform.Find("Dialog/Go/Label")?.GetComponent<TMP_Text>();
+        if (driveLabel != null) driveLabel.text = "DRIVE";
+        var subtitle = transform.Find("Dialog/Subtitle")?.GetComponent<TMP_Text>();
+        if (subtitle != null) subtitle.text = "FREE RUN  /  Choose course and lighting, then DRIVE";
     }
     private void MatchActionButtonColors()
     {
@@ -24,6 +51,43 @@ public class FreeRideCourseMenu : MonoBehaviour
         var backLabel = back.GetComponentInChildren<TMP_Text>(true);
         var goLabel = go.GetComponentInChildren<TMP_Text>(true);
         if (backLabel != null && goLabel != null) goLabel.color = backLabel.color;
+    }
+    private void AddToonButtonIcons()
+    {
+        AddToonIcon(day, "Sun");
+        AddToonIcon(night, "MoonStar");
+        AddToonIcon(transform.Find("Dialog/Back")?.GetComponent<UnityEngine.UI.Button>(), "ArrowLeft");
+        AddToonIcon(transform.Find("Dialog/Go")?.GetComponent<UnityEngine.UI.Button>(), "ArrowRight");
+    }
+    private static void AddToonIcon(UnityEngine.UI.Button button, string asset)
+    {
+        if (button == null) return;
+        var sprite = Resources.Load<Sprite>("FreeRideButtonToons/" + asset);
+        var label = button.transform.Find("Label")?.GetComponent<TMP_Text>();
+        if (sprite == null || label == null) return;
+        const float iconSize = 44f, gap = 12f, padding = 12f;
+        var buttonRect = (RectTransform)button.transform;
+        float textWidth = Mathf.Min(label.GetPreferredValues(label.text).x,
+            buttonRect.rect.width - iconSize - gap - padding * 2f);
+        var iconRect = button.transform.Find("ToonIcon") as RectTransform;
+        if (iconRect == null)
+        {
+            var icon = new GameObject("ToonIcon", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            icon.transform.SetParent(button.transform, false);
+            iconRect = (RectTransform)icon.transform;
+        }
+        iconRect.anchorMin = iconRect.anchorMax = iconRect.pivot = new Vector2(.5f, .5f);
+        iconRect.sizeDelta = Vector2.one * iconSize;
+        iconRect.anchoredPosition = new Vector2(-(textWidth + gap) * .5f, 0f);
+        var image = iconRect.GetComponent<UnityEngine.UI.Image>();
+        image.sprite = sprite;
+        image.color = label.color;
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+        var textRect = label.rectTransform;
+        textRect.anchorMin = textRect.anchorMax = textRect.pivot = new Vector2(.5f, .5f);
+        textRect.sizeDelta = new Vector2(buttonRect.rect.width - iconSize - gap - padding * 2f, textRect.sizeDelta.y);
+        textRect.anchoredPosition = new Vector2((iconSize + gap) * .5f, textRect.anchoredPosition.y);
     }
     private void LateUpdate() => Refresh();
     private void Refresh()
@@ -47,6 +111,9 @@ public class FreeRideCourseMenu : MonoBehaviour
     {
         if (button == null) return;
         button.GetComponent<UnityEngine.UI.Image>().color = selected ? new Color(.98f, .77f, .25f) : new Color(.10f, .22f, .26f);
-        button.GetComponentInChildren<TMP_Text>().color = selected ? new Color(.04f, .06f, .08f) : Color.white;
+        var foreground = selected ? new Color(.04f, .06f, .08f) : Color.white;
+        button.GetComponentInChildren<TMP_Text>().color = foreground;
+        var icon = button.transform.Find("ToonIcon")?.GetComponent<UnityEngine.UI.Image>();
+        if (icon != null) icon.color = foreground;
     }
 }
