@@ -29,6 +29,10 @@ public class TestDriveTouchControls : MonoBehaviour
     private Vector2 originalSpeedPosition;
     private Vector2 originalSpeedAnchorMin, originalSpeedAnchorMax, originalSpeedPivot;
     private TestDriveCameraFollow followCamera;
+    private Vector2 originalSpeedSize;
+    private RectTransform[] speedChildren;
+    private Vector2[] originalSpeedChildSizes, originalSpeedChildPositions;
+    private bool compactSpeedPanel;
     private bool originalHintActive;
     private bool showing;
     private Rect lastSafeArea;
@@ -50,6 +54,19 @@ public class TestDriveTouchControls : MonoBehaviour
             originalSpeedAnchorMin = speedPanel.anchorMin;
             originalSpeedAnchorMax = speedPanel.anchorMax;
             originalSpeedPivot = speedPanel.pivot;
+            originalSpeedSize = speedPanel.sizeDelta;
+            // Cache the authored layout so chase view and disabled controls restore exactly.
+            string[] names = { "Accent", "SpeedHeading", "SpeedValue", "SpeedUnit" };
+            speedChildren = new RectTransform[names.Length];
+            originalSpeedChildSizes = new Vector2[names.Length];
+            originalSpeedChildPositions = new Vector2[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                speedChildren[i] = speedPanel.Find(names[i]) as RectTransform;
+                if (speedChildren[i] == null) continue;
+                originalSpeedChildSizes[i] = speedChildren[i].sizeDelta;
+                originalSpeedChildPositions[i] = speedChildren[i].anchoredPosition;
+            }
         }
         if (keyboardResetHint != null) originalHintActive = keyboardResetHint.activeSelf;
     }
@@ -174,6 +191,7 @@ public class TestDriveTouchControls : MonoBehaviour
         {
             if (followCamera != null && followCamera.IsDriverView && resetButton != null)
             {
+                SetCompactSpeedPanel(true);
                 speedPanel.anchorMin = speedPanel.anchorMax = new Vector2(.5f, 0f);
                 speedPanel.pivot = new Vector2(.5f, 0f);
                 Place(speedPanel, scale, Vector2.zero);
@@ -230,9 +248,37 @@ public class TestDriveTouchControls : MonoBehaviour
 
     private void RestoreSpeedAnchors()
     {
+        SetCompactSpeedPanel(false);
         speedPanel.anchorMin = originalSpeedAnchorMin;
         speedPanel.anchorMax = originalSpeedAnchorMax;
         speedPanel.pivot = originalSpeedPivot;
+    }
+
+    private void SetCompactSpeedPanel(bool compact)
+    {
+        if (compactSpeedPanel == compact) return;
+        compactSpeedPanel = compact;
+        speedPanel.sizeDelta = compact ? new Vector2(260f, 150f) : originalSpeedSize;
+        for (int i = 0; i < speedChildren.Length; i++)
+        {
+            var child = speedChildren[i];
+            if (child == null) continue;
+            var size = originalSpeedChildSizes[i];
+            var position = originalSpeedChildPositions[i];
+            if (compact)
+            {
+                // Tighten padding and text boxes, never the font or transform scale.
+                switch (child.name)
+                {
+                    case "Accent": size.x = speedPanel.rect.width; break;
+                    case "SpeedHeading": position = new Vector2(12f, -8f); break;
+                    case "SpeedValue": size.x = 160f; position.x = 12f; break;
+                    case "SpeedUnit": position.x = -10f; break;
+                }
+            }
+            child.sizeDelta = size;
+            child.anchoredPosition = position;
+        }
     }
 
     private static Rect ScreenRect(RectTransform rect)
