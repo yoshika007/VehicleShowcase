@@ -27,6 +27,8 @@ public class TestDriveTouchControls : MonoBehaviour
     private bool initialized;
     private TestDriveMovement vehicle;
     private Vector2 originalSpeedPosition;
+    private Vector2 originalSpeedAnchorMin, originalSpeedAnchorMax, originalSpeedPivot;
+    private TestDriveCameraFollow followCamera;
     private bool originalHintActive;
     private bool showing;
     private Rect lastSafeArea;
@@ -41,7 +43,14 @@ public class TestDriveTouchControls : MonoBehaviour
     {
         if (initialized) return;
         initialized = true;
-        if (speedPanel != null) originalSpeedPosition = speedPanel.anchoredPosition;
+        followCamera = FindAnyObjectByType<TestDriveCameraFollow>();
+        if (speedPanel != null)
+        {
+            originalSpeedPosition = speedPanel.anchoredPosition;
+            originalSpeedAnchorMin = speedPanel.anchorMin;
+            originalSpeedAnchorMax = speedPanel.anchorMax;
+            originalSpeedPivot = speedPanel.pivot;
+        }
         if (keyboardResetHint != null) originalHintActive = keyboardResetHint.activeSelf;
     }
     public void BindVehicle(TestDriveMovement target)
@@ -163,10 +172,33 @@ public class TestDriveTouchControls : MonoBehaviour
         Place(cleanLapPanel, scale, new Vector2(-margin, -margin));
         if (speedPanel != null)
         {
-            // The readout follows the actual scaled pedal height, with a scaled gap.
-            float pedalHeight = pedalGroup != null ? pedalGroup.rect.height * scale : 0f;
-            float speedY = margin + (touchVisible ? pedalHeight + 24f * scale : 0f);
-            Place(speedPanel, scale, new Vector2(-controlsInset, speedY));
+            if (followCamera != null && followCamera.IsDriverView && resetButton != null)
+            {
+                speedPanel.anchorMin = speedPanel.anchorMax = new Vector2(.5f, 0f);
+                speedPanel.pivot = new Vector2(.5f, 0f);
+                Place(speedPanel, scale, Vector2.zero);
+                PlaceAbove(speedPanel, resetButton, 24f * scale);
+                var speedRect = ScreenRect(speedPanel);
+                bool overlapsSteering = steeringGroup != null && speedRect.Overlaps(ScreenRect(steeringGroup));
+                bool overlapsPedals = pedalGroup != null && speedRect.Overlaps(ScreenRect(pedalGroup));
+                if (overlapsSteering || overlapsPedals)
+                {
+                    var higher = steeringGroup == null ? pedalGroup : pedalGroup == null ? steeringGroup
+                        : ScreenRect(steeringGroup).yMax > ScreenRect(pedalGroup).yMax ? steeringGroup : pedalGroup;
+                    PlaceAbove(speedPanel, higher, 24f * scale, false);
+                }
+                // Keep the recovery message clear of the centered readout, including
+                // when RESET grows into the larger RECOVER button.
+                PlaceAbove(recoveryPanel, speedPanel, 24f * scale);
+            }
+            else
+            {
+                RestoreSpeedAnchors();
+                // Chase view retains the readout above the pedals.
+                float pedalHeight = pedalGroup != null ? pedalGroup.rect.height * scale : 0f;
+                float speedY = margin + (touchVisible ? pedalHeight + 24f * scale : 0f);
+                Place(speedPanel, scale, new Vector2(-controlsInset, speedY));
+            }
         }
     }
 
@@ -196,6 +228,35 @@ public class TestDriveTouchControls : MonoBehaviour
         if (helpUnit > .0001f) challengeHelpButton.localScale = Vector3.one * (cameraUnit / helpUnit);
     }
 
+    private void RestoreSpeedAnchors()
+    {
+        speedPanel.anchorMin = originalSpeedAnchorMin;
+        speedPanel.anchorMax = originalSpeedAnchorMax;
+        speedPanel.pivot = originalSpeedPivot;
+    }
+
+    private static Rect ScreenRect(RectTransform rect)
+    {
+        var canvas = rect.GetComponentInParent<Canvas>().rootCanvas;
+        Camera camera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+        var min = RectTransformUtility.WorldToScreenPoint(camera, rect.TransformPoint(rect.rect.min));
+        var max = RectTransformUtility.WorldToScreenPoint(camera, rect.TransformPoint(rect.rect.max));
+        return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+    }
+
+    private static void PlaceAbove(RectTransform panel, RectTransform below, float gap, bool center = true)
+    {
+        if (panel == null || below == null || !(panel.parent is RectTransform parent)) return;
+        var fromCanvas = below.GetComponentInParent<Canvas>().rootCanvas;
+        var toCanvas = panel.GetComponentInParent<Canvas>().rootCanvas;
+        Camera fromCamera = fromCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : fromCanvas.worldCamera;
+        Camera toCamera = toCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : toCanvas.worldCamera;
+        var top = below.TransformPoint(new Vector3(below.rect.center.x, below.rect.yMax, 0f));
+        var screenPoint = RectTransformUtility.WorldToScreenPoint(fromCamera, top);
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, screenPoint, toCamera, out var local))
+            panel.localPosition = new Vector3(center ? local.x : panel.localPosition.x, local.y + gap, 0f);
+    }
+
     private static void Place(RectTransform target, float scale, Vector2 position)
     {
         if (target == null) return;
@@ -219,7 +280,11 @@ public class TestDriveTouchControls : MonoBehaviour
     private void OnDisable()
     {
         ReleaseAll(); showing = false;
-        if (initialized && speedPanel != null) speedPanel.anchoredPosition = originalSpeedPosition;
+        if (initialized && speedPanel != null)
+        {
+            RestoreSpeedAnchors();
+            speedPanel.anchoredPosition = originalSpeedPosition;
+        }
         if (initialized && keyboardResetHint != null) keyboardResetHint.SetActive(originalHintActive);
         if (controls != null) { controls.alpha = 0; controls.interactable = controls.blocksRaycasts = false; }
     }
