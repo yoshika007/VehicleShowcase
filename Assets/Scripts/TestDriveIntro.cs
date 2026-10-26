@@ -30,7 +30,7 @@ public class TestDriveIntro : MonoBehaviour
     private float radius, carHeight, returnFov;
     private TMP_Text title, subtitle;
     private RectTransform safeArea;
-    private GameObject previousSelection, skipObject;
+    private GameObject previousSelection;
     private Light fill;
     private Shot first, second;
     private bool returning;
@@ -217,7 +217,8 @@ public class TestDriveIntro : MonoBehaviour
         if (view != null) { view.fieldOfView = fieldOfView; view.nearClipPlane = nearClip; }
         if (follow != null) { follow.enabled = followEnabled; follow.SnapToTarget(); }
         if (vehicle != null) vehicle.SetChallengeStopped(wasStopped);
-        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == skipObject)
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null
+            && EventSystem.current.currentSelectedGameObject.transform.IsChildOf(transform))
             EventSystem.current.SetSelectedGameObject(previousSelection != null && previousSelection.activeInHierarchy ? previousSelection : null);
         var callback = completed; completed = null;
         gameObject.SetActive(false);
@@ -248,24 +249,31 @@ public class TestDriveIntro : MonoBehaviour
         scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080); scaler.matchWidthOrHeight = .5f;
         gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        // Consume the completed tap here so it cannot also press a driving control.
+        var tapArea = Rect("TapAnywhereToSkip", transform, Vector2.zero, Vector2.one);
+        var tapImage = tapArea.gameObject.AddComponent<UnityEngine.UI.Image>();
+        tapImage.color = Color.clear;
+        var tapButton = tapArea.gameObject.AddComponent<UnityEngine.UI.Button>();
+        tapButton.targetGraphic = tapImage;
+        tapButton.transition = UnityEngine.UI.Selectable.Transition.None;
+        tapButton.navigation = new UnityEngine.UI.Navigation { mode = UnityEngine.UI.Navigation.Mode.None };
+        tapButton.onClick.AddListener(Skip);
         var top = Rect("Top letterbox", transform, new Vector2(0, .90f), Vector2.one);
-        top.gameObject.AddComponent<UnityEngine.UI.Image>().color = new Color(0, 0, 0, .88f);
+        var topImage = top.gameObject.AddComponent<UnityEngine.UI.Image>();
+        topImage.color = new Color(0, 0, 0, .88f); topImage.raycastTarget = false;
         var bottom = Rect("Bottom letterbox", transform, Vector2.zero, new Vector2(1, .18f));
-        bottom.gameObject.AddComponent<UnityEngine.UI.Image>().color = new Color(0, 0, 0, .88f);
+        var bottomImage = bottom.gameObject.AddComponent<UnityEngine.UI.Image>();
+        bottomImage.color = new Color(0, 0, 0, .88f); bottomImage.raycastTarget = false;
         safeArea = Rect("IntroSafeArea", transform, Vector2.zero, Vector2.one);
+        var hint = Text("TapHint", safeArea, "Tap anywhere to skip", 24, new Vector2(.67f, .91f), new Vector2(.96f, .98f));
+        hint.alignment = TextAlignmentOptions.MidlineRight;
         title = Text("IntroTitle", safeArea, "", 48, new Vector2(.045f, .09f), new Vector2(.77f, .15f));
         title.color = new Color(.98f, .77f, .25f);
         subtitle = Text("IntroSubtitle", safeArea, "", 27, new Vector2(.045f, .035f), new Vector2(.80f, .085f));
-        var skipRect = Rect("SkipIntro", safeArea, new Vector2(.79f, .91f), new Vector2(.96f, .98f));
-        var image = skipRect.gameObject.AddComponent<UnityEngine.UI.Image>(); image.color = new Color(.08f, .25f, .29f);
-        var skip = skipRect.gameObject.AddComponent<UnityEngine.UI.Button>(); skip.targetGraphic = image; skip.onClick.AddListener(Skip);
-        var label = Text("Label", skipRect, "SKIP INTRO", 28, Vector2.zero, Vector2.one);
-        label.alignment = TextAlignmentOptions.Center;
-        skipObject = skip.gameObject;
         if (EventSystem.current != null)
         {
             previousSelection = EventSystem.current.currentSelectedGameObject;
-            EventSystem.current.SetSelectedGameObject(skipObject);
+            EventSystem.current.SetSelectedGameObject(tapArea.gameObject);
         }
         FitSafeArea();
     }

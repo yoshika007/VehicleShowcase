@@ -46,7 +46,7 @@ public static class CheckDriveIntro
     public static async Task<string> Skip()
     {
         var intro=UnityEngine.Object.FindAnyObjectByType<TestDriveIntro>();
-        intro.transform.Find("IntroSafeArea/SkipIntro").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+        intro.transform.Find("TapAnywhereToSkip").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
         intro.Skip();await Step(3);
         var car=UnityEngine.Object.FindAnyObjectByType<TestDriveMovement>();
         var follow=UnityEngine.Object.FindAnyObjectByType<TestDriveCameraFollow>();follow.ToggleView();
