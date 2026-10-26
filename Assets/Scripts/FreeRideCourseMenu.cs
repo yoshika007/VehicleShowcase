@@ -81,7 +81,9 @@ public class FreeRideCourseMenu : MonoBehaviour
                 var rect = transform.Find("Dialog/" + name) as RectTransform;
                 if (rect == null) continue;
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 440f);
-                rect.anchoredPosition = new Vector2(name == "Day" || name == "Back" ? -235f : 235f, rect.anchoredPosition.y);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 90f);
+                rect.anchoredPosition = new Vector2(name == "Day" || name == "Back" ? -235f : 235f,
+                    name == "Day" || name == "Night" ? -125f : -240f);
             }
             return;
         }
