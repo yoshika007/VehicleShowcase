@@ -328,6 +328,86 @@ public static class BuildHarborStreet
             if(pair.Key==glass)windows.Add(g.GetComponent<Renderer>());
         }
     }
+    static Mesh WindowSubset(Mesh source,int[] selected,string name)
+    {
+        var vertices=source.vertices;var normals=source.normals;var uv=source.uv;var tangents=source.tangents;var triangles=source.triangles;
+        var v=new List<Vector3>();var n=new List<Vector3>();var u=new List<Vector2>();var tan=new List<Vector4>();var t=new List<int>();
+        foreach(int window in selected)
+        {
+            int first=window*24,start=v.Count;
+            for(int j=0;j<24;j++)
+            {
+                v.Add(vertices[first+j]);
+                if(normals.Length==vertices.Length)n.Add(normals[first+j]);
+                if(uv.Length==vertices.Length)u.Add(uv[first+j]);
+                if(tangents.Length==vertices.Length)tan.Add(tangents[first+j]);
+            }
+            for(int j=0;j<36;j++)t.Add(start+triangles[window*36+j]-first);
+        }
+        var mesh=new Mesh{name=name,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};
+        mesh.SetVertices(v);mesh.SetTriangles(t,0);if(n.Count>0)mesh.SetNormals(n);if(u.Count>0)mesh.SetUVs(0,u);if(tan.Count>0)mesh.SetTangents(tan);
+        mesh.RecalculateBounds();return mesh;
+    }
+    static string ApplyWindowPattern(Transform course)
+    {
+        var source=AssetDatabase.LoadAssetAtPath<Mesh>(Dir+"/Blue windows scenery.asset");
+        var vertices=source.vertices;var triangles=source.triangles;int count=vertices.Length/24;
+        if(vertices.Length%24!=0||triangles.Length!=count*36)throw new Exception("Unexpected window batch format.");
+        var eligible=new List<int>();
+        for(int i=0;i<count;i++)
+        {
+            for(int j=0;j<36;j++)if(triangles[i*36+j]<i*24||triangles[i*36+j]>=i*24+24)throw new Exception("Window triangles cross box boundaries.");
+            var bounds=new Bounds(vertices[i*24],Vector3.zero);for(int j=1;j<24;j++)bounds.Encapsulate(vertices[i*24+j]);
+            // Yacht windshields are shorter than the 1.85m building windows.
+            if(bounds.size.y>1f)eligible.Add(i);
+        }
+        var order=eligible.ToArray();var random=new System.Random(7347);
+        for(int i=order.Length-1;i>0;i--){int j=random.Next(i+1);int temp=order[i];order[i]=order[j];order[j]=temp;}
+        int litCount=Mathf.RoundToInt(order.Length*.6f);var litIndices=new HashSet<int>(order.Take(litCount));
+        var lit=WindowSubset(source,Enumerable.Range(0,count).Where(i=>litIndices.Contains(i)).ToArray(),"Lit city windows — 60 percent");
+        var dark=WindowSubset(source,Enumerable.Range(0,count).Where(i=>!litIndices.Contains(i)).ToArray(),"Dark city windows and yacht glass");
+        string path=Dir+"/City window pattern.asset";
+        var savedLit=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+        var savedDark=AssetDatabase.LoadAllAssetsAtPath(path).OfType<Mesh>().FirstOrDefault(m=>m!=savedLit);
+        if(!savedLit){AssetDatabase.CreateAsset(lit,path);AssetDatabase.AddObjectToAsset(dark,path);}
+        else
+        {
+            if(!savedDark)throw new Exception("Window pattern is missing its dark subset.");
+            EditorUtility.CopySerialized(lit,savedLit);EditorUtility.CopySerialized(dark,savedDark);
+            Object.DestroyImmediate(lit);Object.DestroyImmediate(dark);lit=savedLit;dark=savedDark;
+        }
+        EditorUtility.SetDirty(lit);EditorUtility.SetDirty(dark);AssetDatabase.SaveAssetIfDirty(lit);AssetDatabase.SaveAssetIfDirty(dark);
+        var original=course.Find("Batched Blue windows").GetComponent<MeshRenderer>();
+        original.GetComponent<MeshFilter>().sharedMesh=dark;
+        var child=course.Find("Lit city windows");
+        var go=child?child.gameObject:new GameObject("Lit city windows",typeof(MeshFilter),typeof(MeshRenderer));
+        go.transform.SetParent(course,false);go.isStatic=original.gameObject.isStatic;go.GetComponent<MeshFilter>().sharedMesh=lit;
+        var renderer=go.GetComponent<MeshRenderer>();renderer.sharedMaterials=original.sharedMaterials;
+        renderer.shadowCastingMode=original.shadowCastingMode;renderer.receiveShadows=original.receiveShadows;
+        var data=new SerializedObject(course.GetComponent<LakeTownNightLights>());var array=data.FindProperty("windows");
+        array.arraySize=1;array.GetArrayElementAtIndex(0).objectReferenceValue=renderer;data.ApplyModifiedPropertiesWithoutUndo();
+        return litCount+" lit building windows, "+(eligible.Count-litCount)+" dark building windows, "+(count-eligible.Count)+" dark yacht windows. All "+count+" windows preserved; seed 7347.";
+    }
+    public static string RandomizeWindows()
+    {
+        if(EditorApplication.isPlaying)throw new Exception("Apply outside Play Mode.");
+        var original=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        var scene=UnityEngine.SceneManagement.SceneManager.GetSceneByPath(ScenePath);
+        bool opened=!scene.IsValid()||!scene.isLoaded;
+        if(opened)scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Additive);
+        try
+        {
+            if(scene.isDirty)throw new Exception("Harbor Street has unsaved edits; preserve them before changing its window pattern.");
+            var course=scene.GetRootGameObjects().Single(g=>g.name=="Harbor Street Course").transform;
+            string result=ApplyWindowPattern(course);
+            EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);return result;
+        }
+        finally
+        {
+            if(opened)EditorSceneManager.CloseScene(scene,true);
+            UnityEngine.SceneManagement.SceneManager.SetActiveScene(original);
+        }
+    }
     static void NightLights()
     {
         var c=root.gameObject.AddComponent<LakeTownNightLights>();var data=new SerializedObject(c);
@@ -376,7 +456,7 @@ public static class BuildHarborStreet
         Box(new Vector3(-110,6,-170),new Vector3(1,1.3f,16),navy);
         foreach(int sign in new[]{-1,1})Box(new Vector3(-110,3,-170+sign*7.7f),new Vector3(.5f,6,.5f),metal);
         Text("HARBOR STREET",new Vector3(-110.55f,6,-170),Vector3.right,4.8f,new Vector2(14,1.2f),white.color);
-        Batch();NightLights();
+        Batch();NightLights();ApplyWindowPattern(root);
         var manager=Object.FindAnyObjectByType<TestDriveSceneManager>();var managerData=new SerializedObject(manager);
         var spawn=(Transform)managerData.FindProperty("spawnPoint").objectReferenceValue;int start=Near(new Vector3(-148,0,-170));
         spawn.position=route[start]-Side(start)*2.3f+Vector3.up*.4f;spawn.rotation=Quaternion.LookRotation(Forward(start));
