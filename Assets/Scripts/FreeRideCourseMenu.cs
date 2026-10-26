@@ -28,14 +28,14 @@ public class FreeRideCourseMenu : MonoBehaviour
         var subtitle = transform.Find("Dialog/Subtitle");
         if (subtitle == null || subtitle.gameObject.activeSelf) return;
         var dialog = transform.Find("Dialog") as RectTransform;
-        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 700f);
-        SetRowPosition("Heading", 295f);
-        SetRowPosition("TestCircuitCourse", 80f);
-        SetRowPosition("LakeTownCourse", 80f);
-        SetRowPosition("Day", -160f);
-        SetRowPosition("Night", -160f);
-        SetRowPosition("Back", -270f);
-        SetRowPosition("Go", -270f);
+        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 760f);
+        SetRowPosition("Heading", 325f);
+        SetRowPosition("TestCircuitCourse", 90f);
+        SetRowPosition("LakeTownCourse", 90f);
+        SetRowPosition("Day", -170f);
+        SetRowPosition("Night", -170f);
+        SetRowPosition("Back", -290f);
+        SetRowPosition("Go", -290f);
     }
     private void SetRowPosition(string name, float y)
     {
@@ -46,26 +46,26 @@ public class FreeRideCourseMenu : MonoBehaviour
     {
         if (mountainPass == null) return;
         var dialog = transform.Find("Dialog") as RectTransform;
-        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1000f);
+        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1150f);
         var buttons = harborStreet != null ? new[] { circuit, lakeTown, mountainPass, harborStreet }
             : new[] { circuit, lakeTown, mountainPass };
         bool four = harborStreet != null;
         for (int i = 0; i < buttons.Length; i++)
         {
             var rect = (RectTransform)buttons[i].transform;
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 220f : 280f);
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 340f);
-            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 235f : 310f), 80f);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 255f : 280f);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 380f);
+            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 275f : 310f), 90f);
             foreach (var label in buttons[i].GetComponentsInChildren<TMP_Text>(true))
             {
-                label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 200f : 260f);
+                label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 235f : 260f);
                 if (label.name == "Label")
                 {
                     label.enableAutoSizing = true;
                     label.fontSizeMin = four ? 20f : 24f;
-                    label.fontSizeMax = four ? 28f : 34f;
+                    label.fontSizeMax = four ? 30f : 34f;
                     label.textWrappingMode = TextWrappingModes.NoWrap;
-                    label.rectTransform.anchoredPosition = new Vector2(0f, 130f);
+                    label.rectTransform.anchoredPosition = new Vector2(0f, 150f);
                 }
                 else if (label.name == "Details")
                 {
@@ -95,8 +95,8 @@ public class FreeRideCourseMenu : MonoBehaviour
             photo.SetParent(button.transform, false);
         }
         photo.anchorMin = photo.anchorMax = photo.pivot = new Vector2(.5f, .5f);
-        photo.anchoredPosition = new Vector2(0f, 25f);
-        photo.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 136f);
+        photo.anchoredPosition = new Vector2(0f, 35f);
+        photo.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 160f);
         var image = photo.GetComponent<UnityEngine.UI.Image>();
         image.sprite = sprite;
         image.color = Color.white;
@@ -120,7 +120,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (details == null) return;
         details.gameObject.SetActive(true);
         details.text = description;
-        details.fontSize = 22f;
+        details.fontSize = 26f;
         details.enableAutoSizing = false;
         details.textWrappingMode = TextWrappingModes.Normal;
         details.alignment = TextAlignmentOptions.Center;
@@ -128,8 +128,8 @@ public class FreeRideCourseMenu : MonoBehaviour
         details.raycastTarget = false;
         var rect = details.rectTransform;
         rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
-        rect.anchoredPosition = new Vector2(0f, -100f);
-        rect.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 100f);
+        rect.anchoredPosition = new Vector2(0f, -115f);
+        rect.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 112f);
     }
     private void MatchButtonSizes()
     {
@@ -140,10 +140,10 @@ public class FreeRideCourseMenu : MonoBehaviour
             {
                 var rect = transform.Find("Dialog/" + name) as RectTransform;
                 if (rect == null) continue;
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 440f);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 510f);
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 90f);
-                rect.anchoredPosition = new Vector2(name == "Day" || name == "Back" ? -235f : 235f,
-                    name == "Day" || name == "Night" ? -160f : -270f);
+                rect.anchoredPosition = new Vector2(name == "Day" || name == "Back" ? -275f : 275f,
+                    name == "Day" || name == "Night" ? -170f : -290f);
             }
             return;
         }
