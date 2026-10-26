@@ -14,8 +14,17 @@ public static class TestDriveSelection
     public static DriveMode Mode { get; private set; }
     public static int VehicleIndex { get; private set; }
     public static bool HasSelection { get; private set; }
+    public static string VehicleName { get; private set; }
+    private static bool introPending;
 
-    public static void Select(int index, DriveMode mode = DriveMode.FreeRun, TimeOfDay lighting = TimeOfDay.Day, ChallengeKind challenge = ChallengeKind.CleanLap, CourseKind course = CourseKind.TestCircuit)
+    public static bool ConsumeIntroRequest()
+    {
+        bool pending = introPending;
+        introPending = false;
+        return pending;
+    }
+
+    public static void Select(int index, DriveMode mode = DriveMode.FreeRun, TimeOfDay lighting = TimeOfDay.Day, ChallengeKind challenge = ChallengeKind.CleanLap, CourseKind course = CourseKind.TestCircuit, string vehicleName = null)
     {
         Course = mode == DriveMode.FreeRun ? course : CourseKind.TestCircuit;
         VehicleIndex = index;
@@ -24,6 +33,8 @@ public static class TestDriveSelection
         Lighting = mode == DriveMode.Challenge
             ? (challenge == ChallengeKind.NightLap ? TimeOfDay.Night : TimeOfDay.Day) : lighting;
         HasSelection = true;
+        VehicleName = vehicleName;
+        introPending = true;
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -35,5 +46,7 @@ public static class TestDriveSelection
         Lighting = TimeOfDay.Day;
         SelectedChallenge = ChallengeKind.CleanLap;
         HasSelection = false;
+        VehicleName = null;
+        introPending = false;
     }
 }

@@ -20,6 +20,7 @@ public class TestDriveSceneManager : MonoBehaviour
 
     private TestDriveMovement vehicle;
     private bool isReturning;
+    private TestDriveIntro intro;
 
     private void Awake()
     {
@@ -59,28 +60,42 @@ public class TestDriveSceneManager : MonoBehaviour
         followCamera.SetTarget(vehicle.transform, framingScale);
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
         minimap.SetVehicle(vehicle.transform);
+        // Cache challenge geometry in Awake, before Unity combines static meshes.
+        // The briefing and countdown remain behind the cinematic handoff.
         if (cleanLapChallenge != null)
+            cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
+        if (TestDriveSelection.ConsumeIntroRequest() && followCamera != null)
         {
-            bool challengeMode = TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge;
-            cleanLapChallenge.ConfigureMode(challengeMode, vehicle);
-            if (challengeMode)
-            {
-                var briefing = new GameObject("CleanLapBriefing", typeof(RectTransform)).AddComponent<CleanLapBriefing>();
-                briefing.Initialize(cleanLapChallenge, vehicle, this);
-            }
+            intro = new GameObject("Drive Intro").AddComponent<TestDriveIntro>();
+            intro.Initialize(vehicle, followCamera, touchControls, BeginDriving);
+        }
+        else BeginDriving();
+    }
+
+    private void BeginDriving()
+    {
+        if (isReturning) return;
+        if (cleanLapChallenge != null && TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge)
+        {
+            var briefing = new GameObject("CleanLapBriefing", typeof(RectTransform)).AddComponent<CleanLapBriefing>();
+            briefing.Initialize(cleanLapChallenge, vehicle, this);
         }
     }
 
     private void Update()
     {
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            ReturnToShowroom();
+        {
+            if (intro != null && intro.IsPlaying) intro.Skip();
+            else ReturnToShowroom();
+        }
     }
 
     public void ReturnToShowroom()
     {
         if (isReturning) return;
         isReturning = true;
+        if (intro != null) intro.Cancel();
         if (followCamera != null) followCamera.DisableViewSwitching();
         if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(null);
         if (returnButton != null) returnButton.interactable = false;

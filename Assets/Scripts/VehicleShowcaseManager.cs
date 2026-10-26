@@ -218,7 +218,7 @@ public class VehicleShowcaseManager : MonoBehaviour
             Debug.LogError("No driving prefab is configured for this vehicle.", this);
             return;
         }
-        TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge, course);
+        TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge, course, currentVehicle.DisplayName);
         string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass ? "MountainPassScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown ? "LakeTownScene" : "TestTrackScene";
         BeginTransition(scene, driveStartSound != null ? driveStartSound : backSound);
