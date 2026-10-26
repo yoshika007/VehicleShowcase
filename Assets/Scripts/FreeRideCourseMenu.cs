@@ -18,6 +18,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         MatchButtonSizes();
         UpdateActionLabels();
         UpdateLakeTownDescription();
+        AddCoursePhotos();
         MatchActionButtonColors();
         AddToonButtonIcons();
         Refresh();
@@ -73,6 +74,36 @@ public class FreeRideCourseMenu : MonoBehaviour
                 }
             }
         }
+    }
+    private void AddCoursePhotos()
+    {
+        SetCoursePhoto(circuit, "TestCircuit");
+        SetCoursePhoto(lakeTown, "LakeTown");
+        SetCoursePhoto(mountainPass, "MountainPass");
+        SetCoursePhoto(harborStreet, "HarborStreet");
+    }
+    private static void SetCoursePhoto(UnityEngine.UI.Button button, string asset)
+    {
+        if (button == null) return;
+        var sprite = Resources.Load<Sprite>("CoursePreviews/" + asset);
+        if (sprite == null) return;
+        var photo = button.transform.Find("CoursePhoto") as RectTransform;
+        if (photo == null)
+        {
+            photo = new GameObject("CoursePhoto", typeof(RectTransform), typeof(UnityEngine.UI.Image)).GetComponent<RectTransform>();
+            photo.SetParent(button.transform, false);
+        }
+        photo.anchorMin = photo.anchorMax = photo.pivot = new Vector2(.5f, .5f);
+        photo.anchoredPosition = new Vector2(0f, -36f);
+        photo.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 136f);
+        var image = photo.GetComponent<UnityEngine.UI.Image>();
+        image.sprite = sprite;
+        image.color = Color.white;
+        image.preserveAspect = true;
+        // The whole course card remains the selection target, including the photo.
+        image.raycastTarget = false;
+        var details = button.transform.Find("Details");
+        if (details != null) details.gameObject.SetActive(false);
     }
     private void MatchButtonSizes()
     {
