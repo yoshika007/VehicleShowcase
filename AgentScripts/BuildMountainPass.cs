@@ -316,7 +316,15 @@ public static class BuildMountainPass
             float x=-430+(float)random.NextDouble()*1000,z=-460+(float)random.NextDouble()*1000;
             float d=route.Min(p=>new Vector2(p.x-x,p.z-z).sqrMagnitude);
             if(d<24*24)continue;
-            Tree(new Vector3(x,Ground(x,z),z),8+(float)random.NextDouble()*8);
+            var treePosition=new Vector3(x,Ground(x,z),z);
+            float treeHeight=8+(float)random.NextDouble()*8;
+            // Include the full crown when clearing the ridge and both portals.
+            var treeBounds=new Bounds(treePosition+Vector3.up*(treeHeight*.545f),
+                new Vector3(treeHeight*.9f,treeHeight*1.09f,treeHeight*.9f));
+            var tunnelClearance=GameObject.Find("Summit rock ridge").GetComponent<Renderer>().bounds;
+            tunnelClearance.Expand(new Vector3(8,8,8));
+            if(tunnelClearance.Intersects(treeBounds))continue;
+            Tree(treePosition,treeHeight);
         }
         for(int i=0;i<90;i++)
         {
