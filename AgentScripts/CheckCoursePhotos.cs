@@ -33,17 +33,22 @@ public static class CheckCoursePhotos
             {
                 var card=menu.transform.Find("Dialog/"+names[i]+"Course");
                 var image=card.Find("CoursePhoto").GetComponent<UnityEngine.UI.Image>();
-                if(!image.sprite||image.raycastTarget||card.Find("Details").gameObject.activeSelf)throw new Exception("Invalid photo card "+names[i]);
+                if(!image.sprite||image.raycastTarget||!card.Find("Details").gameObject.activeSelf)throw new Exception("Invalid photo card "+names[i]);
                 var pointer=new PointerEventData(EventSystem.current){position=RectTransformUtility.WorldToScreenPoint(null,image.transform.position)};
                 var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
                 if(hits.Count==0||ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)!=card.gameObject)throw new Exception("Photo tap blocked: "+names[i]);
                 ExecuteEvents.ExecuteHierarchy(hits[0].gameObject,pointer,ExecuteEvents.pointerClickHandler);
                 if(manager.FreeRideCourse!=expected[i])throw new Exception("Wrong selected course: "+names[i]);
-                details.Add(names[i]+"="+image.sprite.name);
+                var description=card.Find("Details").GetComponent<TMP_Text>();
+                description.ForceMeshUpdate();
+                if(description.isTextOverflowing)throw new Exception("Description overflow "+names[i]);
+                if(card.Find("CourseLayout"))throw new Exception("Unused map remains on card "+names[i]);
+                details.Add(names[i]+"="+image.sprite.name+" / "+description.text.Replace("\n",", "));
             }
             result="Actual runtime screen="+Screen.width+"x"+Screen.height+"; four photo taps selected correct courses; "+string.Join(", ",details);
         };
         await Frames(3);
+        if(result=="not sampled")throw new Exception("Runtime card check did not finish; inspect the Console.");
         manager.SetFreeRideNight();await Frames(1);manager.SetFreeRideDay();
         for(int i=0;i<2;i++){manager.BackToDriveModes();manager.FreeRun();await Frames(2);}
         int photos=menu.GetComponentsInChildren<UnityEngine.UI.Image>().Count(image=>image.name=="CoursePhoto");

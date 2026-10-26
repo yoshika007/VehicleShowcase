@@ -17,8 +17,8 @@ public class FreeRideCourseMenu : MonoBehaviour
         ArrangeCourses();
         MatchButtonSizes();
         UpdateActionLabels();
-        UpdateLakeTownDescription();
         AddCoursePhotos();
+        UpdateCourseDescriptions();
         MatchActionButtonColors();
         AddToonButtonIcons();
         Refresh();
@@ -28,14 +28,14 @@ public class FreeRideCourseMenu : MonoBehaviour
         var subtitle = transform.Find("Dialog/Subtitle");
         if (subtitle == null || subtitle.gameObject.activeSelf) return;
         var dialog = transform.Find("Dialog") as RectTransform;
-        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 620f);
-        SetRowPosition("Heading", 245f);
-        SetRowPosition("TestCircuitCourse", 65f);
-        SetRowPosition("LakeTownCourse", 65f);
-        SetRowPosition("Day", -125f);
-        SetRowPosition("Night", -125f);
-        SetRowPosition("Back", -225f);
-        SetRowPosition("Go", -225f);
+        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 700f);
+        SetRowPosition("Heading", 295f);
+        SetRowPosition("TestCircuitCourse", 80f);
+        SetRowPosition("LakeTownCourse", 80f);
+        SetRowPosition("Day", -160f);
+        SetRowPosition("Night", -160f);
+        SetRowPosition("Back", -270f);
+        SetRowPosition("Go", -270f);
     }
     private void SetRowPosition(string name, float y)
     {
@@ -54,7 +54,8 @@ public class FreeRideCourseMenu : MonoBehaviour
         {
             var rect = (RectTransform)buttons[i].transform;
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 220f : 280f);
-            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 235f : 310f), 65f);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 340f);
+            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 235f : 310f), 80f);
             foreach (var label in buttons[i].GetComponentsInChildren<TMP_Text>(true))
             {
                 label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 200f : 260f);
@@ -64,7 +65,7 @@ public class FreeRideCourseMenu : MonoBehaviour
                     label.fontSizeMin = four ? 20f : 24f;
                     label.fontSizeMax = four ? 28f : 34f;
                     label.textWrappingMode = TextWrappingModes.NoWrap;
-                    label.rectTransform.anchoredPosition = new Vector2(0f, 65f);
+                    label.rectTransform.anchoredPosition = new Vector2(0f, 130f);
                 }
                 else if (label.name == "Details")
                 {
@@ -94,7 +95,7 @@ public class FreeRideCourseMenu : MonoBehaviour
             photo.SetParent(button.transform, false);
         }
         photo.anchorMin = photo.anchorMax = photo.pivot = new Vector2(.5f, .5f);
-        photo.anchoredPosition = new Vector2(0f, -36f);
+        photo.anchoredPosition = new Vector2(0f, 25f);
         photo.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 136f);
         var image = photo.GetComponent<UnityEngine.UI.Image>();
         image.sprite = sprite;
@@ -102,8 +103,33 @@ public class FreeRideCourseMenu : MonoBehaviour
         image.preserveAspect = true;
         // The whole course card remains the selection target, including the photo.
         image.raycastTarget = false;
-        var details = button.transform.Find("Details");
-        if (details != null) details.gameObject.SetActive(false);
+    }
+    private void UpdateCourseDescriptions()
+    {
+        SetCourseDescription(circuit, "Fast oval\nGravel turns\nOptional hill routes");
+        SetCourseDescription(lakeTown, "Lakeside streets\nTown intersections\nWinding roads");
+        SetCourseDescription(mountainPass, "Mountain hairpins\nSummit tunnel\nSweeping descents");
+        SetCourseDescription(harborStreet, "Tight city corners\nHotel hairpin\nSeaside tunnel");
+        var trial = lakeTown != null ? lakeTown.transform.Find("Trial") : null;
+        if (trial != null) trial.gameObject.SetActive(false);
+    }
+    private static void SetCourseDescription(UnityEngine.UI.Button button, string description)
+    {
+        if (button == null) return;
+        var details = button.transform.Find("Details")?.GetComponent<TMP_Text>();
+        if (details == null) return;
+        details.gameObject.SetActive(true);
+        details.text = description;
+        details.fontSize = 22f;
+        details.enableAutoSizing = false;
+        details.textWrappingMode = TextWrappingModes.Normal;
+        details.alignment = TextAlignmentOptions.Center;
+        details.color = new Color(.8f, .88f, .9f);
+        details.raycastTarget = false;
+        var rect = details.rectTransform;
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
+        rect.anchoredPosition = new Vector2(0f, -100f);
+        rect.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 100f);
     }
     private void MatchButtonSizes()
     {
@@ -117,7 +143,7 @@ public class FreeRideCourseMenu : MonoBehaviour
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 440f);
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 90f);
                 rect.anchoredPosition = new Vector2(name == "Day" || name == "Back" ? -235f : 235f,
-                    name == "Day" || name == "Night" ? -125f : -240f);
+                    name == "Day" || name == "Night" ? -160f : -270f);
             }
             return;
         }
@@ -141,14 +167,6 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (driveLabel != null) driveLabel.text = "DRIVE";
         var subtitle = transform.Find("Dialog/Subtitle")?.GetComponent<TMP_Text>();
         if (subtitle != null) subtitle.text = "FREE RUN  /  Choose course and lighting, then DRIVE";
-    }
-    private void UpdateLakeTownDescription()
-    {
-        if (lakeTown == null) return;
-        var details = lakeTown.transform.Find("Details")?.GetComponent<TMP_Text>();
-        if (details != null) details.text = "Lakeside town + winding roads";
-        var trial = lakeTown.transform.Find("Trial");
-        if (trial != null) trial.gameObject.SetActive(false);
     }
     private void MatchActionButtonColors()
     {
