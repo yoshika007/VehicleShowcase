@@ -227,7 +227,7 @@ public static class BuildHarborStreet
         foreach(var start in new[]{foot+Vector3.up*4.5f,foot+Vector3.up*3.3f})
             Box((start+end)*.5f,new Vector3(.16f,.16f,Vector3.Distance(start,end)),metal,Quaternion.LookRotation(end-start));
         var lettering=Text(label,p+Vector3.up*4.1f-f*.12f,f,5,new Vector2(width-.3f,1.5f),gold.color);
-        if(label=="HARBOR STREET"||label=="HOTEL HAIRPIN"||label=="SEASIDE TUNNEL")
+        if(label=="HARBOR STREET"||label=="HOTEL HAIRPIN"||label=="SEASIDE TUNNEL"||label=="CHICANE / SLOW")
             width=lettering.GetPreferredValues(label).x+1f;
         Box(p+Vector3.up*4.1f,new Vector3(width,1.7f,.18f),navy,rot);
     }
@@ -338,6 +338,91 @@ public static class BuildHarborStreet
             var g=MeshObject("Batched "+pair.Key.name,mesh,pair.Key);
             if(pair.Key==glass)windows.Add(g.GetComponent<Renderer>());
         }
+    }
+    static void StreetCoordinates(Mesh mesh)
+    {
+        var v=mesh.vertices;int count=v.Length/2-1;float distance=0;
+        var uv=new Vector2[v.Length];var colors=new Color[v.Length];
+        for(int i=0;i<=count;i++)
+        {
+            int j=i%count;var p=(v[j*2]+v[j*2+1])*.5f;
+            var prev=(v[((j+count-1)%count)*2]+v[((j+count-1)%count)*2+1])*.5f;
+            var next=(v[((j+1)%count)*2]+v[((j+1)%count)*2+1])*.5f;
+            if(i>0){var before=(v[(i-1)*2]+v[(i-1)*2+1])*.5f;distance+=Vector3.Distance(before,p);}
+            float corner=Mathf.Clamp01(Vector3.Angle(p-prev,next-p)*Mathf.Deg2Rad/Mathf.Max(.01f,Vector3.Distance(p,next))*18);
+            float halfWidth=Vector3.Distance(v[j*2],v[j*2+1])*.5f;
+            uv[i*2]=new Vector2(-halfWidth,distance);uv[i*2+1]=new Vector2(halfWidth,distance);
+            colors[i*2]=colors[i*2+1]=new Color(corner,0,0,1);
+        }
+        mesh.uv=uv;mesh.colors=colors;EditorUtility.SetDirty(mesh);AssetDatabase.SaveAssetIfDirty(mesh);
+    }
+    static string ApplyAsphaltDetail(Transform course)
+    {
+        var surface=course.Find("Harbor Street asphalt");var roadMesh=surface.GetComponent<MeshCollider>().sharedMesh;
+        StreetCoordinates(roadMesh);
+        var shader=AssetDatabase.LoadAssetAtPath<Shader>(Dir+"/CityStreetAsphalt.shader");
+        if(!shader)throw new Exception("Missing Harbor Street asphalt shader.");
+        var asphalt=AssetDatabase.LoadAssetAtPath<Material>(Dir+"/City asphalt.mat");
+        var tint=asphalt.GetColor("_BaseColor");asphalt.shader=shader;asphalt.SetColor("_BaseColor",tint);
+        asphalt.SetFloat("_Smoothness",.14f);asphalt.SetFloat("_GrainStrength",.15f);
+        asphalt.SetFloat("_SeamStrength",.35f);asphalt.SetFloat("_WearStrength",.12f);asphalt.SetFloat("_PatchStrength",.16f);
+        EditorUtility.SetDirty(asphalt);AssetDatabase.SaveAssetIfDirty(asphalt);
+        var iron=Mat("Utility iron",new Color(.14f,.16f,.17f),.22f);
+        var recess=Mat("Drain recess",new Color(.045f,.055f,.06f),.08f);
+        var g=GameObject.CreatePrimitive(PrimitiveType.Cube);var box=g.GetComponent<MeshFilter>().sharedMesh;Object.DestroyImmediate(g);
+        g=GameObject.CreatePrimitive(PrimitiveType.Cylinder);var disc=g.GetComponent<MeshFilter>().sharedMesh;Object.DestroyImmediate(g);
+        var metalParts=new List<CombineInstance>();var darkParts=new List<CombineInstance>();
+        var v=roadMesh.vertices;int count=v.Length/2-1;int covers=0,drains=0;
+        var coverIndices=new HashSet<int>(Enumerable.Range(0,10).Select(n=>n*count/10));
+        var drainIndices=new HashSet<int>(Enumerable.Range(0,28).Select(n=>n*count/28));
+        for(int i=0;i<count;i++)
+        {
+            bool cover=coverIndices.Contains(i),drain=drainIndices.Contains(i);
+            if(!cover&&!drain)continue;
+            var p=surface.TransformPoint((v[i*2]+v[i*2+1])*.5f);
+            int j=(i+1)%count;var next=surface.TransformPoint((v[j*2]+v[j*2+1])*.5f);
+            var forward=(next-p).normalized;var side=surface.TransformDirection((v[i*2+1]-v[i*2]).normalized);
+            var up=Vector3.Cross(forward,side).normalized;var rotation=Quaternion.LookRotation(forward,up);
+            float sign=(i/Mathf.Max(1,count/28))%2==0?1:-1;
+            if(cover)
+            {
+                var center=p+side*3.75f+up*.015f;
+                darkParts.Add(new CombineInstance{mesh=disc,transform=course.worldToLocalMatrix*Matrix4x4.TRS(center-up*.006f,rotation,new Vector3(.8f,.006f,.8f))});
+                metalParts.Add(new CombineInstance{mesh=disc,transform=course.worldToLocalMatrix*Matrix4x4.TRS(center,rotation,new Vector3(.72f,.0075f,.72f))});
+                for(int n=-2;n<=2;n++)
+                {
+                    float x=n*.09f;float length=2*Mathf.Sqrt(.28f*.28f-x*x);
+                    darkParts.Add(new CombineInstance{mesh=box,transform=course.worldToLocalMatrix*Matrix4x4.TRS(center+side*x+up*.009f,rotation,new Vector3(.022f,.003f,length))});
+                }
+                covers++;
+            }
+            if(drain)
+            {
+                var center=p+side*sign*4.7f+up*.014f;
+                darkParts.Add(new CombineInstance{mesh=box,transform=course.worldToLocalMatrix*Matrix4x4.TRS(center,rotation,new Vector3(.38f,.012f,.9f))});
+                for(int n=0;n<7;n++)
+                    metalParts.Add(new CombineInstance{mesh=box,transform=course.worldToLocalMatrix*Matrix4x4.TRS(center+forward*(n-3)*.12f+up*.01f,rotation,new Vector3(.34f,.012f,.045f))});
+                drains++;
+            }
+        }
+        var parent=course.Find("Street asphalt details");if(!parent){parent=new GameObject("Street asphalt details").transform;parent.SetParent(course,false);}
+        var materials=new[]{iron,recess};var parts=new[]{metalParts,darkParts};var names=new[]{"Manhole covers and drain grates","Utility cover recesses"};
+        for(int i=0;i<2;i++)
+        {
+            var mesh=new Mesh{name=names[i],indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};mesh.CombineMeshes(parts[i].ToArray());
+            mesh=PersistMesh(mesh,Dir+"/"+names[i]+".asset");AssetDatabase.SaveAssetIfDirty(mesh);
+            var child=parent.Find(names[i]);var item=child?child.gameObject:new GameObject(names[i],typeof(MeshFilter),typeof(MeshRenderer));
+            item.transform.SetParent(parent,false);item.isStatic=true;item.GetComponent<MeshFilter>().sharedMesh=mesh;
+            var renderer=item.GetComponent<MeshRenderer>();renderer.sharedMaterial=materials[i];renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+        return "Street asphalt detailed; "+covers+" manhole covers and "+drains+" curbside drains, no added colliders.";
+    }
+    public static string DetailAsphalt()
+    {
+        var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        if(EditorApplication.isPlaying||scene.isDirty||scene.path!=ScenePath)throw new Exception("Use saved Harbor Street outside Play Mode.");
+        string result=ApplyAsphaltDetail(GameObject.Find("Harbor Street Course").transform);
+        EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);return result;
     }
     static Mesh WindowSubset(Mesh source,int[] selected,string name)
     {
@@ -467,7 +552,7 @@ public static class BuildHarborStreet
         Box(new Vector3(-110,6,-170),new Vector3(1,1.3f,16),navy);
         foreach(int sign in new[]{-1,1})Box(new Vector3(-110,3,-170+sign*7.7f),new Vector3(.5f,6,.5f),metal);
         Text("HARBOR STREET",new Vector3(-110.55f,6,-170),Vector3.right,4.8f,new Vector2(14,1.2f),white.color);
-        Batch();NightLights();ApplyWindowPattern(root);
+        Batch();NightLights();ApplyWindowPattern(root);ApplyAsphaltDetail(root);
         var manager=Object.FindAnyObjectByType<TestDriveSceneManager>();var managerData=new SerializedObject(manager);
         var spawn=(Transform)managerData.FindProperty("spawnPoint").objectReferenceValue;int start=Near(new Vector3(-148,0,-170));
         spawn.position=route[start]-Side(start)*2.3f+Vector3.up*.4f;spawn.rotation=Quaternion.LookRotation(Forward(start));

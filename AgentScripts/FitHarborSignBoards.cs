@@ -10,7 +10,7 @@ public static class FitHarborSignBoards
 {
     public static string View(int index)
     {
-        var names=new[]{"HARBOR STREET","HOTEL HAIRPIN","SEASIDE TUNNEL"};
+        var names=new[]{"HARBOR STREET","HOTEL HAIRPIN","SEASIDE TUNNEL","CHICANE / SLOW"};
         var label=GameObject.Find("Harbor Street Course").GetComponentsInChildren<TMP_Text>().Single(t=>t.text==names[index]&&Mathf.Abs(t.fontSize-5)<.001f);
         UnityEngine.Object.FindAnyObjectByType<TestDriveCameraFollow>().enabled=false;
         var forward=label.transform.forward;var side=Vector3.Cross(Vector3.up,forward).normalized;
@@ -19,14 +19,15 @@ public static class FitHarborSignBoards
         label.ForceMeshUpdate();if(label.isTextOverflowing||Mathf.Abs(label.fontSize-5)>.001f)throw new Exception("Label changed or clipped.");
         return names[index]+": text size="+label.fontSize+", no text overflow";
     }
-    public static string Run()
+    public static string Run() => Fit(new[]{"HARBOR STREET","HOTEL HAIRPIN","SEASIDE TUNNEL","CHICANE / SLOW"});
+    public static string Chicane() => Fit(new[]{"CHICANE / SLOW"});
+    static string Fit(string[] names)
     {
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         if(EditorApplication.isPlaying||scene.isDirty||scene.name!="HarborStreetScene")throw new Exception("Use saved Harbor Street outside Play Mode.");
         var course=GameObject.Find("Harbor Street Course");
-        var names=new[]{"HARBOR STREET","HOTEL HAIRPIN","SEASIDE TUNNEL"};
         var labels=course.GetComponentsInChildren<TMP_Text>().Where(t=>names.Contains(t.text)&&Mathf.Abs(t.fontSize-5)<.001f).ToArray();
-        if(labels.Length!=3)throw new Exception("Expected three roadside labels.");
+        if(labels.Length!=names.Length)throw new Exception("Missing roadside labels.");
         var mesh=AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Environments/HarborStreet/Harbor navy scenery.asset");
         var vertices=mesh.vertices;var messages=new List<string>();
         foreach(var label in labels)
