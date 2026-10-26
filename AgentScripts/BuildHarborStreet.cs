@@ -316,7 +316,7 @@ public static class BuildHarborStreet
             Box(new Vector3(x,-.35f,-231),new Vector3(4,.65f,66),wood);
             for(int n=0;n<3;n++)foreach(int side in new[]{-1,1})
             {
-                var p=new Vector3(x+side*13,-.4f,-213-n*18);
+                var p=new Vector3(x+side*6,-.4f,-213-n*18);
                 Box(p,new Vector3(7,1.5f,14),white);
                 Box(p+Vector3.up*1.1f,new Vector3(5.7f,1,10),navy);
                 Box(p+Vector3.up*2.1f+Vector3.forward,new Vector3(4.6f,1.1f,6),white);
