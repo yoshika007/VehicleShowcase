@@ -79,7 +79,14 @@ public class TestDriveIntro : MonoBehaviour
     private void BuildShots()
     {
         string scene = SceneManager.GetActiveScene().name;
-        if (scene == "MountainPassScene")
+        if (scene == "HarborStreetScene")
+        {
+            first = new Shot("HARBOR STREET", "City climbs, a hotel hairpin and the marina",
+                new Vector3(10, 10, -90), new Vector3(-130, 145, -320), new Vector3(-60, 120, -285));
+            second = new Shot("SEASIDE TUNNEL", "Brake for the tight corners beyond the covered coast road",
+                new Vector3(185, 4, 45), new Vector3(290, 65, -5), new Vector3(275, 48, 70));
+        }
+        else if (scene == "MountainPassScene")
         {
             first = new Shot("MOUNTAIN PASS", "Three hairpins climb toward the summit tunnel",
                 new Vector3(0, 50, 130), new Vector3(280, 190, -110), new Vector3(235, 170, -70));
@@ -198,7 +205,8 @@ public class TestDriveIntro : MonoBehaviour
         }
     }
 
-    private static string CourseName() => SceneManager.GetActiveScene().name == "MountainPassScene" ? "MOUNTAIN PASS"
+    private static string CourseName() => SceneManager.GetActiveScene().name == "HarborStreetScene" ? "HARBOR STREET"
+        : SceneManager.GetActiveScene().name == "MountainPassScene" ? "MOUNTAIN PASS"
         : SceneManager.GetActiveScene().name == "LakeTownScene" ? "LAKE TOWN" : "TEST CIRCUIT";
     private void Pose(Vector3 position, Vector3 focus, float fov)
     {

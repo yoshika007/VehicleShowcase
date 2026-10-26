@@ -10,10 +10,11 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button circuit;
     [SerializeField] private UnityEngine.UI.Button lakeTown;
     [SerializeField] private UnityEngine.UI.Button mountainPass;
+    [SerializeField] private UnityEngine.UI.Button harborStreet;
     private void OnEnable()
     {
         ArrangeWithoutSubtitle();
-        ArrangeThreeCourses();
+        ArrangeCourses();
         MatchButtonSizes();
         UpdateActionLabels();
         UpdateLakeTownDescription();
@@ -40,31 +41,33 @@ public class FreeRideCourseMenu : MonoBehaviour
         var rect = transform.Find("Dialog/" + name) as RectTransform;
         if (rect != null) rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, y);
     }
-    private void ArrangeThreeCourses()
+    private void ArrangeCourses()
     {
         if (mountainPass == null) return;
         var dialog = transform.Find("Dialog") as RectTransform;
         if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1000f);
-        var buttons = new[] { circuit, lakeTown, mountainPass };
+        var buttons = harborStreet != null ? new[] { circuit, lakeTown, mountainPass, harborStreet }
+            : new[] { circuit, lakeTown, mountainPass };
+        bool four = harborStreet != null;
         for (int i = 0; i < buttons.Length; i++)
         {
             var rect = (RectTransform)buttons[i].transform;
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 280f);
-            rect.anchoredPosition = new Vector2((i - 1) * 310f, 65f);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 220f : 280f);
+            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 235f : 310f), 65f);
             foreach (var label in buttons[i].GetComponentsInChildren<TMP_Text>(true))
             {
-                label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 260f);
+                label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 200f : 260f);
                 if (label.name == "Label")
                 {
                     label.enableAutoSizing = true;
-                    label.fontSizeMin = 24f;
-                    label.fontSizeMax = 34f;
+                    label.fontSizeMin = four ? 20f : 24f;
+                    label.fontSizeMax = four ? 28f : 34f;
                     label.textWrappingMode = TextWrappingModes.NoWrap;
                     label.rectTransform.anchoredPosition = new Vector2(0f, 65f);
                 }
                 else if (label.name == "Details")
                 {
-                    label.fontSize = 23f;
+                    label.fontSize = four ? 21f : 23f;
                     label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 120f);
                     label.rectTransform.anchoredPosition = new Vector2(0f, -30f);
                 }
@@ -174,6 +177,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         TintCourse(circuit, manager == null || manager.FreeRideCourse == TestDriveSelection.CourseKind.TestCircuit);
         TintCourse(mountainPass, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.MountainPass);
         TintCourse(lakeTown, lakeSelected);
+        TintCourse(harborStreet, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet);
     }
     private static void TintCourse(UnityEngine.UI.Button button, bool selected)
     {

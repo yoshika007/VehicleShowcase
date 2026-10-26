@@ -170,6 +170,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void TestCircuitRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.TestCircuit);
     public void LakeTownRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.LakeTown);
     public void MountainPassRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.MountainPass);
+    public void HarborStreetRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.HarborStreet);
     private void SelectFreeRideCourse(TestDriveSelection.CourseKind course)
     {
         if (!CourseMenuOpen || isTransitioning) return;
@@ -219,7 +220,8 @@ public class VehicleShowcaseManager : MonoBehaviour
             return;
         }
         TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge, course, currentVehicle.DisplayName);
-        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass ? "MountainPassScene"
+        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet ? "HarborStreetScene"
+            : TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass ? "MountainPassScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown ? "LakeTownScene" : "TestTrackScene";
         BeginTransition(scene, driveStartSound != null ? driveStartSound : backSound);
     }
