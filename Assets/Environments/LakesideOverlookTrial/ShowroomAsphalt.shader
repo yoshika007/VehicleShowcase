@@ -1,0 +1,215 @@
+Shader "Vehicle Showcase/Showroom Asphalt"
+{
+    Properties
+    {
+        [MainColor] _BaseColor("Tint", Color) = (1,1,1,1)
+        _Smoothness("Smoothness", Range(0,1)) = 0.12
+        _GrainStrength("Asphalt grain", Range(0,0.3)) = 0.08
+        _SeamStrength("Repair seams", Range(0,0.5)) = 0.18
+        _WearStrength("Tyre wear", Range(0,0.3)) = 0.10
+    }
+    SubShader
+    {
+        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
+        Cull Back
+        ZWrite On
+        HLSLINCLUDE
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+        CBUFFER_START(UnityPerMaterial)
+            half4 _BaseColor;
+            half _Smoothness;
+            half _GrainStrength, _SeamStrength, _WearStrength;
+        CBUFFER_END
+        struct Attributes
+        {
+            float4 positionOS : POSITION;
+            float3 normalOS : NORMAL;
+            half4 color : COLOR;
+            UNITY_VERTEX_INPUT_INSTANCE_ID
+        };
+        struct Varyings
+        {
+            float4 positionCS : SV_POSITION;
+            float3 positionWS : TEXCOORD0;
+            half3 normalWS : TEXCOORD1;
+            half4 color : TEXCOORD2;
+            half fog : TEXCOORD3;
+            UNITY_VERTEX_INPUT_INSTANCE_ID
+            UNITY_VERTEX_OUTPUT_STEREO
+        };
+        Varyings GroundVertex(Attributes input)
+        {
+            Varyings output = (Varyings)0;
+            UNITY_SETUP_INSTANCE_ID(input);
+            UNITY_TRANSFER_INSTANCE_ID(input, output);
+            UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+            VertexPositionInputs position = GetVertexPositionInputs(input.positionOS.xyz);
+            output.positionCS = position.positionCS;
+            output.positionWS = position.positionWS;
+            output.normalWS = TransformObjectToWorldNormal(input.normalOS);
+            output.color = _BaseColor;
+            output.fog = ComputeFogFactor(position.positionCS.z);
+            return output;
+        }
+        ENDHLSL
+        Pass
+        {
+            Name "ForwardLit"
+            Tags { "LightMode"="UniversalForwardOnly" }
+            HLSLPROGRAM
+            #pragma target 3.0
+            #pragma vertex GroundVertex
+            #pragma fragment GroundFragment
+            #pragma multi_compile_instancing
+            #pragma multi_compile_fog
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
+            #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
+            float Hash(float2 p)
+            {
+                // Fractional mixing avoids a transcendental hash for every grain sample.
+                p = frac(p * float2(.1031, .11369));
+                float mixed = dot(p, p.yx + 19.19);
+                return frac((p.x + mixed) * (p.y + mixed) * 17.17);
+            }
+            float Noise(float2 p)
+            {
+                float2 cell = floor(p), f = frac(p);
+                float2 blend = f * f * (3 - 2 * f);
+                return lerp(lerp(Hash(cell), Hash(cell + float2(1,0)), blend.x),
+                    lerp(Hash(cell + float2(0,1)), Hash(cell + 1), blend.x), blend.y);
+            }
+            float Line(float distance, float width, float aa)
+            {
+                return 1 - smoothstep(max(0, width - aa), width + aa, distance);
+            }
+            half3 Asphalt(float2 p)
+            {
+                float footprint = max(length(ddx(p)), length(ddy(p)));
+                float aa = max(footprint * .65, .004);
+                // Fade subpixel aggregate rather than shimmering in the distance.
+                float grainFade = 1 - smoothstep(.025, .09, footprint);
+                float aggregate = (Noise(p * 55) - .5) * grainFade;
+                float mottling = (Noise(p * .7) - .5) * .055 + (Noise(p * 3) - .5) * .025;
+                float3 tint = _BaseColor.rgb * (1 + aggregate * _GrainStrength * 2 + mottling);
+                // Broad resurfacing areas, rather than a regular concrete-tile grid.
+                float repair = (1 - smoothstep(-6.25, -6.15, p.x)) * .035
+                    + smoothstep(2.75, 2.85, p.y) * .025;
+                tint *= 1 - repair;
+                float seam = max(Line(abs(p.x + 6.2 + sin(p.y * 1.7) * .025), .023, aa),
+                    Line(abs(p.y - 2.8 + sin(p.x * .9) * .02), .020, aa));
+                seam = max(seam, Line(abs(p.x - 8.5), .018, aa) * .7);
+                tint *= 1 - seam * _SeamStrength;
+                float radius = length((p - float2(-2,3)) * float2(1,1.12));
+                float scuff = max(Line(abs(radius - 5.3), .075, aa), Line(abs(radius - 5.65), .06, aa));
+                float scuffMask = (1 - smoothstep(-2, .5, p.x)) * (1 - smoothstep(0, 2, p.y));
+                tint *= 1 - scuff * scuffMask * _WearStrength * (.5 + Noise(p * 9) * .5);
+                return tint;
+            }
+            half4 GroundFragment(Varyings input) : SV_Target
+            {
+                UNITY_SETUP_INSTANCE_ID(input);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+                SurfaceData surface = (SurfaceData)0;
+                surface.albedo = Asphalt(input.positionWS.xz);
+                surface.specular = half3(0.5,0.5,0.5);
+                surface.smoothness = _Smoothness;
+                surface.normalTS = half3(0,0,1);
+                surface.occlusion = 1;
+                surface.alpha = 1;
+                InputData data = (InputData)0;
+                data.positionWS = input.positionWS;
+                data.normalWS = NormalizeNormalPerPixel(input.normalWS);
+                data.viewDirectionWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
+                #if defined(_MAIN_LIGHT_SHADOWS_SCREEN)
+                    data.shadowCoord = ComputeScreenPos(TransformWorldToHClip(input.positionWS));
+                #else
+                    data.shadowCoord = TransformWorldToShadowCoord(input.positionWS);
+                #endif
+                data.bakedGI = SampleSH(data.normalWS);
+                data.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS);
+                data.shadowMask = half4(1,1,1,1);
+                #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+                    data.vertexLighting = VertexLighting(input.positionWS, data.normalWS);
+                #endif
+                half4 color = UniversalFragmentPBR(data, surface);
+                color.rgb = MixFog(color.rgb, input.fog);
+                return half4(color.rgb, 1);
+            }
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags { "LightMode"="ShadowCaster" }
+            ColorMask 0
+            HLSLPROGRAM
+            #pragma target 3.0
+            #pragma vertex ShadowVertex
+            #pragma fragment ShadowFragment
+            #pragma multi_compile_instancing
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            float3 _LightDirection;
+            float3 _LightPosition;
+            float4 ShadowVertex(Attributes input) : SV_POSITION
+            {
+                UNITY_SETUP_INSTANCE_ID(input);
+                float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
+                #if defined(_CASTING_PUNCTUAL_LIGHT_SHADOW)
+                    float3 lightDirection = normalize(_LightPosition - positionWS);
+                #else
+                    float3 lightDirection = _LightDirection;
+                #endif
+                float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirection));
+                #if UNITY_REVERSED_Z
+                    positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+                #else
+                    positionCS.z = max(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+                #endif
+                return positionCS;
+            }
+            half4 ShadowFragment() : SV_Target { return 0; }
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "DepthOnly"
+            Tags { "LightMode"="DepthOnly" }
+            ColorMask 0
+            HLSLPROGRAM
+            #pragma target 3.0
+            #pragma vertex GroundVertex
+            #pragma fragment DepthFragment
+            #pragma multi_compile_instancing
+            half4 DepthFragment(Varyings input) : SV_Target { return 0; }
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "DepthNormals"
+            Tags { "LightMode"="DepthNormalsOnly" }
+            HLSLPROGRAM
+            #pragma target 3.0
+            #pragma vertex GroundVertex
+            #pragma fragment NormalsFragment
+            #pragma multi_compile_instancing
+            #pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT
+            half4 NormalsFragment(Varyings input) : SV_Target
+            {
+                half3 normalWS = NormalizeNormalPerPixel(input.normalWS);
+                #if defined(_GBUFFER_NORMALS_OCT)
+                    float2 octNormal = PackNormalOctQuadEncode(normalWS);
+                    return half4(PackFloat2To888(saturate(octNormal * 0.5 + 0.5)), 0);
+                #else
+                    return half4(normalWS, 0);
+                #endif
+            }
+            ENDHLSL
+        }
+    }
+    Fallback Off
+}
