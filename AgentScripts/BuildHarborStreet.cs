@@ -22,16 +22,20 @@ public static class BuildHarborStreet
     static List<Light> streetLights;
     static List<Renderer> lanterns,windows;
     static int tunnelStart,tunnelEnd;
+    static bool rebuildingHairpin;
     public static Vector3[] Route()
     {
         var k=new[]{
             new Vector3(-170,0,-170),new Vector3(-50,0,-170),new Vector3(85,0,-170),
             new Vector3(140,1,-150),new Vector3(155,4,-115),new Vector3(145,10,-70),
             new Vector3(125,18,-10),new Vector3(80,25,35),new Vector3(20,28,50),
-            new Vector3(-25,27,70),new Vector3(-45,24,100),new Vector3(-20,20,125),
-            new Vector3(10,17,120),new Vector3(25,14,98),new Vector3(17,12,80),
-            new Vector3(0,11,85),new Vector3(-7,10,105),new Vector3(-4,9,133),
-            new Vector3(35,7,155),new Vector3(105,4,145),new Vector3(160,2,100),
+            // A separated approach and return replace the old stacked crossing.
+            // Keep a visible gap between both legs, including their retaining walls.
+            new Vector3(-25,27,70),new Vector3(-45,24,100),new Vector3(-45,22,130),
+            new Vector3(-25,20,150),new Vector3(-5,18,145),new Vector3(3,16,125),
+            new Vector3(4,15,112),new Vector3(5.742f,14.5f,105.5f),new Vector3(10.5f,14,100.742f),
+            new Vector3(17,13.5f,99),new Vector3(23.5f,13,100.742f),new Vector3(28.258f,12.5f,105.5f),
+            new Vector3(30,12,112),new Vector3(30,10,133),new Vector3(48,8,165),new Vector3(105,4,145),new Vector3(160,2,100),
             new Vector3(200,0,35),new Vector3(205,0,-40),new Vector3(235,0,-65),
             new Vector3(260,0,-45),new Vector3(260,0,20),new Vector3(245,0,95),
             new Vector3(205,0,170),new Vector3(125,0,200),new Vector3(10,0,205),
@@ -56,6 +60,8 @@ public static class BuildHarborStreet
     static Vector3 Side(int i)=>Vector3.Cross(Vector3.up,Forward(i)).normalized;
     static Material Mat(string name,Color color,float smooth=.15f,float emission=0)
     {
+        var existing=AssetDatabase.LoadAssetAtPath<Material>(Dir+"/"+name+".mat");
+        if(existing)return existing;
         var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name,color=color};
         m.SetFloat("_Smoothness",smooth);
         if(emission>0){m.EnableKeyword("_EMISSION");m.SetColor("_EmissionColor",color*emission);m.globalIlluminationFlags=MaterialGlobalIlluminationFlags.BakedEmissive;}
@@ -71,7 +77,17 @@ public static class BuildHarborStreet
     {
         var m=new Mesh{name=name,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};
         m.SetVertices(v);m.SetTriangles(t,0);m.RecalculateNormals();m.RecalculateBounds();
-        AssetDatabase.CreateAsset(m,Dir+"/"+name+".asset");return m;
+        return PersistMesh(m,Dir+"/"+name+".asset");
+    }
+    static Mesh PersistMesh(Mesh generated,string path)
+    {
+        var existing=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+        if(existing)
+        {
+            EditorUtility.CopySerialized(generated,existing);Object.DestroyImmediate(generated);
+            EditorUtility.SetDirty(existing);return existing;
+        }
+        AssetDatabase.CreateAsset(generated,path);return generated;
     }
     static GameObject MeshObject(string name,Mesh mesh,Material material,bool collider=false)
     {
@@ -307,7 +323,7 @@ public static class BuildHarborStreet
         {
             var mesh=new Mesh{name=pair.Key.name+" scenery",indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};
             mesh.CombineMeshes(pair.Value.ToArray());
-            AssetDatabase.CreateAsset(mesh,Dir+"/"+mesh.name+".asset");
+            mesh=PersistMesh(mesh,Dir+"/"+mesh.name+".asset");
             var g=MeshObject("Batched "+pair.Key.name,mesh,pair.Key);
             if(pair.Key==glass)windows.Add(g.GetComponent<Renderer>());
         }
@@ -328,9 +344,9 @@ public static class BuildHarborStreet
     {
         if(EditorApplication.isPlaying||UnityEngine.SceneManagement.SceneManager.GetActiveScene().isDirty)
             throw new Exception("Stop Play Mode and preserve any dirty scene before building.");
-        if(AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath)!=null||AssetDatabase.IsValidFolder(Dir))
+        if(!rebuildingHairpin && (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath)!=null||AssetDatabase.IsValidFolder(Dir)))
             throw new Exception("Harbor Street already exists; refusing to overwrite.");
-        AssetDatabase.CreateFolder("Assets/Environments","HarborStreet");
+        if(!AssetDatabase.IsValidFolder(Dir))AssetDatabase.CreateFolder("Assets/Environments","HarborStreet");
         var source=EditorSceneManager.OpenScene("Assets/Scenes/MountainPassScene.unity");
         EditorSceneManager.SaveScene(source,ScenePath,true);
         var scene=EditorSceneManager.OpenScene(ScenePath);
@@ -353,7 +369,7 @@ public static class BuildHarborStreet
             Mat("Ochre facades",new Color(.77f,.66f,.43f)),Mat("Pearl facades",new Color(.81f,.81f,.75f))};
         RoadAndWalls();Tunnel();Harbor();City();
         Sign("HARBOR STREET",new Vector3(-150,0,-170),9,14);
-        Sign("HOTEL HAIRPIN",new Vector3(-20,20,125),-10,12);
+        Sign("HOTEL HAIRPIN",new Vector3(3,16,125),10,12);
         Sign("SEASIDE TUNNEL",route[tunnelStart-15],11,14);
         Sign("CHICANE / SLOW",new Vector3(-205,0,40),-10,13);
         // Start gantry is above maximum vehicle clearance.
@@ -375,10 +391,28 @@ public static class BuildHarborStreet
         camera.transform.position=spawn.position-spawn.forward*8+Vector3.up*4;camera.transform.LookAt(spawn.position+spawn.forward*5);
         RenderSettings.fogColor=new Color(.64f,.76f,.80f);RenderSettings.fogDensity=.0009f;
         EditorSceneManager.SaveScene(scene);
-        var scenes=EditorBuildSettings.scenes.ToList();scenes.Add(new EditorBuildSettingsScene(ScenePath,true));EditorBuildSettings.scenes=scenes.ToArray();
+        var scenes=EditorBuildSettings.scenes.ToList();
+        if(!scenes.Any(s=>s.path==ScenePath))scenes.Add(new EditorBuildSettingsScene(ScenePath,true));
+        EditorBuildSettings.scenes=scenes.ToArray();
         AssetDatabase.SaveAssets();
         float length=Enumerable.Range(0,route.Length).Sum(i=>Vector3.Distance(route[i],route[(i+1)%route.Length]));
         return "Harbor Street built: "+length.ToString("F0")+"m, "+route.Max(p=>p.y).ToString("F1")+"m climb, hotel hairpin, seaside tunnel, harbor chicane, "+streetLights.Count+" night streetlights.";
+    }
+    // Explicit repair entry: only replace this generated course, retaining all asset GUIDs.
+    public static string SeparateHotelHairpin()
+    {
+        var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        if(EditorApplication.isPlaying||scene.isDirty||scene.path!=ScenePath)
+            throw new Exception("Open the saved Harbor Street scene outside Play Mode before repair.");
+        rebuildingHairpin=true;
+        try
+        {
+            string result=Run();
+            // Foundations are now generated with their buildings in the concrete batch.
+            AssetDatabase.DeleteAsset(Dir+"/City terrace foundations.asset");
+            return result+" The hotel approach and exit no longer cross in plan view.";
+        }
+        finally{rebuildingHairpin=false;}
     }
     public static string AddMenu()
     {

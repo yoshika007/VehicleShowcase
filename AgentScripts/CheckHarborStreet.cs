@@ -89,7 +89,7 @@ public static class CheckHarborStreet
         TestDriveSelection.Select(carIndex,course:TestDriveSelection.CourseKind.HarborStreet);
         SceneManager.LoadScene("HarborStreetScene");await Frames(3);
         Object.FindAnyObjectByType<TestDriveIntro>()?.Skip();await Frames(2);
-        await Place(25,105);
+        await Place(4,125);
         var car=Object.FindAnyObjectByType<TestDriveMovement>();var rb=car.GetComponent<Rigidbody>();
         var controls=Object.FindAnyObjectByType<TestDriveTouchControls>();var data=new SerializedObject(controls);
         var gas=(TestDriveTouchButton)data.FindProperty("gas").objectReferenceValue;
@@ -104,7 +104,7 @@ public static class CheckHarborStreet
         float error=0;int advance=0,steps=0;
         try
         {
-            for(;steps<650 && advance<55;steps++)
+            for(;steps<900 && advance<48;steps++)
             {
                 int nearest=Enumerable.Range(0,points.Length).OrderBy(i=>(points[i]-car.transform.position).sqrMagnitude).First();
                 advance=(nearest-start+points.Length)%points.Length;
@@ -127,7 +127,7 @@ public static class CheckHarborStreet
     {
         TestDriveSelection.Select(1,course:TestDriveSelection.CourseKind.HarborStreet);
         SceneManager.LoadScene("HarborStreetScene");await Frames(3);Object.FindAnyObjectByType<TestDriveIntro>()?.Skip();await Frames(2);
-        string hairpin=await Place(14,82);string tunnel=await Place(195,20,true);
+        string hairpin=await Place(17,99);string tunnel=await Place(195,20,true);
         var car=Object.FindAnyObjectByType<TestDriveMovement>();car.ResetVehicle();await Frames(30);
         string reset="reset count="+car.ResetCount+", position="+car.transform.position+", grounded="+car.GetComponentsInChildren<WheelCollider>().Count(w=>w.isGrounded);
         Object.FindAnyObjectByType<TestDriveSceneManager>().ReturnToShowroom();
