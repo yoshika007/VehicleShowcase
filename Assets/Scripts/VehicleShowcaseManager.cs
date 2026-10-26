@@ -169,6 +169,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void SetFreeRideNight() { if (CourseMenuOpen && !isTransitioning) { freeRideLighting = TestDriveSelection.TimeOfDay.Night; PlayButtonSound(navigationSound); } }
     public void TestCircuitRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.TestCircuit);
     public void LakeTownRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.LakeTown);
+    public void MountainPassRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.MountainPass);
     private void SelectFreeRideCourse(TestDriveSelection.CourseKind course)
     {
         if (!CourseMenuOpen || isTransitioning) return;
@@ -218,7 +219,9 @@ public class VehicleShowcaseManager : MonoBehaviour
             return;
         }
         TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge, course);
-        BeginTransition(TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown ? "LakeTownScene" : "TestTrackScene", driveStartSound != null ? driveStartSound : backSound);
+        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass ? "MountainPassScene"
+            : TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown ? "LakeTownScene" : "TestTrackScene";
+        BeginTransition(scene, driveStartSound != null ? driveStartSound : backSound);
     }
 
     private void BeginTransition(string sceneName, AudioClip transitionSound)

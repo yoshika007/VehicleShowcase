@@ -3,7 +3,7 @@ using UnityEngine;
 // Keeps the chosen vehicle during scene changes in the current play session.
 public static class TestDriveSelection
 {
-    public enum CourseKind { TestCircuit, LakeTown }
+    public enum CourseKind { TestCircuit, LakeTown, MountainPass }
     public static CourseKind Course { get; private set; }
     public enum DriveMode { FreeRun, Challenge }
     public enum ChallengeKind { CleanLap, CheckpointSprint, Slalom, OffroadTrail, HillClimb, NightLap }
