@@ -56,7 +56,7 @@ public static class CheckDriveIntro
     {
         float original=Time.timeScale;
         Time.timeScale=0;
-        try { return await Seek(8.99f)+", timeScale="+Time.timeScale; }
+        try { return await Seek(TestDriveIntro.Duration - .01f)+", timeScale="+Time.timeScale; }
         finally { Time.timeScale=original; }
     }
     public static async Task<string> Challenge()
@@ -85,7 +85,7 @@ public static class CheckDriveIntro
         {
             TestDriveSelection.Select(0,TestDriveSelection.DriveMode.Challenge,challenge:kind);
             SceneManager.LoadScene("TestTrackScene");await Step(3);
-            await Seek(4);
+            await Seek(TestDriveIntro.Duration * .5f);
             string shot=UnityEngine.Object.FindAnyObjectByType<TestDriveIntro>().GetComponentsInChildren<TMPro.TMP_Text>().First(t=>t.name=="IntroTitle").text;
             UnityEngine.Object.FindAnyObjectByType<TestDriveIntro>().Skip();await Step(2);
             var challenge=UnityEngine.Object.FindAnyObjectByType<TestDriveCleanLapChallenge>();

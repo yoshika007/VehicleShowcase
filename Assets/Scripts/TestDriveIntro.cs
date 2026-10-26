@@ -10,7 +10,11 @@ using UnityEngine.SceneManagement;
 // challenge briefing/countdown. Uses unscaled time and restores all captured state.
 public class TestDriveIntro : MonoBehaviour
 {
-    public const float Duration = 9f;
+    private const float CarSeconds = 1.8f;
+    private const float FeatureSeconds = 1.2f;
+    private const float HandoffSeconds = .8f;
+    private const float FeaturesEnd = CarSeconds + FeatureSeconds * 2;
+    public const float Duration = FeaturesEnd + HandoffSeconds;
     public bool IsPlaying { get; private set; }
     public float Elapsed => elapsed;
     private TestDriveMovement vehicle;
@@ -153,9 +157,9 @@ public class TestDriveIntro : MonoBehaviour
     {
         FitSafeArea();
         view.nearClipPlane = .1f;
-        if (time < 3f)
+        if (time < CarSeconds)
         {
-            float t = Mathf.SmoothStep(0, 1, time / 3f);
+            float t = Mathf.SmoothStep(0, 1, time / CarSeconds);
             Vector3 offset = Quaternion.AngleAxis(Mathf.Lerp(-55, 45, t), Vector3.up) * carForward * radius;
             Vector3 position = carCenter + offset + Vector3.up * Mathf.Lerp(carHeight, carHeight * 1.25f, t);
             Pose(position, carCenter, Mathf.Lerp(48, 43, t));
@@ -165,11 +169,12 @@ public class TestDriveIntro : MonoBehaviour
             subtitle.text = CourseName() + (TestDriveSelection.IsNight ? "  /  NIGHT DRIVE" : "  /  DAY DRIVE");
             fill.enabled = TestDriveSelection.IsNight; fill.transform.position = position;
         }
-        else if (time < 8f)
+        else if (time < FeaturesEnd)
         {
             fill.enabled = false;
-            var shot = time < 5.5f ? first : second;
-            float t = Mathf.SmoothStep(0, 1, (time < 5.5f ? time - 3f : time - 5.5f) / 2.5f);
+            bool firstShot = time < CarSeconds + FeatureSeconds;
+            var shot = firstShot ? first : second;
+            float t = Mathf.SmoothStep(0, 1, (time - CarSeconds - (firstShot ? 0 : FeatureSeconds)) / FeatureSeconds);
             Pose(Vector3.Lerp(shot.from, shot.to, t), shot.focus, 53);
             title.text = shot.title; subtitle.text = shot.subtitle;
         }
@@ -185,7 +190,7 @@ public class TestDriveIntro : MonoBehaviour
                 returnRotation = Quaternion.LookRotation(carCenter - returnPosition);
                 returnFov = 48f;
             }
-            float t = Mathf.SmoothStep(0, 1, time - 8f);
+            float t = Mathf.SmoothStep(0, 1, (time - FeaturesEnd) / HandoffSeconds);
             view.transform.SetPositionAndRotation(Vector3.Lerp(returnPosition, chasePosition, t),
                 Quaternion.Slerp(returnRotation, chaseRotation, t));
             view.fieldOfView = Mathf.Lerp(returnFov, fieldOfView, t);
