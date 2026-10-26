@@ -210,12 +210,12 @@ public static class BuildHarborStreet
             foreach(int side in new[]{-1,1})Box(route[i]+Side(i)*side*7.3f+Vector3.up*4,new Vector3(1,8,1.3f),walk,rot);
         }
     }
-    static void Text(string value,Vector3 p,Vector3 facing,float size,Vector2 area,Color color)
+    static TMP_Text Text(string value,Vector3 p,Vector3 facing,float size,Vector2 area,Color color)
     {
         var g=new GameObject(value,typeof(TextMeshPro));g.transform.SetParent(root,false);g.transform.position=p;
         g.transform.rotation=Quaternion.LookRotation(facing);
         var tmp=g.GetComponent<TextMeshPro>();tmp.text=value;tmp.fontSize=size;tmp.color=color;tmp.alignment=TextAlignmentOptions.Center;
-        tmp.rectTransform.sizeDelta=area;tmp.textWrappingMode=TextWrappingModes.NoWrap;
+        tmp.rectTransform.sizeDelta=area;tmp.textWrappingMode=TextWrappingModes.NoWrap;return tmp;
     }
     static void Sign(string label,Vector3 target,float side=9f,float width=11)
     {
@@ -226,8 +226,10 @@ public static class BuildHarborStreet
         var end=p+Vector3.up*4.5f+f*.16f;
         foreach(var start in new[]{foot+Vector3.up*4.5f,foot+Vector3.up*3.3f})
             Box((start+end)*.5f,new Vector3(.16f,.16f,Vector3.Distance(start,end)),metal,Quaternion.LookRotation(end-start));
+        var lettering=Text(label,p+Vector3.up*4.1f-f*.12f,f,5,new Vector2(width-.3f,1.5f),gold.color);
+        if(label=="HARBOR STREET"||label=="HOTEL HAIRPIN"||label=="SEASIDE TUNNEL")
+            width=lettering.GetPreferredValues(label).x+1f;
         Box(p+Vector3.up*4.1f,new Vector3(width,1.7f,.18f),navy,rot);
-        Text(label,p+Vector3.up*4.1f-f*.12f,f,5,new Vector2(width-.3f,1.5f),gold.color);
     }
     static void Building(Vector3 p,float width,float depth,float height,int style)
     {
