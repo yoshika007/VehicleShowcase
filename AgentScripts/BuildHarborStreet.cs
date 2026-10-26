@@ -169,7 +169,11 @@ public static class BuildHarborStreet
     static void Lamp(Vector3 foot,Vector3 direction,bool tunnel=false)
     {
         float h=tunnel?6.6f:7.5f;
-        if(!tunnel)Box(foot+Vector3.up*h*.5f,new Vector3(.18f,h,.18f),metal);
+        if(!tunnel)
+        {
+            Box(foot+Vector3.up*h*.5f,new Vector3(.18f,h,.18f),metal);
+            Box(foot+Vector3.up*.07f,new Vector3(.6f,.24f,.6f),stone);
+        }
         var position=foot+Vector3.up*h;
         var lensRenderer=SeparateBox(tunnel?"Tunnel lamp lens":"Boulevard lamp lens",position,new Vector3(1.3f,.12f,.5f),lens);
         lanterns.Add(lensRenderer);
@@ -216,7 +220,12 @@ public static class BuildHarborStreet
     static void Sign(string label,Vector3 target,float side=9f,float width=11)
     {
         int i=Near(target);var p=route[i]+Side(i)*side;var f=Forward(i);var rot=Quaternion.LookRotation(f);
-        Box(p+Vector3.up*2.3f,new Vector3(.18f,4.6f,.18f),metal);
+        var foot=route[i]+Side(i)*Mathf.Sign(side)*6.9f-Vector3.up*.12f;
+        Box(foot+Vector3.up*2.3f,new Vector3(.18f,4.6f,.18f),metal);
+        Box(foot+Vector3.up*.07f,new Vector3(.6f,.24f,.6f),stone);
+        var end=p+Vector3.up*4.5f+f*.16f;
+        foreach(var start in new[]{foot+Vector3.up*4.5f,foot+Vector3.up*3.3f})
+            Box((start+end)*.5f,new Vector3(.16f,.16f,Vector3.Distance(start,end)),metal,Quaternion.LookRotation(end-start));
         Box(p+Vector3.up*4.1f,new Vector3(width,1.7f,.18f),navy,rot);
         Text(label,p+Vector3.up*4.1f-f*.12f,f,5,new Vector2(width-.3f,1.5f),gold.color);
     }
@@ -275,7 +284,7 @@ public static class BuildHarborStreet
         for(int i=0;i<route.Length;i+=28)
         {
             if(i>=tunnelStart-8&&i<=tunnelEnd+8)continue;
-            int sign=i%56==0?1:-1;var foot=route[i]+Side(i)*sign*8.4f;
+            int sign=i%56==0?1:-1;var foot=route[i]+Side(i)*sign*6.9f-Vector3.up*.12f;
             if(route.Where((q,j)=>Mathf.Abs(j-i)>15).Any(q=>new Vector2(q.x-foot.x,q.z-foot.z).magnitude<7))continue;
             Lamp(foot,Side(i)*-sign*2);
         }
