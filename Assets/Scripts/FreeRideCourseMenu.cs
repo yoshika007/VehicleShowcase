@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 // Course selection before choosing Free Run or Challenge.
 public class FreeRideCourseMenu : MonoBehaviour
@@ -9,10 +10,17 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button lakeTown;
     [SerializeField] private UnityEngine.UI.Button mountainPass;
     [SerializeField] private UnityEngine.UI.Button harborStreet;
+    private const int VisibleCourses = 3;
+    private UnityEngine.UI.Button previousPage, nextPage;
+    private int firstVisible;
+    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, harborStreet };
+
     private void OnEnable()
     {
         ArrangeWithoutSubtitle();
+        firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 1 : 0;
         ArrangeCourses();
+        EnsurePagingControls();
         MatchButtonSizes();
         AddCoursePhotos();
         UpdateCourseDescriptions();
@@ -38,37 +46,89 @@ public class FreeRideCourseMenu : MonoBehaviour
     }
     private void ArrangeCourses()
     {
-        if (mountainPass == null) return;
         var dialog = transform.Find("Dialog") as RectTransform;
         if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1150f);
-        var buttons = harborStreet != null ? new[] { circuit, lakeTown, mountainPass, harborStreet }
-            : new[] { circuit, lakeTown, mountainPass };
-        bool four = harborStreet != null;
+        var buttons = CourseButtons;
         for (int i = 0; i < buttons.Length; i++)
         {
+            if (buttons[i] == null) continue;
             var rect = (RectTransform)buttons[i].transform;
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 255f : 280f);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300f);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 380f);
-            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 275f : 310f), 50f);
             foreach (var label in buttons[i].GetComponentsInChildren<TMP_Text>(true))
             {
-                label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 235f : 260f);
+                label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 280f);
                 if (label.name == "Label")
                 {
                     label.enableAutoSizing = true;
-                    label.fontSizeMin = four ? 20f : 24f;
-                    label.fontSizeMax = four ? 30f : 34f;
+                    label.fontSizeMin = 24f;
+                    label.fontSizeMax = 34f;
                     label.textWrappingMode = TextWrappingModes.NoWrap;
                     label.rectTransform.anchoredPosition = new Vector2(0f, 150f);
                 }
-                else if (label.name == "Details")
-                {
-                    label.fontSize = four ? 21f : 23f;
-                    label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 120f);
-                    label.rectTransform.anchoredPosition = new Vector2(0f, -30f);
-                }
             }
+            var swipe = buttons[i].GetComponent<CourseCardSwipe>();
+            if (swipe == null) swipe = buttons[i].gameObject.AddComponent<CourseCardSwipe>();
+            swipe.Initialize(this);
         }
+        UpdatePage();
+    }
+
+    private void EnsurePagingControls()
+    {
+        var dialog = transform.Find("Dialog");
+        if (dialog == null) return;
+        if (previousPage == null) previousPage = CreatePageButton(dialog, "PreviousCourses", "ArrowLeft", -520f, -1);
+        if (nextPage == null) nextPage = CreatePageButton(dialog, "NextCourses", "ArrowRight", 520f, 1);
+        UpdatePage();
+    }
+
+    private UnityEngine.UI.Button CreatePageButton(Transform parent, string name, string iconName, float x, int direction)
+    {
+        var obj = new GameObject(name, typeof(RectTransform), typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Button));
+        var rect = (RectTransform)obj.transform;
+        rect.SetParent(parent, false);
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
+        rect.sizeDelta = new Vector2(66f, 80f);
+        rect.anchoredPosition = new Vector2(x, 50f);
+        var image = obj.GetComponent<UnityEngine.UI.Image>();
+        image.color = new Color(.10f, .34f, .38f, 1f);
+        var button = obj.GetComponent<UnityEngine.UI.Button>();
+        button.targetGraphic = image;
+        button.onClick.AddListener(() => ChangePage(direction));
+        var icon = new GameObject("Icon", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+        var iconRect = (RectTransform)icon.transform;
+        iconRect.SetParent(rect, false);
+        iconRect.anchorMin = iconRect.anchorMax = iconRect.pivot = new Vector2(.5f, .5f);
+        iconRect.sizeDelta = new Vector2(40f, 40f);
+        var iconImage = icon.GetComponent<UnityEngine.UI.Image>();
+        iconImage.sprite = Resources.Load<Sprite>("FreeRideButtonToons/" + iconName);
+        iconImage.preserveAspect = true;
+        iconImage.raycastTarget = false;
+        return button;
+    }
+
+    public void ChangePage(int direction)
+    {
+        int count = 0;
+        foreach (var button in CourseButtons) if (button != null) count++;
+        firstVisible = Mathf.Clamp(firstVisible + direction, 0, Mathf.Max(0, count - VisibleCourses));
+        UpdatePage();
+    }
+
+    private void UpdatePage()
+    {
+        int index = 0;
+        foreach (var button in CourseButtons)
+        {
+            if (button == null) continue;
+            bool visible = index >= firstVisible && index < firstVisible + VisibleCourses;
+            button.gameObject.SetActive(visible);
+            if (visible) ((RectTransform)button.transform).anchoredPosition = new Vector2((index - firstVisible - 1) * 320f, 50f);
+            index++;
+        }
+        if (previousPage != null) previousPage.interactable = firstVisible > 0;
+        if (nextPage != null) nextPage.interactable = firstVisible + VisibleCourses < index;
     }
     private void AddCoursePhotos()
     {
@@ -189,5 +249,20 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (outline != null) outline.enabled = selected;
         var title = button.transform.Find("Label")?.GetComponent<TMP_Text>();
         if (title != null) title.color = selected ? new Color(.98f, .77f, .25f) : Color.white;
+    }
+}
+
+// A drag on a card changes the visible set; an ordinary tap still selects the card.
+public class CourseCardSwipe : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+{
+    private FreeRideCourseMenu menu;
+    private Vector2 start;
+    public void Initialize(FreeRideCourseMenu target) => menu = target;
+    public void OnBeginDrag(PointerEventData eventData) => start = eventData.position;
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Vector2 delta = eventData.position - start;
+        if (menu != null && Mathf.Abs(delta.x) >= 60f && Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+            menu.ChangePage(delta.x < 0f ? 1 : -1);
     }
 }
