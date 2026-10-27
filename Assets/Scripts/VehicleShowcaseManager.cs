@@ -322,7 +322,7 @@ public class VehicleShowcaseManager : MonoBehaviour
             testDriveCatalog.drivingPrefabs[currentVehicleIndex] != null)
         {
             float targetSpeed = testDriveCatalog.drivingPrefabs[currentVehicleIndex].TargetTopSpeedKmh;
-            descriptionText.text += $"\nTOP SPEED (TARGET): {Mathf.RoundToInt(targetSpeed)} km/h";
+            descriptionText.text += $"\nTOP SPEED: {Mathf.RoundToInt(targetSpeed)} km/h";
         }
         if (layoutText != null)
             layoutText.text = $"LAYOUT: {currentVehicle.LayoutCode}";
