@@ -55,6 +55,31 @@ public static class AddPineWetLanes
         var board=GameObject.CreatePrimitive(PrimitiveType.Cube);board.name=title+" board";board.transform.SetParent(root,false);board.transform.SetPositionAndRotation(p+Vector3.up*2.5f,Quaternion.LookRotation(direction));board.transform.localScale=new Vector3(4.2f,1.15f,.16f);board.GetComponent<Renderer>().sharedMaterial=material;Object.DestroyImmediate(board.GetComponent<Collider>());
         var label=new GameObject("Lettering",typeof(TextMeshPro));label.transform.SetParent(root,false);label.transform.SetPositionAndRotation(board.transform.position-direction*.09f,board.transform.rotation);var text=label.GetComponent<TextMeshPro>();text.text=title;text.fontSize=4.2f;text.alignment=TextAlignmentOptions.Center;text.color=new Color(.98f,.8f,.35f);text.rectTransform.sizeDelta=new Vector2(4f,1f);
     }
+    static void AddSecondMud(Material mud, Material timber)
+    {
+        var recovery = new GameObject("Forest Mud Dry Recovery Point").transform;
+        recovery.SetParent(root, false);
+        var direction = route[529] - route[528]; direction.y = 0;
+        recovery.SetPositionAndRotation(route[528] + Side(528) * 3f + Vector3.up * .8f, Quaternion.LookRotation(direction));
+        Lane("Forest mud lane", 480, 525, mud, TestDriveSurface.Kind.Mud, recovery);
+        Sign(465, "MUD AHEAD", timber);
+    }
+    public static string ExtendMud()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/Scenes/PineRidgeScene.unity" || EditorApplication.isPlaying) throw new Exception("Open Pine Ridge in Edit Mode");
+        root = scene.GetRootGameObjects().First(x => x.name == "Optional Mud and Water Lanes").transform;
+        if (root.Find("Forest mud lane") != null || AssetDatabase.LoadAssetAtPath<Mesh>(Dir + "/Forest mud lane.asset") != null) throw new Exception("Forest mud lane already exists");
+        var map = AssetDatabase.FindAssets("Trail map t:Mesh", new[] { "Assets/Environments/PineRidge" }).Select(AssetDatabase.GUIDToAssetPath).Select(AssetDatabase.LoadAssetAtPath<Mesh>).First();
+        var vertices = map.vertices; route = new Vector3[vertices.Length / 2 - 1];
+        for (int i = 0; i < route.Length; i++) route[i] = (vertices[i * 2] + vertices[i * 2 + 1]) * .5f;
+        var mud = AssetDatabase.LoadAssetAtPath<Material>("Assets/Environments/OffroadCourse/WetTrial/Wet Rutted Mud.mat");
+        var timber = AssetDatabase.LoadAssetAtPath<Material>("Assets/Environments/PineRidge/Details/Trail timber.mat");
+        if (mud == null || timber == null) throw new Exception("Required existing materials not found");
+        AddSecondMud(mud, timber);
+        EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene); AssetDatabase.SaveAssets();
+        return "Added a second mud lane, warning sign, and nearby dry recovery point.";
+    }
     public static string Run()
     {
         var scene=SceneManager.GetActiveScene();if(scene.path!="Assets/Scenes/PineRidgeScene.unity"||EditorApplication.isPlaying)throw new Exception("Open Pine Ridge in Edit Mode");
@@ -71,6 +96,7 @@ public static class AddPineWetLanes
         var muddy=Lane("Mud lane",205,245,mud,TestDriveSurface.Kind.Mud,recovery);
         var ford=Lane("Shallow water lane",355,375,water,TestDriveSurface.Kind.Water,null);
         Sign(190,"MUD LANE",timber);Sign(340,"SHALLOW WATER",timber);
+        AddSecondMud(mud, timber);
         EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
         return "Added optional mud and shallow water lanes with spray, resistance, audio and dry-side recovery.";
     }
