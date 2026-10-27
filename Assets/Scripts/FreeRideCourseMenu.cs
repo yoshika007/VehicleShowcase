@@ -24,8 +24,8 @@ public class FreeRideCourseMenu : MonoBehaviour
         var subtitle = transform.Find("Dialog/Subtitle");
         if (subtitle == null || subtitle.gameObject.activeSelf) return;
         var dialog = transform.Find("Dialog") as RectTransform;
-        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 650f);
-        SetRowPosition("Heading", 270f);
+        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 690f);
+        SetRowPosition("Heading", 290f);
         SetRowPosition("TestCircuitCourse", 50f);
         SetRowPosition("LakeTownCourse", 50f);
         SetRowPosition("Back", -240f);
