@@ -23,6 +23,7 @@ public class TestDriveMovement : MonoBehaviour
     [Header("Engine and brakes")]
     [SerializeField, Min(0f)] private float moveSpeed = 8f;
     [SerializeField, Min(0f)] private float reverseSpeed = 4f;
+    public float TargetTopSpeedKmh => moveSpeed * 3.6f;
     [SerializeField, Min(0f)] private float motorTorque = 1600f;
     [SerializeField, Min(0f)] private float torqueResponse = 2500f;
     [SerializeField, Min(0f)] private float brakeTorque = 1800f;

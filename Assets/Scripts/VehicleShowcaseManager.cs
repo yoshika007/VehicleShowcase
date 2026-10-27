@@ -317,6 +317,13 @@ public class VehicleShowcaseManager : MonoBehaviour
         vehicleNameText.text = currentVehicle.DisplayName;
         categoryText.text = currentVehicle.Category;
         descriptionText.text = currentVehicle.GetDiscription();
+        if (testDriveCatalog != null && testDriveCatalog.drivingPrefabs != null &&
+            currentVehicleIndex < testDriveCatalog.drivingPrefabs.Length &&
+            testDriveCatalog.drivingPrefabs[currentVehicleIndex] != null)
+        {
+            float targetSpeed = testDriveCatalog.drivingPrefabs[currentVehicleIndex].TargetTopSpeedKmh;
+            descriptionText.text += $"\nTOP SPEED (TARGET): {Mathf.RoundToInt(targetSpeed)} km/h";
+        }
         if (layoutText != null)
             layoutText.text = $"LAYOUT: {currentVehicle.LayoutCode}";
         vehicleCounterText.text = $"{currentVehicleIndex + 1} / {vehiclePrefabs.Length}";

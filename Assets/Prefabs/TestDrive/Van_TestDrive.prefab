@@ -947,7 +947,7 @@ MonoBehaviour:
     visual: {fileID: 3957632723273154565}
     steering: 0
     driven: 0
-  moveSpeed: 50
+  moveSpeed: 41.666668
   reverseSpeed: 4
   motorTorque: 2500
   torqueResponse: 3500
