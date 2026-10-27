@@ -32,7 +32,7 @@ public class VehiclePaintSelector : MonoBehaviour
         int count = target != null && target.Palette != null ? target.Palette.Count : 0;
         section.SetActive(count > 0);
         panel.sizeDelta = panelSize + Vector2.up * (count > 0 ? extraPanelHeight : 0f);
-        Vector2 position = drivePosition - Vector2.up * (count > 0 ? extraPanelHeight * .5f : 0f);
+        Vector2 position = drivePosition - Vector2.up * (count > 0 ? extraPanelHeight * panel.localScale.y * .5f : 0f);
         if (testDriveButton.TryGetComponent<TestDriveButtonFeedback>(out var feedback))
             feedback.SetRestingPosition(position);
         else testDriveButton.anchoredPosition = position;
