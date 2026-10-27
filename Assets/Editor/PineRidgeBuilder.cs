@@ -63,6 +63,13 @@ public static class PineRidgeBuilder
         }
         return SaveMesh(name, vertices.ToArray(), triangles.ToArray());
     }
+    static void AudioSurface(GameObject go, TestDriveAudioSurface.Kind kind)
+    {
+        var audio = go.AddComponent<TestDriveAudioSurface>();
+        var so = new SerializedObject(audio);
+        so.FindProperty("kind").enumValueIndex = (int)kind;
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
     static void Surface(GameObject go, float grip)
     {
         var surface = go.AddComponent<TestDriveSurface>(); var so = new SerializedObject(surface);
@@ -112,7 +119,7 @@ public static class PineRidgeBuilder
             float px=-540+x*12f, pz=-540+z*12f; vertices.Add(new Vector3(px,Ground(px,pz),pz));
             if (x>0 && z>0) { int i=z*(grid+1)+x; triangles.AddRange(new[]{i-grid-2,i-1,i-grid-1,i-grid-1,i-1,i}); }
         }
-        MeshObject("Forest terrain",SaveMesh("Forest terrain",vertices.ToArray(),triangles.ToArray()),grass,true);
+        AudioSurface(MeshObject("Forest terrain",SaveMesh("Forest terrain",vertices.ToArray(),triangles.ToArray()),grass,true), TestDriveAudioSurface.Kind.Grass);
         vertices.Clear(); triangles.Clear();
         for (int i=0;i<=samples;i++)
         {
@@ -123,13 +130,16 @@ public static class PineRidgeBuilder
             }
             if(i>0) for(int j=0;j<3;j++){int a=(i-1)*4+j,b=i*4+j;triangles.AddRange(new[]{a,b,a+1,a+1,b,b+1});}
         }
-        MeshObject("Trail earth banks",SaveMesh("Trail earth banks",vertices.ToArray(),triangles.ToArray()),soil,true);
+        var banks = MeshObject("Trail earth banks",SaveMesh("Trail earth banks",vertices.ToArray(),triangles.ToArray()),soil,true);
+        AudioSurface(banks, TestDriveAudioSurface.Kind.Dirt);
+        Surface(banks, 1f); // Dust without changing the bank's original grip.
         var full=Ribbon("Trail map",0,samples,14,0); // map mesh represents the complete loop
         for(int part=0;part<3;part++)
         {
             int from=part==0?0:part==1?350:380, to=part==0?350:part==1?380:samples;
             var road=MeshObject(part==1?"Shallow creek crossing":"Packed dirt trail "+part,Ribbon("Trail section",from,to,14,.03f),part==1?creek:dirt,true);
             Surface(road,part==1?.82f:.88f);
+            AudioSurface(road, part==1 ? TestDriveAudioSurface.Kind.Gravel : TestDriveAudioSurface.Kind.Dirt);
         }
         var cv=new List<Vector3>(); var ct=new List<int>();
         for(int i=0;i<8;i++){float a=i*Mathf.PI/4,b=(i+1)*Mathf.PI/4;int n=cv.Count;cv.AddRange(new[]{new Vector3(Mathf.Cos(a),0,Mathf.Sin(a)),Vector3.up,new Vector3(Mathf.Cos(b),0,Mathf.Sin(b))});ct.AddRange(new[]{n,n+1,n+2});}
