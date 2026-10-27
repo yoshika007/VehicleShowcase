@@ -9,6 +9,7 @@ public class InterceptorRoofLights : MonoBehaviour
     private MaterialPropertyBlock properties;
     private float startedAt;
     private int displayedState = -1;
+    private bool allowSpill;
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     private static readonly Color Red = new Color(1f, .012f, .025f);
@@ -16,6 +17,10 @@ public class InterceptorRoofLights : MonoBehaviour
 
     private void OnEnable()
     {
+        // Keep the flashing lenses, but prevent their colored spill from making
+        // Harbor Street road and scenery pulse with the beacons.
+        allowSpill = GetComponentInParent<TestDriveMovement>() == null ||
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "HarborStreetScene";
         startedAt = Time.time;
         displayedState = -1;
         Update();
@@ -29,8 +34,8 @@ public class InterceptorRoofLights : MonoBehaviour
         displayedState = state;
         ShowLens(0, Red, state == 1);
         ShowLens(1, Blue, flashing);
-        if (redSpill != null) redSpill.enabled = state == 1;
-        if (blueSpill != null) blueSpill.enabled = flashing;
+        if (redSpill != null) redSpill.enabled = allowSpill && state == 1;
+        if (blueSpill != null) blueSpill.enabled = allowSpill && flashing;
     }
 
     private void ShowLens(int slot, Color color, bool lit)
