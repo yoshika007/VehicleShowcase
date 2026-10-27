@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: APEX_PaintPalette
   m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
   paletteId: apex-gt
+  defaultIndex: 0
   options:
+  - displayName: SOLAR YELLOW
+    swatch: {r: 1, g: 0.83137256, b: 0.2784314, a: 1}
+    material: {fileID: 2100000, guid: 1c8095dbebeb6419882b1341741e08ea, type: 2}
   - displayName: SKY BLUE
     swatch: {r: 0.21176471, g: 0.62352943, b: 1, a: 1}
     material: {fileID: 2100000, guid: f56b5f95ebacd40ee9385847071f1ecd, type: 2}
@@ -23,6 +27,3 @@ MonoBehaviour:
   - displayName: PEARL WHITE
     swatch: {r: 0.9529412, g: 0.9647059, b: 0.9882353, a: 1}
     material: {fileID: 2100000, guid: 87567741626784efbaf7298b9cb8b1f1, type: 2}
-  - displayName: SOLAR YELLOW
-    swatch: {r: 1, g: 0.83137256, b: 0.2784314, a: 1}
-    material: {fileID: 2100000, guid: 1c8095dbebeb6419882b1341741e08ea, type: 2}

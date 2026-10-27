@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: PickupTruck_PaintPalette
   m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
   paletteId: workhorse
+  defaultIndex: 0
   options:
-  - displayName: HARVEST GOLD
-    swatch: {r: 0.6901961, g: 0.4745098, b: 0, a: 1}
-    material: {fileID: 2100000, guid: 364c54ffd676c4d91aa36343c29c240f, type: 2}
   - displayName: FOREST GREEN
     swatch: {r: 0.27450982, g: 0.38039216, b: 0.28627452, a: 1}
     material: {fileID: 2100000, guid: 601295e474dd548a2b048b6eb241f536, type: 2}
+  - displayName: HARVEST GOLD
+    swatch: {r: 0.6901961, g: 0.4745098, b: 0, a: 1}
+    material: {fileID: 2100000, guid: 364c54ffd676c4d91aa36343c29c240f, type: 2}
   - displayName: UTILITY WHITE
     swatch: {r: 0.9137255, g: 0.89411765, b: 0.84313726, a: 1}
     material: {fileID: 2100000, guid: f5288e785b9c04a85872d7ec1e10c36c, type: 2}

@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: MuscleCar_PaintPalette
   m_EditorClassIdentifier: Assembly-CSharp::VehiclePaintPalette
   paletteId: vortex-v8
+  defaultIndex: 0
   options:
-  - displayName: VINTAGE GREEN
-    swatch: {r: 0.43137255, g: 0.6313726, b: 0.44313726, a: 1}
-    material: {fileID: 2100000, guid: 244c6201374944f848e359d823a1da70, type: 2}
   - displayName: CHARGER ORANGE
     swatch: {r: 0.9019608, g: 0.45490196, b: 0.18039216, a: 1}
     material: {fileID: 2100000, guid: 3f67822b5eea54d469d5f133ffbd5431, type: 2}
+  - displayName: VINTAGE GREEN
+    swatch: {r: 0.43137255, g: 0.6313726, b: 0.44313726, a: 1}
+    material: {fileID: 2100000, guid: 244c6201374944f848e359d823a1da70, type: 2}
   - displayName: CHERRY RED
     swatch: {r: 0.6862745, g: 0.1882353, b: 0.23921569, a: 1}
     material: {fileID: 2100000, guid: dd4648970a928427089c5c8ae21afd2f, type: 2}

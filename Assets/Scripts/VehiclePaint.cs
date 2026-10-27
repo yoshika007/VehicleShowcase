@@ -10,7 +10,7 @@ public class VehiclePaint : MonoBehaviour
     private static readonly Dictionary<string, int> selections = new Dictionary<string, int>();
     public VehiclePaintPalette Palette => palette;
     public int SelectedIndex => palette != null && selections.TryGetValue(palette.Id, out int index)
-        ? Mathf.Clamp(index, 0, Mathf.Max(0, palette.Count - 1)) : 0;
+        ? Mathf.Clamp(index, 0, Mathf.Max(0, palette.Count - 1)) : palette != null ? palette.DefaultIndex : 0;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ClearSelections() => selections.Clear();
