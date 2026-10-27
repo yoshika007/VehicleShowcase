@@ -145,7 +145,9 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void FreeRun()
     {
         if (isTransitioning || driveModePanel == null || !driveModePanel.activeSelf) return;
-        BeginDrive(TestDriveSelection.DriveMode.FreeRun, freeRideLighting, course: freeRideCourse);
+        PlayButtonSound(navigationSound);
+        driveModePanel.SetActive(false);
+        ShowTimeOfDay();
     }
 
     public void ConfirmCourse()
@@ -165,6 +167,12 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (courseSelectionPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
 
+    private void ShowTimeOfDay()
+    {
+        timeOfDayPanel.SetActive(true);
+        if (timeOfDayPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
+    }
+
     public void BackToDriveModes()
     {
         if (isTransitioning || (!TimeMenuOpen && !ChallengeMenuOpen)) return;
@@ -182,7 +190,7 @@ public class VehicleShowcaseManager : MonoBehaviour
             : freeRideCourse == TestDriveSelection.CourseKind.MountainPass ? "Mountain Pass"
             : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? "Harbor Street" : "Test Circuit";
         var freeRunDescription = driveModePanel.transform.Find("Dialog/FreeRunButton/Description")?.GetComponent<TMP_Text>();
-        if (freeRunDescription != null) freeRunDescription.text = course + " / " + freeRideLighting;
+        if (freeRunDescription != null) freeRunDescription.text = "Explore " + course + "\nin day or night.";
         bool hasChallenges = freeRideCourse == TestDriveSelection.CourseKind.TestCircuit;
         var challenge = driveModePanel.transform.Find("Dialog/ChallengeButton")?.GetComponent<UnityEngine.UI.Button>();
         if (challenge != null)
@@ -195,8 +203,6 @@ public class VehicleShowcaseManager : MonoBehaviour
         }
     }
 
-    public void SetFreeRideDay() { if (CourseMenuOpen && !isTransitioning) { freeRideLighting = TestDriveSelection.TimeOfDay.Day; PlayButtonSound(navigationSound); } }
-    public void SetFreeRideNight() { if (CourseMenuOpen && !isTransitioning) { freeRideLighting = TestDriveSelection.TimeOfDay.Night; PlayButtonSound(navigationSound); } }
     public void TestCircuitRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.TestCircuit);
     public void LakeTownRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.LakeTown);
     public void MountainPassRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.MountainPass);
@@ -211,8 +217,14 @@ public class VehicleShowcaseManager : MonoBehaviour
     {
         FreeRun();
     }
-    public void DayDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Day, course: freeRideCourse); }
-    public void NightDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Night, course: freeRideCourse); }
+    public void DayDrive() => SelectTimeOfDay(TestDriveSelection.TimeOfDay.Day);
+    public void NightDrive() => SelectTimeOfDay(TestDriveSelection.TimeOfDay.Night);
+    private void SelectTimeOfDay(TestDriveSelection.TimeOfDay lighting)
+    {
+        if (isTransitioning || !TimeMenuOpen) return;
+        freeRideLighting = lighting;
+        BeginDrive(TestDriveSelection.DriveMode.FreeRun, lighting, course: freeRideCourse);
+    }
     public void Challenge()
     {
         if (isTransitioning || driveModePanel == null || !driveModePanel.activeSelf ||

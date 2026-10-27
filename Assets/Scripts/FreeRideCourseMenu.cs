@@ -1,12 +1,10 @@
 using UnityEngine;
 using TMPro;
 
-// Course and lighting selection before choosing Free Run or Challenge.
+// Course selection before choosing Free Run or Challenge.
 public class FreeRideCourseMenu : MonoBehaviour
 {
     [SerializeField] private VehicleShowcaseManager manager;
-    [SerializeField] private UnityEngine.UI.Button day;
-    [SerializeField] private UnityEngine.UI.Button night;
     [SerializeField] private UnityEngine.UI.Button circuit;
     [SerializeField] private UnityEngine.UI.Button lakeTown;
     [SerializeField] private UnityEngine.UI.Button mountainPass;
@@ -16,10 +14,8 @@ public class FreeRideCourseMenu : MonoBehaviour
         ArrangeWithoutSubtitle();
         ArrangeCourses();
         MatchButtonSizes();
-        UpdateActionLabels();
         AddCoursePhotos();
         UpdateCourseDescriptions();
-        MatchActionButtonColors();
         AddToonButtonIcons();
         Refresh();
     }
@@ -28,14 +24,12 @@ public class FreeRideCourseMenu : MonoBehaviour
         var subtitle = transform.Find("Dialog/Subtitle");
         if (subtitle == null || subtitle.gameObject.activeSelf) return;
         var dialog = transform.Find("Dialog") as RectTransform;
-        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 760f);
-        SetRowPosition("Heading", 325f);
-        SetRowPosition("TestCircuitCourse", 90f);
-        SetRowPosition("LakeTownCourse", 90f);
-        SetRowPosition("Day", -170f);
-        SetRowPosition("Night", -170f);
-        SetRowPosition("Back", -290f);
-        SetRowPosition("Go", -290f);
+        if (dialog != null) dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 650f);
+        SetRowPosition("Heading", 270f);
+        SetRowPosition("TestCircuitCourse", 50f);
+        SetRowPosition("LakeTownCourse", 50f);
+        SetRowPosition("Back", -240f);
+        SetRowPosition("Go", -240f);
     }
     private void SetRowPosition(string name, float y)
     {
@@ -55,7 +49,7 @@ public class FreeRideCourseMenu : MonoBehaviour
             var rect = (RectTransform)buttons[i].transform;
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 255f : 280f);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 380f);
-            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 275f : 310f), 90f);
+            rect.anchoredPosition = new Vector2((i - (buttons.Length - 1) * .5f) * (four ? 275f : 310f), 50f);
             foreach (var label in buttons[i].GetComponentsInChildren<TMP_Text>(true))
             {
                 label.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, four ? 235f : 260f);
@@ -133,56 +127,19 @@ public class FreeRideCourseMenu : MonoBehaviour
     }
     private void MatchButtonSizes()
     {
-        if (circuit == null || lakeTown == null) return;
-        if (mountainPass != null)
+        var back = transform.Find("Dialog/Back") as RectTransform;
+        if (back == null) return;
+        back.sizeDelta = new Vector2(510f, 90f);
+        back.anchoredPosition = new Vector2(-275f, -240f);
+        var go = transform.Find("Dialog/Go") as RectTransform;
+        if (go != null)
         {
-            foreach (string name in new[] { "Day", "Night", "Back", "Go" })
-            {
-                var rect = transform.Find("Dialog/" + name) as RectTransform;
-                if (rect == null) continue;
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 510f);
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 90f);
-                rect.anchoredPosition = new Vector2(name == "Day" || name == "Back" ? -275f : 275f,
-                    name == "Day" || name == "Night" ? -170f : -290f);
-            }
-            return;
+            go.sizeDelta = new Vector2(510f, 90f);
+            go.anchoredPosition = new Vector2(275f, -240f);
         }
-        var leftColumn = (RectTransform)circuit.transform;
-        var rightColumn = (RectTransform)lakeTown.transform;
-        MatchButtonWidth(day, leftColumn);
-        MatchButtonWidth(night, rightColumn);
-        MatchButtonWidth(transform.Find("Dialog/Back")?.GetComponent<UnityEngine.UI.Button>(), leftColumn);
-        MatchButtonWidth(transform.Find("Dialog/Go")?.GetComponent<UnityEngine.UI.Button>(), rightColumn);
-    }
-    private static void MatchButtonWidth(UnityEngine.UI.Button button, RectTransform column)
-    {
-        if (button == null) return;
-        var rect = (RectTransform)button.transform;
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, column.rect.width);
-        rect.anchoredPosition = new Vector2(column.anchoredPosition.x, rect.anchoredPosition.y);
-    }
-    private void UpdateActionLabels()
-    {
-        var driveLabel = transform.Find("Dialog/Go/Label")?.GetComponent<TMP_Text>();
-        if (driveLabel != null) driveLabel.text = "NEXT";
-        var subtitle = transform.Find("Dialog/Subtitle")?.GetComponent<TMP_Text>();
-        if (subtitle != null) subtitle.text = "Choose a course and lighting, then select a drive mode.";
-    }
-    private void MatchActionButtonColors()
-    {
-        var back = transform.Find("Dialog/Back")?.GetComponent<UnityEngine.UI.Button>();
-        var go = transform.Find("Dialog/Go")?.GetComponent<UnityEngine.UI.Button>();
-        if (back == null || go == null) return;
-        if (back.targetGraphic != null && go.targetGraphic != null)
-            go.targetGraphic.color = back.targetGraphic.color;
-        var backLabel = back.GetComponentInChildren<TMP_Text>(true);
-        var goLabel = go.GetComponentInChildren<TMP_Text>(true);
-        if (backLabel != null && goLabel != null) goLabel.color = backLabel.color;
     }
     private void AddToonButtonIcons()
     {
-        AddToonIcon(day, "Sun");
-        AddToonIcon(night, "MoonStar");
         AddToonIcon(transform.Find("Dialog/Back")?.GetComponent<UnityEngine.UI.Button>(), "ArrowLeft");
         AddToonIcon(transform.Find("Dialog/Go")?.GetComponent<UnityEngine.UI.Button>(), "ArrowRight");
     }
@@ -219,9 +176,6 @@ public class FreeRideCourseMenu : MonoBehaviour
     private void LateUpdate() => Refresh();
     private void Refresh()
     {
-        bool isNight = manager != null && manager.FreeRideLighting == TestDriveSelection.TimeOfDay.Night;
-        Tint(day, !isNight);
-        Tint(night, isNight);
         bool lakeSelected = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.LakeTown;
         TintCourse(circuit, manager == null || manager.FreeRideCourse == TestDriveSelection.CourseKind.TestCircuit);
         TintCourse(mountainPass, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.MountainPass);
@@ -235,14 +189,5 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (outline != null) outline.enabled = selected;
         var title = button.transform.Find("Label")?.GetComponent<TMP_Text>();
         if (title != null) title.color = selected ? new Color(.98f, .77f, .25f) : Color.white;
-    }
-    private static void Tint(UnityEngine.UI.Button button, bool selected)
-    {
-        if (button == null) return;
-        button.GetComponent<UnityEngine.UI.Image>().color = selected ? new Color(.98f, .77f, .25f) : new Color(.10f, .22f, .26f);
-        var foreground = selected ? new Color(.04f, .06f, .08f) : Color.white;
-        button.GetComponentInChildren<TMP_Text>().color = foreground;
-        var icon = button.transform.Find("ToonIcon")?.GetComponent<UnityEngine.UI.Image>();
-        if (icon != null) icon.color = foreground;
     }
 }
