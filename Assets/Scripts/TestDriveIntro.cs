@@ -13,6 +13,7 @@ public class TestDriveIntro : MonoBehaviour
     private const float CarSeconds = 1.8f;
     private const float FeatureSeconds = 1.2f;
     private const float HandoffSeconds = .8f;
+    private const float BottomLetterboxHeight = .18f;
     private const float FeaturesEnd = CarSeconds + FeatureSeconds * 2;
     public const float Duration = FeaturesEnd + HandoffSeconds;
     public bool IsPlaying { get; private set; }
@@ -269,15 +270,15 @@ public class TestDriveIntro : MonoBehaviour
         var top = Rect("Top letterbox", transform, new Vector2(0, .90f), Vector2.one);
         var topImage = top.gameObject.AddComponent<UnityEngine.UI.Image>();
         topImage.color = new Color(0, 0, 0, .88f); topImage.raycastTarget = false;
-        var bottom = Rect("Bottom letterbox", transform, Vector2.zero, new Vector2(1, .18f));
+        var bottom = Rect("Bottom letterbox", transform, Vector2.zero, new Vector2(1, BottomLetterboxHeight));
         var bottomImage = bottom.gameObject.AddComponent<UnityEngine.UI.Image>();
         bottomImage.color = new Color(0, 0, 0, .88f); bottomImage.raycastTarget = false;
         safeArea = Rect("IntroSafeArea", transform, Vector2.zero, Vector2.one);
         var hint = Text("TapHint", safeArea, "Tap anywhere to skip", 24, new Vector2(.67f, .91f), new Vector2(.96f, .98f));
         hint.alignment = TextAlignmentOptions.MidlineRight;
-        title = Text("IntroTitle", safeArea, "", 48, new Vector2(.045f, .09f), new Vector2(.77f, .15f));
+        title = Text("IntroTitle", safeArea, "", 48, new Vector2(.045f, .065f), new Vector2(.77f, .132f));
         title.color = new Color(.98f, .77f, .25f);
-        subtitle = Text("IntroSubtitle", safeArea, "", 27, new Vector2(.045f, .035f), new Vector2(.80f, .085f));
+        subtitle = Text("IntroSubtitle", safeArea, "", 27, new Vector2(.045f, .007f), new Vector2(.80f, .054f));
         if (EventSystem.current != null)
         {
             previousSelection = EventSystem.current.currentSelectedGameObject;
@@ -292,5 +293,20 @@ public class TestDriveIntro : MonoBehaviour
         safeArea.anchorMin = new Vector2(area.xMin / Screen.width, area.yMin / Screen.height);
         safeArea.anchorMax = new Vector2(area.xMax / Screen.width, area.yMax / Screen.height);
         safeArea.offsetMin = safeArea.offsetMax = Vector2.zero;
+        LayoutLetterboxText(area, new Vector2Int(Screen.width, Screen.height));
+    }
+
+    private void LayoutLetterboxText(Rect area, Vector2Int screen)
+    {
+        if (title == null || subtitle == null || area.height <= 0 || screen.y <= 0) return;
+        // Use the part of the bottom bar inside the safe area; inset both labels
+        // so the title remains below the bar edge even on devices with a home indicator.
+        float available = Mathf.Clamp01((screen.y * BottomLetterboxHeight - area.yMin) / area.height);
+        var titleRect = title.rectTransform;
+        var subtitleRect = subtitle.rectTransform;
+        titleRect.anchorMin = new Vector2(titleRect.anchorMin.x, available * .36f);
+        titleRect.anchorMax = new Vector2(titleRect.anchorMax.x, available * .73f);
+        subtitleRect.anchorMin = new Vector2(subtitleRect.anchorMin.x, available * .04f);
+        subtitleRect.anchorMax = new Vector2(subtitleRect.anchorMax.x, available * .30f);
     }
 }
