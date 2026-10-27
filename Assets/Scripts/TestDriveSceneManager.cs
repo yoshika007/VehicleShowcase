@@ -45,14 +45,6 @@ public class TestDriveSceneManager : MonoBehaviour
             trail.Initialize();
             selectedSpawn = trail.Spawn;
         }
-        if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge
-            && TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HillClimb)
-        {
-            var hill = new GameObject("Hill Climb Course").AddComponent<HillClimbCourse>();
-            hill.transform.SetParent(transform, false);
-            hill.Initialize();
-            selectedSpawn = hill.Spawn;
-        }
         vehicle = Instantiate(catalog.drivingPrefabs[index], selectedSpawn.position, selectedSpawn.rotation);
         vehicle.ConfigureReset(selectedSpawn, followCamera);
         if (touchControls != null) touchControls.BindVehicle(vehicle);

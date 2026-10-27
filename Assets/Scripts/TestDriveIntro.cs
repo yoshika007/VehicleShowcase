@@ -105,37 +105,24 @@ public class TestDriveIntro : MonoBehaviour
         {
             first = new Shot("TEST CIRCUIT", "Fast straights and sweeping turns",
                 Vector3.zero, new Vector3(85, 75, -95), new Vector3(-20, 60, -100));
-            var feature = GameObject.Find(TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HillClimb
-                ? "Truck ridge branch" : "Dirt Hill 1");
+
+            var feature = GameObject.Find("Dirt Hill 1");
             Vector3 point = feature != null && feature.TryGetComponent<Collider>(out var collider)
                 ? collider.bounds.center : new Vector3(30, 0, 80);
             second = new Shot("BEYOND THE ASPHALT", "Gravel, hills and mixed-surface routes",
                 point, point + new Vector3(55, 35, -50), point + new Vector3(5, 30, -60));
         }
         if (TestDriveSelection.Mode != TestDriveSelection.DriveMode.Challenge) return;
-        var hill = FindAnyObjectByType<HillClimbCourse>();
         var trail = FindAnyObjectByType<OffroadTrailCourse>();
-        if (hill != null)
-        {
-            first = RouteShot(hill.Route, .25f, "HILL CLIMB", "Carry your momentum up the gravel ridge");
-            second = RouteShot(hill.Route, .8f, "SUMMIT RIDGE", "Three climb gates lead to the top");
-        }
-        else if (trail != null)
+        if (trail != null)
         {
             first = RouteShot(trail.Route, .25f, "OFF-ROAD TRAIL", "Follow the dirt loop over rolling terrain");
             second = RouteShot(trail.Route, .7f, "GRAVEL CORNERS", "Eight gates test your grip and control");
         }
         else
         {
-            var slalom = GameObject.Find("Slalom Gate 3");
-            if (slalom != null)
-                second = new Shot("SLALOM", "Find a clean line through the cone gates", slalom.transform.position,
-                    slalom.transform.position + new Vector3(25, 20, -30), slalom.transform.position + new Vector3(-5, 16, -35));
-            else
-                second = new Shot(TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.CheckpointSprint ? "CHECKPOINT SPRINT"
-                    : TestDriveSelection.IsNight ? "NIGHT LAP" : "CLEAN LAP",
-                    TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.CheckpointSprint ? "Four checkpoints against the clock"
-                    : "Smooth braking and clean corners make the difference", new Vector3(35, 0, 25),
+            second = new Shot(TestDriveSelection.IsNight ? "NIGHT LAP" : "CLEAN LAP",
+                    "Smooth braking and clean corners make the difference", new Vector3(35, 0, 25),
                     new Vector3(80, 28, -5), new Vector3(65, 22, 65));
         }
     }

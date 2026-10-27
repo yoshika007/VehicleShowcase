@@ -6,7 +6,7 @@ public static class TestDriveSelection
     public enum CourseKind { TestCircuit, LakeTown, MountainPass, HarborStreet }
     public static CourseKind Course { get; private set; }
     public enum DriveMode { FreeRun, Challenge }
-    public enum ChallengeKind { CleanLap, CheckpointSprint, Slalom, OffroadTrail, HillClimb, NightLap }
+    public enum ChallengeKind { CleanLap = 0, OffroadTrail = 3, NightLap = 5 }
     public static ChallengeKind SelectedChallenge { get; private set; }
     public enum TimeOfDay { Day, Night }
     public static TimeOfDay Lighting { get; private set; }

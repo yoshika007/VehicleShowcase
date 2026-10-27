@@ -44566,8 +44566,6 @@ MonoBehaviour:
   bronzeSeconds: 22
   view: {fileID: 403526831}
   challengeAudio: {fileID: 721319957}
-  sprintStartSeconds: 10
-  sprintBonusSeconds: 6
 --- !u!4 &721319956
 Transform:
   m_ObjectHideFlags: 0

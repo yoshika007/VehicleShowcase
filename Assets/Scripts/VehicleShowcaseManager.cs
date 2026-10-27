@@ -225,17 +225,8 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (challengePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
     public void CleanLap() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge); }
-    public void CheckpointSprint() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
-        TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.CheckpointSprint); }
-
-    public void Slalom() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
-        TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.Slalom); }
-
     public void OffroadTrail() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.OffroadTrail); }
-
-    public void HillClimb() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
-        TestDriveSelection.TimeOfDay.Day, TestDriveSelection.ChallengeKind.HillClimb); }
 
     public void NightLap() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         TestDriveSelection.TimeOfDay.Night, TestDriveSelection.ChallengeKind.NightLap); }

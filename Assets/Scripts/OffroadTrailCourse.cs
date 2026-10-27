@@ -11,7 +11,7 @@ public class OffroadTrailCourse : MonoBehaviour
     public float Length { get; private set; }
     public float HalfWidth { get; private set; }
     private float[] distances;
-    private SprintCheckpointGates gates;
+    private CheckpointGates gates;
 
     public void Initialize()
     {
@@ -47,7 +47,7 @@ public class OffroadTrailCourse : MonoBehaviour
             positions[i] = Sample(d);
             forwards[i] = Direction(d);
         }
-        gates = new GameObject("Trail Checkpoint Gates").AddComponent<SprintCheckpointGates>();
+        gates = new GameObject("Trail Checkpoint Gates").AddComponent<CheckpointGates>();
         gates.transform.SetParent(transform, false);
         gates.Initialize(positions, forwards, HalfWidth, "TRAIL");
         gates.ShowStart();

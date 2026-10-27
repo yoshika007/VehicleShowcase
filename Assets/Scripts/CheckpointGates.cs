@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 
 // Visual gates only: crossing is checked against an ordered plane, never a physics trigger.
-public class SprintCheckpointGates : MonoBehaviour
+public class CheckpointGates : MonoBehaviour
 {
     private Vector3[] points, directions;
     private float halfWidth;
@@ -21,7 +21,7 @@ public class SprintCheckpointGates : MonoBehaviour
         frameMaterial.SetFloat("_Smoothness", .1f);
         for (int i = 0; i < points.Length; i++)
         {
-            var gate = new GameObject("Sprint Gate " + (i + 1)).transform;
+            var gate = new GameObject("Checkpoint Gate " + (i + 1)).transform;
             gate.SetParent(transform, false); gate.position = points[i];
             gate.rotation = Quaternion.LookRotation(directions[i], Vector3.up);
             frames[i] = new Renderer[3];

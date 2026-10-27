@@ -30,7 +30,6 @@ public class CleanLapChallengeAudio : MonoBehaviour
         lastCountdown = 0;
         Play(startSound);
     }
-    public void PlayPenalty() => Play(countdownTick, .75f);
     public void PlayCheckpoint() => Play(countdownTick, 1.8f);
     public void PlayResult(bool success)
     {

@@ -16,26 +16,10 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     [SerializeField, Min(1f)] private float bronzeSeconds = 22f;
     [SerializeField] private TestDriveCleanLapView view;
     [SerializeField] private CleanLapChallengeAudio challengeAudio;
-    [Header("Checkpoint Sprint")]
-    [SerializeField, Min(1f)] private float sprintStartSeconds = 10f;
-    [SerializeField, Min(1f)] private float sprintBonusSeconds = 6f;
     public bool IsNightLap => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.NightLap;
-    private HillClimbCourse hillCourse;
-    public bool IsHill => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HillClimb;
     private OffroadTrailCourse trailCourse;
     public bool IsTrail => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.OffroadTrail;
-    private string ReadyMessage => IsHill ? "Climb through three gates to the summit." : IsTrail ? "Follow the dirt loop through all eight gates." : IsSlalom ? "Weave through six gates. Cone hits add 2 seconds." : IsSprint ? "Reach each gate before time runs out." : "Avoid barriers. No resets.";
-    private SlalomCourse slalomCourse;
-    public bool IsSlalom => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.Slalom;
-    public float PenaltySeconds => slalomCourse != null ? slalomCourse.PenaltySeconds : 0f;
-    public int ConesHit => slalomCourse != null ? slalomCourse.ConesHit : 0;
-    public float ScoreSeconds => ElapsedSeconds + (IsSlalom ? PenaltySeconds : 0f);
-    private float sprintBudget;
-    private SprintCheckpointGates sprintGates;
-    public bool IsSprint => TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.CheckpointSprint;
-    public float SprintStartSeconds => sprintStartSeconds;
-    public float SprintBonusSeconds => sprintBonusSeconds;
-    public float RemainingSeconds => Mathf.Max(0, sprintBudget - ElapsedSeconds);
+    private string ReadyMessage => IsTrail ? "Follow the dirt loop through all eight gates." : "Avoid barriers. No resets.";
     private TestDriveMovement vehicle;
     private Rigidbody body;
     private WheelCollider[] wheels;
@@ -73,12 +57,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     public void ConfigureMode(bool challengeMode, TestDriveMovement target)
     {
         BindVehicle(challengeMode ? target : null);
-        if (challengeMode && !IsTrail && !IsHill && circuitBarrier == null)
+        if (challengeMode && !IsTrail && circuitBarrier == null)
         {
             circuitBarrier = CleanLapCircuitBarrier.Create(circuit);
             if (circuitBarrier != null) circuitBarrier.transform.SetParent(transform, true);
         }
-        if (circuitBarrier != null) circuitBarrier.SetActive(challengeMode && !IsTrail && !IsHill);
+        if (circuitBarrier != null) circuitBarrier.SetActive(challengeMode && !IsTrail);
         if (view != null) view.gameObject.SetActive(challengeMode);
         gameObject.SetActive(challengeMode);
     }
@@ -107,7 +91,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         wheels = target.GetComponentsInChildren<WheelCollider>();
         var paint = target.GetComponent<VehiclePaint>();
         string id = paint != null && paint.Palette != null ? paint.Palette.Id : target.name.Replace("(Clone)", "");
-        saveKey = (IsNightLap ? "VehicleShowcase.NightLap.v1." : IsHill ? "VehicleShowcase.HillClimb.v1." : IsTrail ? "VehicleShowcase.OffroadTrail.v1." : IsSlalom ? "VehicleShowcase.Slalom.v1." : IsSprint ? "VehicleShowcase.Sprint.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
+        saveKey = (IsNightLap ? "VehicleShowcase.NightLap.v1." : IsTrail ? "VehicleShowcase.OffroadTrail.v1." : "VehicleShowcase.CleanLap.v1.") + id + ".BestSeconds";
         float saved = PlayerPrefs.GetFloat(saveKey, 0f);
         BestSeconds = saved > 0 && !float.IsInfinity(saved) && !float.IsNaN(saved) ? saved : 0f;
         message = ReadyMessage;
@@ -115,11 +99,6 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         {
             trailCourse = FindAnyObjectByType<OffroadTrailCourse>();
             startLine = trailCourse.StartLine;
-        }
-        if (IsHill)
-        {
-            hillCourse = FindAnyObjectByType<HillClimbCourse>();
-            startLine = hillCourse.StartLine;
         }
         CacheRoute();
         if (timingLights == null)
@@ -130,43 +109,17 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             displayedStartLights = -1;
             RefreshTimingLights();
         }
-        if (sprintGates != null) Destroy(sprintGates.gameObject);
-        if (IsSprint)
-        {
-            sprintGates = new GameObject("Sprint Checkpoint Gates").AddComponent<SprintCheckpointGates>();
-            sprintGates.transform.SetParent(transform, false);
-            var points = new Vector3[4]; var directions = new Vector3[4];
-            float startDistance = RouteDistance(startLine.position);
-            for (int i = 0; i < 4; i++)
-            {
-                float d = Mathf.Repeat(startDistance + length * (i + 1) / 4f, length);
-                int row = 0;
-                while (row < distances.Length - 2 && distances[row + 1] < d) row++;
-                points[i] = Vector3.Lerp(route[row], route[row + 1], Mathf.InverseLerp(distances[row], distances[row + 1], d));
-                directions[i] = (route[row + 1] - route[row]).normalized;
-            }
-            points[3] = startLine.position; directions[3] = startLine.forward;
-            sprintGates.Initialize(points, directions, gateHalfWidth);
-        }
-        if (slalomCourse != null) Destroy(slalomCourse.gameObject);
-        if (IsSlalom)
-        {
-            slalomCourse = new GameObject("Slalom Course").AddComponent<SlalomCourse>();
-            slalomCourse.transform.SetParent(transform, false);
-            slalomCourse.Initialize(this, target, startLine, gateHalfWidth);
-        }
-        sprintBudget = sprintStartSeconds;
     }
     private void CacheRoute()
     {
         if (route != null) return;
-        if (IsTrail || IsHill)
+        if (IsTrail)
         {
-            route = IsHill ? hillCourse.Route : trailCourse.Route;
+            route = trailCourse.Route;
             distances = new float[route.Length];
             for (int i = 1; i < route.Length; i++) distances[i] = distances[i - 1] + Vector3.Distance(route[i - 1], route[i]);
             length = distances[distances.Length - 1];
-            gateHalfWidth = IsHill ? hillCourse.HalfWidth : trailCourse.HalfWidth;
+            gateHalfWidth = trailCourse.HalfWidth;
             return;
         }
         var vertices = circuit.sharedMesh.vertices;
@@ -239,11 +192,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         ElapsedSeconds = travelled = 0;
         CheckpointsPassed = 0;
         LastMedal = Medal.None;
-        sprintBudget = sprintStartSeconds;
-        if (sprintGates != null) sprintGates.ShowNext(0);
-        if (slalomCourse != null) slalomCourse.ResetAttempt();
         if (trailCourse != null) trailCourse.ShowStart();
-        if (hillCourse != null) hillCourse.ShowStart();
         message = "Get ready";
         previousPosition = body.position;
         if (view != null) view.Refresh(this);
@@ -307,30 +256,16 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             State = Phase.Running;
             startedAt = Time.fixedTimeAsDouble;
             if (trailCourse != null) trailCourse.ShowNext(0);
-            if (hillCourse != null) hillCourse.ShowNext(0);
             lastDistance = distance;
             message = ReadyMessage;
         }
         else if (State == Phase.Running)
         {
-            float delta = IsHill ? distance - lastDistance : Mathf.DeltaAngle(lastDistance / length * 360f, distance / length * 360f) * length / 360f;
+            float delta = Mathf.DeltaAngle(lastDistance / length * 360f, distance / length * 360f) * length / 360f;
             travelled = Mathf.Max(0f, travelled + delta);
             lastDistance = distance;
             ElapsedSeconds = (float)(Time.fixedTimeAsDouble - startedAt);
-            if (IsHill)
-            {
-                if (CheckpointsPassed < HillClimbCourse.GateCount
-                    && travelled >= length * (CheckpointsPassed + 1) / HillClimbCourse.GateCount - 3f
-                    && hillCourse.Crossed(CheckpointsPassed, previousPosition, position))
-                {
-                    CheckpointsPassed++;
-                    hillCourse.ShowNext(CheckpointsPassed);
-                    message = $"Climb gate {CheckpointsPassed}/3";
-                    if (challengeAudio != null) challengeAudio.PlayCheckpoint();
-                    if (CheckpointsPassed == HillClimbCourse.GateCount) Finish();
-                }
-            }
-            else if (IsTrail)
+            if (IsTrail)
             {
                 if (CheckpointsPassed < OffroadTrailCourse.GateCount
                     && travelled >= length * (CheckpointsPassed + 1) / OffroadTrailCourse.GateCount - 3f
@@ -343,31 +278,6 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
                     if (CheckpointsPassed == OffroadTrailCourse.GateCount) Finish();
                 }
             }
-            else if (IsSlalom)
-            {
-                if (CheckpointsPassed < SlalomCourse.GateCount && slalomCourse.Crossed(CheckpointsPassed, previousPosition, position))
-                {
-                    CheckpointsPassed++;
-                    slalomCourse.ShowNext(CheckpointsPassed);
-                    message = $"Gate {CheckpointsPassed}/6 · +{PenaltySeconds:0}s penalties";
-                    if (challengeAudio != null) challengeAudio.PlayCheckpoint();
-                }
-                if (CheckpointsPassed == SlalomCourse.GateCount && slalomCourse.Crossed(SlalomCourse.GateCount, previousPosition, position)) Finish();
-            }
-            else if (IsSprint)
-            {
-                if (RemainingSeconds <= 0f) { Fail("Time ran out. Try again."); return; }
-                if (CheckpointsPassed < 3 && travelled >= length * (CheckpointsPassed + 1) / 4f - 3f
-                    && sprintGates.Crossed(CheckpointsPassed, previousPosition, position))
-                {
-                    CheckpointsPassed++;
-                    sprintBudget += sprintBonusSeconds;
-                    sprintGates.ShowNext(CheckpointsPassed);
-                    message = $"Checkpoint {CheckpointsPassed}/4  +{sprintBonusSeconds:0}s";
-                    if (challengeAudio != null) challengeAudio.PlayCheckpoint();
-                }
-                if (CheckpointsPassed == 3 && crossed && travelled >= length - 2f) Finish();
-            }
             else
             {
                 CheckpointsPassed = Mathf.Clamp(Mathf.FloorToInt(travelled / length * 8f), 0, 7);
@@ -376,16 +286,9 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         }
         previousPosition = position;
     }
-    public void ReportSlalomPenalty()
-    {
-        if (!IsSlalom || State != Phase.Running) return;
-        message = $"Cone hit: +2s · {PenaltySeconds:0}s total penalties";
-        if (challengeAudio != null) challengeAudio.PlayPenalty();
-    }
-
     private void ReportBarrierContact(Collider surface)
     {
-        if (IsHill || IsTrail || IsSprint || IsSlalom || !isActiveAndEnabled || !IsAvailable || surface == null) return;
+        if (IsTrail || !isActiveAndEnabled || !IsAvailable || surface == null) return;
         if (State != Phase.Countdown && State != Phase.Armed && State != Phase.Running) return;
         if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
             Fail("Barrier hit. Try again.");
@@ -403,22 +306,17 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         // A completed attempt can award only once; another award requires a retry.
         if (State != Phase.Running) return;
         State = Phase.Finished;
-        CheckpointsPassed = IsHill ? HillClimbCourse.GateCount : IsTrail ? OffroadTrailCourse.GateCount : IsSlalom ? SlalomCourse.GateCount : IsSprint ? 4 : 8;
-        if (slalomCourse != null) slalomCourse.ShowNext(SlalomCourse.GateCount + 1);
-        if (sprintGates != null) sprintGates.ShowNext(4);
-        LastMedal = IsHill || IsTrail || IsSprint || IsSlalom ? Medal.None : EvaluateMedal(ElapsedSeconds);
-        bool improved = BestSeconds <= 0 || ScoreSeconds < BestSeconds;
+        CheckpointsPassed = IsTrail ? OffroadTrailCourse.GateCount : 8;
+        LastMedal = IsTrail ? Medal.None : EvaluateMedal(ElapsedSeconds);
+        bool improved = BestSeconds <= 0 || ElapsedSeconds < BestSeconds;
         if (improved)
         {
-            BestSeconds = ScoreSeconds;
+            BestSeconds = ElapsedSeconds;
             PlayerPrefs.SetFloat(saveKey, BestSeconds);
             PlayerPrefs.Save();
         }
         message = IsNightLap ? (improved ? "Night lap complete. New best!" : "Night lap complete.")
-            : IsHill ? (improved ? "Summit reached. New best!" : "Summit reached.")
             : IsTrail ? (improved ? "Trail complete. New best!" : "Trail complete.")
-            : IsSlalom ? (improved ? "Slalom complete. New best!" : "Slalom complete.")
-            : IsSprint ? (improved ? "Sprint complete. New best!" : "Sprint complete.")
             : improved ? "Clean lap complete. New best!" : "Clean lap complete.";
         EndAttempt();
     }
