@@ -754,6 +754,7 @@ GameObject:
   - component: {fileID: 111837212}
   - component: {fileID: 111837214}
   - component: {fileID: 111837213}
+  - component: {fileID: 111837215}
   m_Layer: 0
   m_Name: Batched Trail timber
   m_TagString: Untagged
@@ -833,6 +834,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111837211}
   m_Mesh: {fileID: 4300000, guid: c8c4f243d71f645bc8634bc8da24095b, type: 2}
+--- !u!114 &111837215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111837211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bfd7b2990d664c3f8423e063e190749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PineRidgeTimberGlow
+  nightEmission: {r: 0.55, g: 0.22, b: 0.055, a: 1}
 --- !u!1 &118102295
 GameObject:
   m_ObjectHideFlags: 0
@@ -7574,7 +7588,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4284075258
   m_fontColor: {r: 0.98, g: 0.8, b: 0.35, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7587,7 +7601,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
