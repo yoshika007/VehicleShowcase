@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-// Reflects course and lighting selections before DRIVE starts the drive.
+// Course and lighting selection before choosing Free Run or Challenge.
 public class FreeRideCourseMenu : MonoBehaviour
 {
     [SerializeField] private VehicleShowcaseManager manager;
@@ -164,9 +164,9 @@ public class FreeRideCourseMenu : MonoBehaviour
     private void UpdateActionLabels()
     {
         var driveLabel = transform.Find("Dialog/Go/Label")?.GetComponent<TMP_Text>();
-        if (driveLabel != null) driveLabel.text = "DRIVE";
+        if (driveLabel != null) driveLabel.text = "NEXT";
         var subtitle = transform.Find("Dialog/Subtitle")?.GetComponent<TMP_Text>();
-        if (subtitle != null) subtitle.text = "FREE RUN  /  Choose course and lighting, then DRIVE";
+        if (subtitle != null) subtitle.text = "Choose a course and lighting, then select a drive mode.";
     }
     private void MatchActionButtonColors()
     {

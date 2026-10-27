@@ -96,16 +96,20 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     private void Update()
     {
-        if (ModeMenuOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            if (TimeMenuOpen || ChallengeMenuOpen || CourseMenuOpen) BackToDriveModes();
-            else CloseDriveMenu();
-        }
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) NavigateBack();
+    }
+
+    public void NavigateBack()
+    {
+        if (!ModeMenuOpen || isTransitioning) return;
+        if (CourseMenuOpen) CloseDriveMenu();
+        else if (TimeMenuOpen || ChallengeMenuOpen) BackToDriveModes();
+        else BackToCourses();
     }
 
     public void OpenDriveMenu()
     {
-        if (isTransitioning || ModeMenuOpen || driveModePanel == null) return;
+        if (isTransitioning || ModeMenuOpen || courseSelectionPanel == null) return;
         PlayButtonSound(navigationSound);
         navigationAvailability = new bool[navigationButtons.Length];
         for (int i = 0; i < navigationButtons.Length; i++)
@@ -120,8 +124,8 @@ public class VehicleShowcaseManager : MonoBehaviour
             dragWasEnabled = vehicleDragRotation.enabled;
             vehicleDragRotation.enabled = false;
         }
-        if (driveModePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
-        driveModePanel.SetActive(true);
+        courseSelectionPanel.SetActive(true);
+        if (courseSelectionPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
 
     public void CloseDriveMenu()
@@ -140,29 +144,55 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void FreeRun()
     {
-        if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || ChallengeMenuOpen || CourseMenuOpen || timeOfDayPanel == null) return;
+        if (isTransitioning || driveModePanel == null || !driveModePanel.activeSelf) return;
+        BeginDrive(TestDriveSelection.DriveMode.FreeRun, freeRideLighting, course: freeRideCourse);
+    }
+
+    public void ConfirmCourse()
+    {
+        if (isTransitioning || !CourseMenuOpen || driveModePanel == null) return;
+        PlayButtonSound(navigationSound);
+        courseSelectionPanel.SetActive(false);
+        ShowDriveModes();
+    }
+
+    public void BackToCourses()
+    {
+        if (isTransitioning || driveModePanel == null || !driveModePanel.activeSelf) return;
         PlayButtonSound(navigationSound);
         driveModePanel.SetActive(false);
-        if (courseSelectionPanel != null)
-        {
-            freeRideLighting = TestDriveSelection.TimeOfDay.Day;
-            freeRideCourse = TestDriveSelection.CourseKind.TestCircuit;
-            courseSelectionPanel.SetActive(true);
-            if (courseSelectionPanel.TryGetComponent<CanvasGroup>(out var courseGroup)) courseGroup.interactable = true;
-            return;
-        }
-        timeOfDayPanel.SetActive(true);
-        if (timeOfDayPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
+        courseSelectionPanel.SetActive(true);
+        if (courseSelectionPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
 
     public void BackToDriveModes()
     {
-        if (isTransitioning || (!TimeMenuOpen && !ChallengeMenuOpen && !CourseMenuOpen)) return;
+        if (isTransitioning || (!TimeMenuOpen && !ChallengeMenuOpen)) return;
         PlayButtonSound(navigationSound);
-        timeOfDayPanel.SetActive(false);
-        if (courseSelectionPanel != null) courseSelectionPanel.SetActive(false);
+        if (timeOfDayPanel != null) timeOfDayPanel.SetActive(false);
         if (challengePanel != null) challengePanel.SetActive(false);
+        ShowDriveModes();
+    }
+
+    private void ShowDriveModes()
+    {
         driveModePanel.SetActive(true);
+        if (driveModePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
+        string course = freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? "Lake Town"
+            : freeRideCourse == TestDriveSelection.CourseKind.MountainPass ? "Mountain Pass"
+            : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? "Harbor Street" : "Test Circuit";
+        var freeRunDescription = driveModePanel.transform.Find("Dialog/FreeRunButton/Description")?.GetComponent<TMP_Text>();
+        if (freeRunDescription != null) freeRunDescription.text = course + " / " + freeRideLighting;
+        bool hasChallenges = freeRideCourse == TestDriveSelection.CourseKind.TestCircuit;
+        var challenge = driveModePanel.transform.Find("Dialog/ChallengeButton")?.GetComponent<UnityEngine.UI.Button>();
+        if (challenge != null)
+        {
+            challenge.interactable = hasChallenges;
+            var description = challenge.transform.Find("Description")?.GetComponent<TMP_Text>();
+            if (description != null) description.text = hasChallenges
+                ? "Choose a challenge and\ntest your driving skills."
+                : "Challenges for this course\nare coming later.";
+        }
     }
 
     public void SetFreeRideDay() { if (CourseMenuOpen && !isTransitioning) { freeRideLighting = TestDriveSelection.TimeOfDay.Day; PlayButtonSound(navigationSound); } }
@@ -179,14 +209,14 @@ public class VehicleShowcaseManager : MonoBehaviour
     }
     public void StartFreeRide()
     {
-        if (CourseMenuOpen && !isTransitioning)
-            BeginDrive(TestDriveSelection.DriveMode.FreeRun, freeRideLighting, course: freeRideCourse);
+        FreeRun();
     }
-    public void DayDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Day); }
-    public void NightDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Night); }
+    public void DayDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Day, course: freeRideCourse); }
+    public void NightDrive() { if (TimeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.FreeRun, TestDriveSelection.TimeOfDay.Night, course: freeRideCourse); }
     public void Challenge()
     {
-        if (isTransitioning || !ModeMenuOpen || TimeMenuOpen || ChallengeMenuOpen || CourseMenuOpen || challengePanel == null) return;
+        if (isTransitioning || driveModePanel == null || !driveModePanel.activeSelf ||
+            freeRideCourse != TestDriveSelection.CourseKind.TestCircuit || challengePanel == null) return;
         PlayButtonSound(navigationSound);
         driveModePanel.SetActive(false);
         var dialog = challengePanel.transform.Find("Dialog");
