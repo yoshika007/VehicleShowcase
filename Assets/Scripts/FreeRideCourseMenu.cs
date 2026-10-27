@@ -10,15 +10,17 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button lakeTown;
     [SerializeField] private UnityEngine.UI.Button mountainPass;
     [SerializeField] private UnityEngine.UI.Button harborStreet;
+    [SerializeField] private UnityEngine.UI.Button pineRidge;
     private const int VisibleCourses = 3;
     private UnityEngine.UI.Button previousPage, nextPage;
     private int firstVisible;
-    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, harborStreet };
+    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, harborStreet, pineRidge };
 
     private void OnEnable()
     {
         ArrangeWithoutSubtitle();
-        firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 1 : 0;
+        firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge ? 2
+            : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 1 : 0;
         ArrangeCourses();
         EnsurePagingControls();
         MatchButtonSizes();
@@ -136,6 +138,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         SetCoursePhoto(lakeTown, "LakeTown");
         SetCoursePhoto(mountainPass, "MountainPass");
         SetCoursePhoto(harborStreet, "HarborStreet");
+        SetCoursePhoto(pineRidge, "PineRidge");
     }
     private static void SetCoursePhoto(UnityEngine.UI.Button button, string asset)
     {
@@ -164,6 +167,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         SetCourseDescription(lakeTown, "Lakeside streets\nTown intersections\nWinding roads");
         SetCourseDescription(mountainPass, "Mountain hairpins\nSummit tunnel\nSweeping descents");
         SetCourseDescription(harborStreet, "Tight city corners\nHotel hairpin\nSeaside tunnel");
+        SetCourseDescription(pineRidge, "Forest dirt trails\nRolling hills\nShallow crossing");
         var trial = lakeTown != null ? lakeTown.transform.Find("Trial") : null;
         if (trial != null) trial.gameObject.SetActive(false);
     }
@@ -241,6 +245,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         TintCourse(mountainPass, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.MountainPass);
         TintCourse(lakeTown, lakeSelected);
         TintCourse(harborStreet, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet);
+        TintCourse(pineRidge, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge);
     }
     private static void TintCourse(UnityEngine.UI.Button button, bool selected)
     {

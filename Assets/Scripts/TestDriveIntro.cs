@@ -80,7 +80,12 @@ public class TestDriveIntro : MonoBehaviour
     private void BuildShots()
     {
         string scene = SceneManager.GetActiveScene().name;
-        if (scene == "HarborStreetScene")
+        if (scene == "PineRidgeScene")
+        {
+            first = new Shot("PINE RIDGE TRAIL", "Explore a forest dirt circuit", Vector3.zero, new Vector3(100, 80, -120), new Vector3(10, 65, -100));
+            second = new Shot("FOREST AND RIDGE", "Follow the trail through the hills", new Vector3(0, 8, 120), new Vector3(90, 65, 50), new Vector3(20, 55, 80));
+        }
+        else if (scene == "HarborStreetScene")
         {
             first = new Shot("HARBOR STREET", "City climbs, a hotel hairpin and the marina",
                 new Vector3(10, 10, -90), new Vector3(-130, 145, -320), new Vector3(-60, 120, -285));
@@ -193,7 +198,8 @@ public class TestDriveIntro : MonoBehaviour
         }
     }
 
-    private static string CourseName() => SceneManager.GetActiveScene().name == "HarborStreetScene" ? "HARBOR STREET"
+    private static string CourseName() => SceneManager.GetActiveScene().name == "PineRidgeScene" ? "PINE RIDGE TRAIL"
+        : SceneManager.GetActiveScene().name == "HarborStreetScene" ? "HARBOR STREET"
         : SceneManager.GetActiveScene().name == "MountainPassScene" ? "MOUNTAIN PASS"
         : SceneManager.GetActiveScene().name == "LakeTownScene" ? "LAKE TOWN" : "TEST CIRCUIT";
     private void Pose(Vector3 position, Vector3 focus, float fov)

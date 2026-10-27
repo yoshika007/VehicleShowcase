@@ -188,7 +188,8 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (driveModePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
         string course = freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? "Lake Town"
             : freeRideCourse == TestDriveSelection.CourseKind.MountainPass ? "Mountain Pass"
-            : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? "Harbor Street" : "Test Circuit";
+            : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? "Harbor Street"
+            : freeRideCourse == TestDriveSelection.CourseKind.PineRidge ? "Pine Ridge Trail" : "Test Circuit";
         var freeRunDescription = driveModePanel.transform.Find("Dialog/FreeRunButton/Description")?.GetComponent<TMP_Text>();
         if (freeRunDescription != null) freeRunDescription.text = "Explore " + course + "\nin day or night.";
         bool hasChallenges = freeRideCourse == TestDriveSelection.CourseKind.TestCircuit;
@@ -207,6 +208,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void LakeTownRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.LakeTown);
     public void MountainPassRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.MountainPass);
     public void HarborStreetRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.HarborStreet);
+    public void PineRidgeRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.PineRidge);
     private void SelectFreeRideCourse(TestDriveSelection.CourseKind course)
     {
         if (!CourseMenuOpen || isTransitioning) return;
@@ -253,7 +255,8 @@ public class VehicleShowcaseManager : MonoBehaviour
             return;
         }
         TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge, course, currentVehicle.DisplayName);
-        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet ? "HarborStreetScene"
+        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge ? "PineRidgeScene"
+            : TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet ? "HarborStreetScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass ? "MountainPassScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown ? "LakeTownScene" : "TestTrackScene";
         BeginTransition(scene, driveStartSound != null ? driveStartSound : backSound);

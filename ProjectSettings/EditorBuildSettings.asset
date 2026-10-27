@@ -23,5 +23,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HarborStreetScene.unity
     guid: c4536b492761240f894dec6c9817ba84
+  - enabled: 1
+    path: Assets/Scenes/PineRidgeScene.unity
+    guid: 285601951bdd74759b0201c1d5acdea0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
