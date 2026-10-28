@@ -24,6 +24,8 @@ public class VehiclePaintSelector : MonoBehaviour
         const float extraWidth = 56f, extraHeight = 20f;
         panelSize = panel.sizeDelta + new Vector2(extraWidth, extraHeight);
         drivePosition = testDriveButton.anchoredPosition - Vector2.up * (extraHeight * panel.localScale.y * .5f);
+        if (testDriveButton.TryGetComponent<TestDriveButtonFeedback>(out var feedback))
+            feedback.SetExpandDownwards(true);
         swatchTemplate.gameObject.SetActive(false);
     }
     public void Bind(VehiclePaint target, Action onChanged)

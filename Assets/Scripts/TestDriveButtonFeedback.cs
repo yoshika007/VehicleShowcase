@@ -29,6 +29,10 @@ public class TestDriveButtonFeedback : MonoBehaviour, IPointerExitHandler,
         restingScale = transform.localScale;
         restingPosition = rect.anchoredPosition;
         restingHeight = rect.rect.height;
+        // The title button is anchored near the top edge: expand away from it.
+        if (gameObject.name == "BackToTitleButton") expandDownwards = true;
+        if (clearanceHint == null && gameObject.name == "PreviousButton" && transform.parent != null)
+            clearanceHint = transform.parent.Find("RotationHint") as RectTransform;
         if (clearanceHint != null) restingHintPosition = clearanceHint.anchoredPosition;
         if (outline != null) restingOutline = outline.effectColor;
     }
@@ -55,6 +59,9 @@ public class TestDriveButtonFeedback : MonoBehaviour, IPointerExitHandler,
         if (clearanceHint != null)
             clearanceHint.anchoredPosition = restingHintPosition + Vector2.up * (height - restingHeight);
     }
+    // Keep the upper edge fixed when a button must expand below nearby content.
+    public void SetExpandDownwards(bool value) => expandDownwards = value;
+
     // Layout changes can move the button without fighting its touch-size adjustment.
     public void SetRestingPosition(Vector2 position)
     {
