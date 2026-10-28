@@ -17,7 +17,7 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         var area = GetComponent<RectTransform>();
         area.SetParent(description.transform.parent, false);
         area.anchorMin = new Vector2(0f, 1f); area.anchorMax = new Vector2(1f, 1f);
-        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 191f);
+        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 203f);
         area.anchoredPosition = new Vector2(0f, -201f);
         fills = new UnityEngine.UI.Image[6];
         string[] names = { "ACCELERATION", "BRAKING", "CORNERING", "STABILITY", "ON-ROAD", "OFF-ROAD" };
@@ -28,7 +28,9 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
             var track = Image(area, "Track", new Vector2(170f, y - 6f), new Vector2(255f, 16f), new Color(.15f, .27f, .28f, 1f));
             fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(255f, 16f), new Color(.98f, .74f, .25f, 1f));
         }
-        speedText = Label(area, description, "", new Vector2(0f, -162f), new Vector2(425f, 28f));
+        speedText = Label(area, description, "", new Vector2(0f, -162f), new Vector2(425f, 40f));
+        var layout = description.transform.parent.Find("LayoutText")?.GetComponent<TMP_Text>();
+        if (layout != null) speedText.fontSize = layout.fontSize;
         description.gameObject.SetActive(false);
     }
 
