@@ -108,26 +108,50 @@ public class TestDriveTouchControls : MonoBehaviour
         }
         if (keyboardResetHint != null) keyboardResetHint.SetActive(!visible && originalHintActive);
         if (recoveryPrompt != null) recoveryPrompt.SetTouchMode(visible);
-        ApplyLayout(Screen.safeArea, new Vector2Int(Screen.width, Screen.height), visible);
+        Rect area = Screen.safeArea;
+        Vector2Int screen = new Vector2Int(Screen.width, Screen.height);
+        var bounds = hudSafeArea != null ? hudSafeArea : safeArea;
+        var canvas = bounds != null ? bounds.GetComponentInParent<Canvas>() : null;
+        if (canvas != null)
+        {
+            // Device Simulator can expose the device safe area in canvas pixels
+            // while Screen.width/height still describe an older Game view size.
+            Rect viewport = canvas.rootCanvas.pixelRect;
+            if (viewport.width > 0f && viewport.height > 0f &&
+                area.xMin >= viewport.xMin && area.yMin >= viewport.yMin &&
+                area.xMax <= viewport.xMax && area.yMax <= viewport.yMax)
+            {
+                area.position -= viewport.position;
+                screen = new Vector2Int(Mathf.RoundToInt(viewport.width), Mathf.RoundToInt(viewport.height));
+            }
+        }
+        ApplyLayout(area, screen, visible);
     }
 
     private void ApplyLayout(Rect area, Vector2Int screen, bool touchVisible)
     {
         RectTransform bounds = hudSafeArea != null ? hudSafeArea : safeArea;
         if (bounds == null || screen.x <= 0 || screen.y <= 0) return;
-        // Clamp transient Simulator/rotation values before converting pixels to anchors.
-        float xMin = Mathf.Clamp(area.xMin, 0, screen.x);
-        float yMin = Mathf.Clamp(area.yMin, 0, screen.y);
-        float xMax = Mathf.Clamp(area.xMax, xMin, screen.x);
-        float yMax = Mathf.Clamp(area.yMax, yMin, screen.y);
-        if (xMax <= xMin || yMax <= yMin) return;
-        area = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
+        // During Simulator startup or rotation the safe area can still describe the
+        // previous screen size. Do not clamp that stale rectangle into a narrow HUD.
+        bool validArea = area.width > 0f && area.height > 0f && area.xMin >= 0f && area.yMin >= 0f
+            && area.xMax <= screen.x && area.yMax <= screen.y;
+        if (!validArea)
+        {
+            if (lastScreen == screen && lastSafeArea.width > 0f && lastSafeArea.height > 0f)
+                area = lastSafeArea;
+            else
+                area = new Rect(0f, 0f, screen.x, screen.y);
+        }
         if (area != lastSafeArea || screen != lastScreen)
         {
             lastSafeArea = area; lastScreen = screen;
             bounds.anchorMin = new Vector2(area.xMin / screen.x, area.yMin / screen.y);
             bounds.anchorMax = new Vector2(area.xMax / screen.x, area.yMax / screen.y);
             bounds.offsetMin = bounds.offsetMax = Vector2.zero;
+            // The screen can change before the Canvas has rebuilt its layout.
+            // Resolve the new safe rectangle before positioning the child controls.
+            bounds.ForceUpdateRectTransforms();
         }
         // Reserve room for the top HUD, speed readout and controls even on short screens.
         float steeringWidth = steeringGroup != null ? steeringGroup.rect.width : 0f;
