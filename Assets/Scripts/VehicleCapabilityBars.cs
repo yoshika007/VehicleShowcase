@@ -12,10 +12,10 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         var area = GetComponent<RectTransform>();
         area.SetParent(description.transform.parent, false);
         area.anchorMin = new Vector2(0f, 1f); area.anchorMax = new Vector2(1f, 1f);
-        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 110f);
+        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 191f);
         area.anchoredPosition = new Vector2(0f, -201f);
-        fills = new UnityEngine.UI.Image[3];
-        string[] names = { "ACCELERATION", "ON-ROAD", "OFF-ROAD" };
+        fills = new UnityEngine.UI.Image[6];
+        string[] names = { "ACCELERATION", "BRAKING", "CORNERING", "STABILITY", "ON-ROAD", "OFF-ROAD" };
         for (int i = 0; i < names.Length; i++)
         {
             float y = -i * 27f;
@@ -23,7 +23,7 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
             var track = Image(area, "Track", new Vector2(170f, y - 6f), new Vector2(255f, 16f), new Color(.15f, .27f, .28f, 1f));
             fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(255f, 16f), new Color(.98f, .74f, .25f, 1f));
         }
-        speedText = Label(area, description, "", new Vector2(0f, -81f), new Vector2(425f, 28f));
+        speedText = Label(area, description, "", new Vector2(0f, -162f), new Vector2(425f, 28f));
         description.gameObject.SetActive(false);
     }
 
@@ -65,8 +65,35 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
             MilitaryVehicle => new Vector3(.57f, .48f, .90f),
             _ => new Vector3(.5f, .5f, .5f)
         };
+        Vector2 handling = vehicle switch
+        {
+            Hatchback => new Vector2(.68f, .70f),
+            PickupTruck => new Vector2(.52f, .68f),
+            Van => new Vector2(.48f, .64f),
+            ClassicCar => new Vector2(.60f, .65f),
+            PoliceCar => new Vector2(.75f, .82f),
+            MuscleCar => new Vector2(.62f, .60f),
+            SportsCar => new Vector2(.92f, .82f),
+            MonsterTruck => new Vector2(.40f, .55f),
+            MilitaryVehicle => new Vector2(.44f, .78f),
+            _ => new Vector2(.5f, .5f)
+        };
+        float braking = vehicle switch
+        {
+            Hatchback => .65f,
+            PickupTruck => .62f,
+            Van => .52f,
+            ClassicCar => .60f,
+            PoliceCar => .80f,
+            MuscleCar => .68f,
+            SportsCar => .90f,
+            MonsterTruck => .55f,
+            MilitaryVehicle => .66f,
+            _ => .5f
+        };
+        float[] values = { rating.x, braking, handling.x, handling.y, rating.y, rating.z };
         for (int i = 0; i < fills.Length; i++)
-            fills[i].rectTransform.sizeDelta = new Vector2(255f * rating[i], 16f);
+            fills[i].rectTransform.sizeDelta = new Vector2(255f * values[i], 16f);
         speedText.text = topSpeed.HasValue ? $"TOP SPEED: {Mathf.RoundToInt(topSpeed.Value)} km/h" : "TOP SPEED: --";
     }
 }
