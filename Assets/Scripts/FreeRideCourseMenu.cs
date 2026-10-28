@@ -145,15 +145,32 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (button == null) return;
         var sprite = Resources.Load<Sprite>("CoursePreviews/" + asset);
         if (sprite == null) return;
-        var photo = button.transform.Find("CoursePhoto") as RectTransform;
+        var oldPhoto = button.transform.Find("CoursePhoto");
+        if (oldPhoto != null) oldPhoto.gameObject.SetActive(false);
+
+        // Fill a consistent photo window without stretching images with different aspect ratios.
+        var frame = button.transform.Find("CoursePhotoFrame") as RectTransform;
+        if (frame == null)
+        {
+            frame = new GameObject("CoursePhotoFrame", typeof(RectTransform), typeof(UnityEngine.UI.RectMask2D)).GetComponent<RectTransform>();
+            frame.SetParent(button.transform, false);
+        }
+        frame.anchorMin = frame.anchorMax = frame.pivot = new Vector2(.5f, .5f);
+        frame.anchoredPosition = new Vector2(0f, 35f);
+        var frameSize = new Vector2(((RectTransform)button.transform).rect.width - 20f, 160f);
+        frame.sizeDelta = frameSize;
+
+        var photo = frame.Find("CoursePhoto") as RectTransform;
         if (photo == null)
         {
             photo = new GameObject("CoursePhoto", typeof(RectTransform), typeof(UnityEngine.UI.Image)).GetComponent<RectTransform>();
-            photo.SetParent(button.transform, false);
+            photo.SetParent(frame, false);
         }
         photo.anchorMin = photo.anchorMax = photo.pivot = new Vector2(.5f, .5f);
-        photo.anchoredPosition = new Vector2(0f, 35f);
-        photo.sizeDelta = new Vector2(((RectTransform)button.transform).rect.width - 20f, 160f);
+        photo.anchoredPosition = Vector2.zero;
+        var spriteSize = sprite.rect.size;
+        float scale = Mathf.Max(frameSize.x / spriteSize.x, frameSize.y / spriteSize.y);
+        photo.sizeDelta = spriteSize * scale;
         var image = photo.GetComponent<UnityEngine.UI.Image>();
         image.sprite = sprite;
         image.color = Color.white;
