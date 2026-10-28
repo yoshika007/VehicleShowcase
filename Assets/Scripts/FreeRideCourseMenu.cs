@@ -15,15 +15,15 @@ public class FreeRideCourseMenu : MonoBehaviour
     private const int VisibleCourses = 3;
     private UnityEngine.UI.Button previousPage, nextPage;
     private int firstVisible;
-    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, harborStreet, pineRidge, highlandClimb };
+    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, pineRidge, harborStreet, highlandClimb };
 
     private void OnEnable()
     {
         EnsureHighlandCourse();
         ArrangeWithoutSubtitle();
         firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HighlandClimb ? 3
-            : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge ? 2
-            : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 1 : 0;
+            : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 2
+            : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge ? 1 : 0;
         ArrangeCourses();
         EnsurePagingControls();
         MatchButtonSizes();
