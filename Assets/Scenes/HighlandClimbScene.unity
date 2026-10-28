@@ -1243,7 +1243,7 @@ GameObject:
   - component: {fileID: 302172692}
   - component: {fileID: 302172691}
   m_Layer: 0
-  m_Name: Forest terrain
+  m_Name: Desert terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

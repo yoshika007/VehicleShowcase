@@ -119,7 +119,7 @@ public static class HighlandClimbBuilder
             float px=-540+x*12f, pz=-540+z*12f; vertices.Add(new Vector3(px,Ground(px,pz),pz));
             if (x>0 && z>0) { int i=z*(grid+1)+x; triangles.AddRange(new[]{i-grid-2,i-1,i-grid-1,i-grid-1,i-1,i}); }
         }
-        AudioSurface(MeshObject("Forest terrain",SaveMesh("Forest terrain",vertices.ToArray(),triangles.ToArray()),grass,true), TestDriveAudioSurface.Kind.Grass);
+        AudioSurface(MeshObject("Desert terrain",SaveMesh("Forest terrain",vertices.ToArray(),triangles.ToArray()),grass,true), TestDriveAudioSurface.Kind.Grass);
         vertices.Clear(); triangles.Clear();
         for (int i=0;i<=samples;i++)
         {
@@ -151,7 +151,7 @@ public static class HighlandClimbBuilder
             float x = -430 + (float)random.NextDouble() * 860, z = -430 + (float)random.NextDouble() * 860;
             if (route.Min(p => (p.x-x)*(p.x-x) + (p.z-z)*(p.z-z)) < 30*30) continue;
             var hits = Physics.RaycastAll(new Vector3(x, 200, z), Vector3.down, 400);
-            var ground = hits.Where(h => h.collider.name == "Forest terrain" && h.collider.gameObject.scene == scene).OrderByDescending(h => h.point.y).ToArray();
+            var ground = hits.Where(h => h.collider.name == "Desert terrain" && h.collider.gameObject.scene == scene).OrderByDescending(h => h.point.y).ToArray();
             if (ground.Length == 0) continue;
             var pos = ground[0].point;
             if (i % 3 != 0)
