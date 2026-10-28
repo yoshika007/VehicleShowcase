@@ -102,8 +102,8 @@ public static class HighlandClimbBuilder
         controlsData.FindProperty("cleanLapPanel").objectReferenceValue = null; controlsData.ApplyModifiedPropertiesWithoutUndo();
         root = new GameObject("Highland Climb Trail").transform; SceneManager.MoveGameObjectToScene(root.gameObject, scene);
         dirt = Material("Packed trail dirt", new Color(.42f,.29f,.17f)); soil = Material("Earth bank",new Color(.45f,.34f,.22f));
-        grass = Material("Forest meadow",new Color(.30f,.40f,.24f)); rock = Material("Ridge stone",new Color(.43f,.42f,.37f));
-        foliage = Material("Pine foliage",new Color(.12f,.28f,.17f)); bark = Material("Pine bark",new Color(.27f,.17f,.09f));
+        grass = Material("Forest meadow",new Color(.48f,.39f,.28f)); rock = Material("Ridge stone",new Color(.48f,.41f,.32f));
+        foliage = Material("Pine foliage",new Color(.34f,.30f,.22f)); bark = Material("Pine bark",new Color(.30f,.24f,.18f));
         creek = Material("Shallow creek bed",new Color(.36f,.40f,.32f));
         const int samples = 600; route = new Vector3[samples];
         for (int i=0; i<samples; i++)
@@ -166,7 +166,7 @@ public static class HighlandClimbBuilder
         var map=scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<TestDriveMinimap>(true)).First(); var mapData=new SerializedObject(map);
         mapData.FindProperty("roadMesh").objectReferenceValue=full; mapData.FindProperty("roadTransform").objectReferenceValue=root;
         mapData.FindProperty("startLineA").vector3Value=route[2]-Side(2)*7; mapData.FindProperty("startLineB").vector3Value=route[2]+Side(2)*7; mapData.ApplyModifiedPropertiesWithoutUndo();
-        RenderSettings.fog=true; RenderSettings.fogColor=new Color(.62f,.73f,.68f); RenderSettings.fogMode=FogMode.Exponential; RenderSettings.fogDensity=.0008f;
+        RenderSettings.fog=true; RenderSettings.fogColor=new Color(.68f,.62f,.53f); RenderSettings.fogMode=FogMode.Exponential; RenderSettings.fogDensity=.0008f;
         EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
         var scenes=EditorBuildSettings.scenes.ToList(); scenes.Add(new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
         AssetDatabase.SaveAssets(); EditorSceneManager.CloseScene(scene,true);
