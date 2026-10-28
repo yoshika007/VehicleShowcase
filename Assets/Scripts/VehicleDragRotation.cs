@@ -32,6 +32,7 @@ public class VehicleDragRotation : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     public void SetVehicle(Transform target)
     {
+        bool switchingVehicle = vehicle != null && vehicle != target;
         activePointer = null;
         vehicle = target;
         var nextCamera = Camera.main;
@@ -48,6 +49,7 @@ public class VehicleDragRotation : MonoBehaviour, IBeginDragHandler, IDragHandle
             }
         }
         ResetCamera();
+        if (switchingVehicle) resumeIdleAt = Time.unscaledTime;
         var renderers = target.GetComponentsInChildren<Renderer>();
         vehicleBounds = new Bounds(target.position, Vector3.zero);
         if (renderers.Length > 0)
