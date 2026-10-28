@@ -42,13 +42,16 @@ public static class AddMountainPassTechnicalSection
         var location=p+side*9.5f;
         Physics.Raycast(location+Vector3.up*20,Vector3.down,out var hit,50);
         if(hit.collider!=null)location.y=hit.point.y;
-        Box(root,"Technical warning post",location+Vector3.up*1.7f,new Vector3(.16f,3.4f,.16f),mat("Galvanized rail"));
+        Box(root,"Technical warning post",location+Vector3.up*1.7f+forward.normalized*.2f,new Vector3(.16f,3.4f,.16f),mat("Galvanized rail"));
         var board=Box(root,"Technical corner board",location+Vector3.up*3.1f,new Vector3(width,1.65f,.15f),mat("Sign forest"));
         board.transform.rotation=Quaternion.LookRotation(forward);
         var g=new GameObject("Technical sign lettering",typeof(TextMeshPro));g.transform.SetParent(root,false);
         g.transform.SetPositionAndRotation(board.transform.position-forward*.1f,board.transform.rotation);
         var t=g.GetComponent<TextMeshPro>();t.text=text;t.fontSize=5.5f;t.color=mat("Safety gold").color;
         t.alignment=TextAlignmentOptions.Center;t.rectTransform.sizeDelta=new Vector2(width-.3f,1.5f);
+        float fittedWidth=t.GetPreferredValues().x+1.2f;
+        board.transform.localScale=new Vector3(fittedWidth,1.65f,.15f);
+        t.rectTransform.sizeDelta=new Vector2(fittedWidth-.3f,1.5f);
     }
     public static string Run()
     {
