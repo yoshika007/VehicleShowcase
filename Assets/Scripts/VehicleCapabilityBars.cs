@@ -12,18 +12,18 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         var area = GetComponent<RectTransform>();
         area.SetParent(description.transform.parent, false);
         area.anchorMin = new Vector2(0f, 1f); area.anchorMax = new Vector2(1f, 1f);
-        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 90f);
+        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 110f);
         area.anchoredPosition = new Vector2(0f, -201f);
         fills = new UnityEngine.UI.Image[3];
         string[] names = { "ACCELERATION", "ON-ROAD", "OFF-ROAD" };
         for (int i = 0; i < names.Length; i++)
         {
-            float y = -i * 23f;
-            Label(area, description, names[i], new Vector2(0f, y), new Vector2(150f, 22f));
-            var track = Image(area, "Track", new Vector2(155f, y - 5f), new Vector2(220f, 12f), new Color(.15f, .27f, .28f, 1f));
-            fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(220f, 12f), new Color(.98f, .74f, .25f, 1f));
+            float y = -i * 27f;
+            Label(area, description, names[i], new Vector2(0f, y), new Vector2(164f, 28f));
+            var track = Image(area, "Track", new Vector2(170f, y - 6f), new Vector2(255f, 16f), new Color(.15f, .27f, .28f, 1f));
+            fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(255f, 16f), new Color(.98f, .74f, .25f, 1f));
         }
-        speedText = Label(area, description, "", new Vector2(0f, -69f), new Vector2(375f, 22f));
+        speedText = Label(area, description, "", new Vector2(0f, -81f), new Vector2(425f, 28f));
         description.gameObject.SetActive(false);
     }
 
@@ -34,7 +34,7 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
         rect.anchoredPosition = position; rect.sizeDelta = size;
         var text = obj.GetComponent<TextMeshProUGUI>(); text.font = source.font; text.fontSharedMaterial = source.fontSharedMaterial;
-        text.text = value; text.fontSize = 16f; text.color = new Color(.88f, .93f, .91f, 1f);
+        text.text = value; text.fontSize = 20f; text.color = new Color(.88f, .93f, .91f, 1f);
         text.alignment = TextAlignmentOptions.MidlineLeft; text.textWrappingMode = TextWrappingModes.NoWrap; text.raycastTarget = false;
         return text;
     }
@@ -66,7 +66,7 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
             _ => new Vector3(.5f, .5f, .5f)
         };
         for (int i = 0; i < fills.Length; i++)
-            fills[i].rectTransform.sizeDelta = new Vector2(220f * rating[i], 12f);
+            fills[i].rectTransform.sizeDelta = new Vector2(255f * rating[i], 16f);
         speedText.text = topSpeed.HasValue ? $"TOP SPEED: {Mathf.RoundToInt(topSpeed.Value)} km/h" : "TOP SPEED: --";
     }
 }

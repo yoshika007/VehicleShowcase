@@ -20,8 +20,10 @@ public class VehiclePaintSelector : MonoBehaviour
 
     private void Awake()
     {
-        panelSize = panel.sizeDelta;
-        drivePosition = testDriveButton.anchoredPosition;
+        // Give the capability chart more room while keeping the drive button below the panel.
+        const float extraWidth = 56f, extraHeight = 40f;
+        panelSize = panel.sizeDelta + new Vector2(extraWidth, extraHeight);
+        drivePosition = testDriveButton.anchoredPosition - Vector2.up * (extraHeight * panel.localScale.y * .5f);
         swatchTemplate.gameObject.SetActive(false);
     }
     public void Bind(VehiclePaint target, Action onChanged)
