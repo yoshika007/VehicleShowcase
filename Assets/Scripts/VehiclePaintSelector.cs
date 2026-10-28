@@ -22,8 +22,11 @@ public class VehiclePaintSelector : MonoBehaviour
     {
         // Give the capability chart more room while keeping the drive button below the panel.
         const float extraWidth = 56f, extraHeight = 20f;
-        panelSize = panel.sizeDelta + new Vector2(extraWidth, extraHeight);
-        drivePosition = testDriveButton.anchoredPosition - Vector2.up * (extraHeight * panel.localScale.y * .5f);
+        bool authoredPreview = panel.Find("VehicleCapabilityBars") != null;
+        panelSize = authoredPreview ? panel.sizeDelta - Vector2.up * extraPanelHeight
+            : panel.sizeDelta + new Vector2(extraWidth, extraHeight);
+        drivePosition = authoredPreview ? testDriveButton.anchoredPosition + Vector2.up * (extraPanelHeight * panel.localScale.y * .5f)
+            : testDriveButton.anchoredPosition - Vector2.up * (extraHeight * panel.localScale.y * .5f);
         if (testDriveButton.TryGetComponent<TestDriveButtonFeedback>(out var feedback))
             feedback.SetExpandDownwards(true);
         swatchTemplate.gameObject.SetActive(false);

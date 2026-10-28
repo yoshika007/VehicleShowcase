@@ -4,11 +4,16 @@ using TMPro;
 // Relative showroom ratings, not measured lap times or acceleration figures.
 public sealed class VehicleCapabilityBars : MonoBehaviour
 {
-    private UnityEngine.UI.Image[] fills;
-    private TMP_Text speedText;
+    [SerializeField] private UnityEngine.UI.Image[] fills;
+    [SerializeField] private TMP_Text speedText;
 
     public void Initialize(TMP_Text description)
     {
+        if (fills != null && fills.Length == 6 && speedText != null)
+        {
+            description.gameObject.SetActive(false);
+            return;
+        }
         var area = GetComponent<RectTransform>();
         area.SetParent(description.transform.parent, false);
         area.anchorMin = new Vector2(0f, 1f); area.anchorMax = new Vector2(1f, 1f);

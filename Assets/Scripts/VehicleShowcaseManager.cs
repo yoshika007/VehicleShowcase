@@ -51,6 +51,14 @@ public class VehicleShowcaseManager : MonoBehaviour
     private Vehicle currentVehicle;
     private VehicleCapabilityBars capabilityBars;
 
+    private void Awake()
+    {
+        var preview = GameObject.Find("Showroom Edit Preview");
+        if (preview != null) preview.SetActive(false);
+        var swatches = GameObject.Find("Edit Preview Swatches");
+        if (swatches != null) swatches.SetActive(false);
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -329,7 +337,10 @@ public class VehicleShowcaseManager : MonoBehaviour
         categoryText.text = currentVehicle.Category;
         if (capabilityBars == null && descriptionText != null)
         {
-            capabilityBars = new GameObject("VehicleCapabilityBars", typeof(RectTransform)).AddComponent<VehicleCapabilityBars>();
+            var existing = descriptionText.transform.parent.Find("VehicleCapabilityBars");
+            capabilityBars = existing != null ? existing.GetComponent<VehicleCapabilityBars>() : null;
+            if (capabilityBars == null)
+                capabilityBars = new GameObject("VehicleCapabilityBars", typeof(RectTransform)).AddComponent<VehicleCapabilityBars>();
             capabilityBars.Initialize(descriptionText);
         }
         float? topSpeed = null;
