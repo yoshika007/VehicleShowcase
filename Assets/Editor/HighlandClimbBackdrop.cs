@@ -54,17 +54,39 @@ public static class HighlandClimbBackdrop
         if(AssetDatabase.LoadAssetAtPath<Mesh>(wallPath)!=null)throw new Exception("Boundary asset already exists");
         var wall=new Mesh{name="Desert perimeter collision"};wall.SetVertices(vertices);wall.SetTriangles(triangles,0);wall.RecalculateBounds();AssetDatabase.CreateAsset(wall,wallPath);
         var boundary=new GameObject("Desert perimeter boundary",typeof(MeshCollider));boundary.transform.SetParent(root,false);boundary.GetComponent<MeshCollider>().sharedMesh=wall;boundary.isStatic=true;
-        var cube=Resources.GetBuiltinResource<Mesh>("Sphere.fbx");var rocks=new List<CombineInstance>();var random=new System.Random(6891);
-        for(int i=0;i<128;i++)
-        {
-            int angle=(i*73)%128;int band=1+i%3;var p=hills[angle*5+band];
-            float size=8f+(float)random.NextDouble()*16f;
-            var rotation=Quaternion.Euler((float)random.NextDouble()*16f-8f,(float)random.NextDouble()*360f,(float)random.NextDouble()*18f-9f);
-            rocks.Add(new CombineInstance{mesh=cube,transform=Matrix4x4.TRS(p+Vector3.up*size*.20f,rotation,new Vector3(size,size*.65f,size*.7f))});
-        }
+        var rocks=CreateRockInstances(hills);
         string rocksPath=Dir+"/Distant hill rocks.asset";if(AssetDatabase.LoadAssetAtPath<Mesh>(rocksPath)!=null)throw new Exception("Hill rock asset already exists");
         var rockMesh=new Mesh{name="Distant hill rocks",indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};rockMesh.CombineMeshes(rocks.ToArray());AssetDatabase.CreateAsset(rockMesh,rocksPath);
         var detail=new GameObject("Distant hill rocks",typeof(MeshFilter),typeof(MeshRenderer));detail.transform.SetParent(root,false);detail.GetComponent<MeshFilter>().sharedMesh=rockMesh;detail.GetComponent<MeshRenderer>().sharedMaterial=AssetDatabase.LoadAssetAtPath<Material>(Dir+"/Ridge stone.mat");detail.isStatic=true;
+    }
+    // Sample the actual hill triangles so rocks are grounded between the mesh vertices.
+    static List<CombineInstance> CreateRockInstances(Vector3[] hills)
+    {
+        var sphere=Resources.GetBuiltinResource<Mesh>("Sphere.fbx");
+        var rocks=new List<CombineInstance>();var random=new System.Random(6891);
+        for(int i=0;i<128;i++)
+        {
+            int angle=random.Next(128), band=random.Next(1,4);
+            var a=hills[angle*5+band];var b=hills[(angle+1)*5+band];
+            var c=hills[angle*5+band+1];var d=hills[(angle+1)*5+band+1];
+            float u=(float)random.NextDouble(),v=(float)random.NextDouble();
+            if(u+v>1f){u=1f-u;v=1f-v;}
+            Vector3 p=random.Next(2)==0 ? a+(b-a)*u+(c-a)*v : d+(b-d)*u+(c-d)*v;
+            float size=8f+(float)random.NextDouble()*16f;
+            var rotation=Quaternion.Euler((float)random.NextDouble()*16f-8f,(float)random.NextDouble()*360f,(float)random.NextDouble()*18f-9f);
+            rocks.Add(new CombineInstance{mesh=sphere,transform=Matrix4x4.TRS(p+Vector3.up*size*.20f,rotation,new Vector3(size,size*.65f,size*.7f))});
+        }
+        return rocks;
+    }
+    public static string RedistributeRocks()
+    {
+        var scene=SceneManager.GetActiveScene();
+        if(scene.path!="Assets/Scenes/HighlandClimbScene.unity"||scene.isDirty||EditorApplication.isPlaying)throw new Exception("Open the saved Highland Climb scene in Edit Mode");
+        var root=scene.GetRootGameObjects().First(x=>x.name=="Highland Climb Trail").transform;
+        var hills=root.Find("Distant desert hills").GetComponent<MeshFilter>().sharedMesh.vertices;
+        var mesh=root.Find("Distant hill rocks").GetComponent<MeshFilter>().sharedMesh;
+        mesh.Clear();mesh.CombineMeshes(CreateRockInstances(hills).ToArray());EditorUtility.SetDirty(mesh);AssetDatabase.SaveAssets();
+        return "Redistributed 128 rocks across hill triangles";
     }
     public static string AddDetailsToCurrentScene()
     {
