@@ -183,7 +183,8 @@ public static class HighlandClimbBuilder
         var map=scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<TestDriveMinimap>(true)).First(); var mapData=new SerializedObject(map);
         mapData.FindProperty("roadMesh").objectReferenceValue=full; mapData.FindProperty("roadTransform").objectReferenceValue=root;
         mapData.FindProperty("startLineA").vector3Value=route[spawnIndex]-Side(spawnIndex)*7; mapData.FindProperty("startLineB").vector3Value=route[spawnIndex]+Side(spawnIndex)*7; mapData.ApplyModifiedPropertiesWithoutUndo();
-        RenderSettings.fog=true; RenderSettings.fogColor=new Color(.68f,.62f,.53f); RenderSettings.fogMode=FogMode.Exponential; RenderSettings.fogDensity=.0008f;
+        RenderSettings.fog=true; RenderSettings.fogColor=new Color(.68f,.62f,.53f); RenderSettings.fogMode=FogMode.Exponential; RenderSettings.fogDensity=.0012f;
+        HighlandClimbBackdrop.Generate(scene, root);
         EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
         var scenes=EditorBuildSettings.scenes.ToList(); scenes.Add(new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
         AssetDatabase.SaveAssets(); EditorSceneManager.CloseScene(scene,true);
