@@ -1,0 +1,72 @@
+using UnityEngine;
+using TMPro;
+
+// Relative showroom ratings, not measured lap times or acceleration figures.
+public sealed class VehicleCapabilityBars : MonoBehaviour
+{
+    private UnityEngine.UI.Image[] fills;
+    private TMP_Text speedText;
+
+    public void Initialize(TMP_Text description)
+    {
+        var area = GetComponent<RectTransform>();
+        area.SetParent(description.transform.parent, false);
+        area.anchorMin = new Vector2(0f, 1f); area.anchorMax = new Vector2(1f, 1f);
+        area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 90f);
+        area.anchoredPosition = new Vector2(0f, -201f);
+        fills = new UnityEngine.UI.Image[3];
+        string[] names = { "ACCELERATION", "ON-ROAD", "OFF-ROAD" };
+        for (int i = 0; i < names.Length; i++)
+        {
+            float y = -i * 23f;
+            Label(area, description, names[i], new Vector2(0f, y), new Vector2(150f, 22f));
+            var track = Image(area, "Track", new Vector2(155f, y - 5f), new Vector2(220f, 12f), new Color(.15f, .27f, .28f, 1f));
+            fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(220f, 12f), new Color(.98f, .74f, .25f, 1f));
+        }
+        speedText = Label(area, description, "", new Vector2(0f, -69f), new Vector2(375f, 22f));
+        description.gameObject.SetActive(false);
+    }
+
+    private static TMP_Text Label(RectTransform parent, TMP_Text source, string value, Vector2 position, Vector2 size)
+    {
+        var obj = new GameObject("CapabilityLabel", typeof(RectTransform), typeof(TextMeshProUGUI));
+        var rect = (RectTransform)obj.transform; rect.SetParent(parent, false);
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = position; rect.sizeDelta = size;
+        var text = obj.GetComponent<TextMeshProUGUI>(); text.font = source.font; text.fontSharedMaterial = source.fontSharedMaterial;
+        text.text = value; text.fontSize = 16f; text.color = new Color(.88f, .93f, .91f, 1f);
+        text.alignment = TextAlignmentOptions.MidlineLeft; text.textWrappingMode = TextWrappingModes.NoWrap; text.raycastTarget = false;
+        return text;
+    }
+
+    private static UnityEngine.UI.Image Image(RectTransform parent, string name, Vector2 position, Vector2 size, Color color)
+    {
+        var obj = new GameObject(name, typeof(RectTransform), typeof(UnityEngine.UI.Image));
+        var rect = (RectTransform)obj.transform; rect.SetParent(parent, false);
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = position; rect.sizeDelta = size;
+        var image = obj.GetComponent<UnityEngine.UI.Image>(); image.color = color; image.raycastTarget = false;
+        return image;
+    }
+
+    public void Show(Vehicle vehicle, float? topSpeed)
+    {
+        // Broad relative ratings reflect the vehicles' intended roles, not physical measurements.
+        Vector3 rating = vehicle switch
+        {
+            Hatchback => new Vector3(.48f, .72f, .25f),
+            PickupTruck => new Vector3(.50f, .62f, .72f),
+            Van => new Vector3(.35f, .58f, .32f),
+            ClassicCar => new Vector3(.45f, .70f, .20f),
+            PoliceCar => new Vector3(.67f, .82f, .28f),
+            MuscleCar => new Vector3(.85f, .74f, .18f),
+            SportsCar => new Vector3(.83f, .95f, .15f),
+            MonsterTruck => new Vector3(.62f, .42f, 1f),
+            MilitaryVehicle => new Vector3(.57f, .48f, .90f),
+            _ => new Vector3(.5f, .5f, .5f)
+        };
+        for (int i = 0; i < fills.Length; i++)
+            fills[i].rectTransform.sizeDelta = new Vector2(220f * rating[i], 12f);
+        speedText.text = topSpeed.HasValue ? $"TOP SPEED: {Mathf.RoundToInt(topSpeed.Value)} km/h" : "TOP SPEED: --";
+    }
+}

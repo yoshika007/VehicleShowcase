@@ -49,6 +49,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     private bool isTransitioning;
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
+    private VehicleCapabilityBars capabilityBars;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -326,14 +327,17 @@ public class VehicleShowcaseManager : MonoBehaviour
     {
         vehicleNameText.text = currentVehicle.DisplayName;
         categoryText.text = currentVehicle.Category;
-        descriptionText.text = currentVehicle.GetDiscription();
+        if (capabilityBars == null && descriptionText != null)
+        {
+            capabilityBars = new GameObject("VehicleCapabilityBars", typeof(RectTransform)).AddComponent<VehicleCapabilityBars>();
+            capabilityBars.Initialize(descriptionText);
+        }
+        float? topSpeed = null;
         if (testDriveCatalog != null && testDriveCatalog.drivingPrefabs != null &&
             currentVehicleIndex < testDriveCatalog.drivingPrefabs.Length &&
             testDriveCatalog.drivingPrefabs[currentVehicleIndex] != null)
-        {
-            float targetSpeed = testDriveCatalog.drivingPrefabs[currentVehicleIndex].TargetTopSpeedKmh;
-            descriptionText.text += $"\nTOP SPEED: {Mathf.RoundToInt(targetSpeed)} km/h";
-        }
+            topSpeed = testDriveCatalog.drivingPrefabs[currentVehicleIndex].TargetTopSpeedKmh;
+        if (capabilityBars != null) capabilityBars.Show(currentVehicle, topSpeed);
         if (layoutText != null)
             layoutText.text = $"LAYOUT: {currentVehicle.LayoutCode}";
         vehicleCounterText.text = $"{currentVehicleIndex + 1} / {vehiclePrefabs.Length}";
