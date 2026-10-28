@@ -11,15 +11,18 @@ public class FreeRideCourseMenu : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button mountainPass;
     [SerializeField] private UnityEngine.UI.Button harborStreet;
     [SerializeField] private UnityEngine.UI.Button pineRidge;
+    private UnityEngine.UI.Button highlandClimb;
     private const int VisibleCourses = 3;
     private UnityEngine.UI.Button previousPage, nextPage;
     private int firstVisible;
-    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, harborStreet, pineRidge };
+    private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, harborStreet, pineRidge, highlandClimb };
 
     private void OnEnable()
     {
+        EnsureHighlandCourse();
         ArrangeWithoutSubtitle();
-        firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge ? 2
+        firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HighlandClimb ? 3
+            : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge ? 2
             : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 1 : 0;
         ArrangeCourses();
         EnsurePagingControls();
@@ -28,6 +31,19 @@ public class FreeRideCourseMenu : MonoBehaviour
         UpdateCourseDescriptions();
         AddToonButtonIcons();
         Refresh();
+    }
+    private void EnsureHighlandCourse()
+    {
+        if (highlandClimb == null && pineRidge != null)
+        {
+            highlandClimb = Instantiate(pineRidge, pineRidge.transform.parent);
+            highlandClimb.name = "HighlandClimbCourse";
+            highlandClimb.onClick = new UnityEngine.UI.Button.ButtonClickedEvent();
+            highlandClimb.onClick.AddListener(() => manager.HighlandClimbRide());
+            var label = highlandClimb.transform.Find("Label")?.GetComponent<TMP_Text>();
+            if (label != null) label.text = "HIGHLAND CLIMB";
+        }
+        if (highlandClimb != null) highlandClimb.interactable = manager != null && manager.CanDriveHighlandClimb;
     }
     private void ArrangeWithoutSubtitle()
     {
@@ -139,6 +155,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         SetCoursePhoto(mountainPass, "MountainPass");
         SetCoursePhoto(harborStreet, "HarborStreet");
         SetCoursePhoto(pineRidge, "PineRidge");
+        SetCoursePhoto(highlandClimb, "HighlandClimb");
     }
     private static void SetCoursePhoto(UnityEngine.UI.Button button, string asset)
     {
@@ -185,6 +202,9 @@ public class FreeRideCourseMenu : MonoBehaviour
         SetCourseDescription(mountainPass, "Mountain hairpins\nSummit tunnel\nSweeping descents");
         SetCourseDescription(harborStreet, "Tight city corners\nHotel hairpin\nSeaside tunnel");
         SetCourseDescription(pineRidge, "Forest dirt trails\nRolling hills\nShallow crossing");
+        SetCourseDescription(highlandClimb, manager != null && manager.CanDriveHighlandClimb
+            ? "Steep climbs\nRocky hills\nOff-road vehicles only"
+            : "Off-road vehicles only\nChoose Trailmaster\nor Sentinel");
         var trial = lakeTown != null ? lakeTown.transform.Find("Trial") : null;
         if (trial != null) trial.gameObject.SetActive(false);
     }
@@ -263,6 +283,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         TintCourse(lakeTown, lakeSelected);
         TintCourse(harborStreet, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet);
         TintCourse(pineRidge, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge);
+        TintCourse(highlandClimb, manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HighlandClimb);
     }
     private static void TintCourse(UnityEngine.UI.Button button, bool selected)
     {

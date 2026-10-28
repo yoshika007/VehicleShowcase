@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PineRidgeScene.unity
     guid: 285601951bdd74759b0201c1d5acdea0
+  - enabled: 1
+    path: Assets/Scenes/HighlandClimbScene.unity
+    guid: abdc8acc75feb4b4aa20ee55cd8feef1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

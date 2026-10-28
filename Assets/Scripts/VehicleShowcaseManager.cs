@@ -38,6 +38,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     public TestDriveSelection.TimeOfDay FreeRideLighting => freeRideLighting;
     private TestDriveSelection.CourseKind freeRideCourse;
     public TestDriveSelection.CourseKind FreeRideCourse => freeRideCourse;
+    public bool CanDriveHighlandClimb => currentVehicle != null && (currentVehicle.Category == "Off-Road" || currentVehicle.Category == "Military");
     private bool CourseMenuOpen => courseSelectionPanel != null && courseSelectionPanel.activeSelf;
     private bool ChallengeMenuOpen => challengePanel != null && challengePanel.activeSelf;
     private bool[] navigationAvailability;
@@ -124,6 +125,8 @@ public class VehicleShowcaseManager : MonoBehaviour
             dragWasEnabled = vehicleDragRotation.enabled;
             vehicleDragRotation.enabled = false;
         }
+        if (freeRideCourse == TestDriveSelection.CourseKind.HighlandClimb && !CanDriveHighlandClimb)
+            freeRideCourse = TestDriveSelection.CourseKind.TestCircuit;
         courseSelectionPanel.SetActive(true);
         if (courseSelectionPanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
@@ -152,7 +155,8 @@ public class VehicleShowcaseManager : MonoBehaviour
 
     public void ConfirmCourse()
     {
-        if (isTransitioning || !CourseMenuOpen || driveModePanel == null) return;
+        if (isTransitioning || !CourseMenuOpen || driveModePanel == null ||
+            (freeRideCourse == TestDriveSelection.CourseKind.HighlandClimb && !CanDriveHighlandClimb)) return;
         PlayButtonSound(navigationSound);
         courseSelectionPanel.SetActive(false);
         ShowDriveModes();
@@ -186,7 +190,8 @@ public class VehicleShowcaseManager : MonoBehaviour
     {
         driveModePanel.SetActive(true);
         if (driveModePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
-        string course = freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? "Lake Town"
+        string course = freeRideCourse == TestDriveSelection.CourseKind.HighlandClimb ? "Highland Climb"
+            : freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? "Lake Town"
             : freeRideCourse == TestDriveSelection.CourseKind.MountainPass ? "Mountain Pass"
             : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? "Harbor Street"
             : freeRideCourse == TestDriveSelection.CourseKind.PineRidge ? "Pine Ridge Trail" : "Test Circuit";
@@ -209,6 +214,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void MountainPassRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.MountainPass);
     public void HarborStreetRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.HarborStreet);
     public void PineRidgeRide() => SelectFreeRideCourse(TestDriveSelection.CourseKind.PineRidge);
+    public void HighlandClimbRide() { if (CanDriveHighlandClimb) SelectFreeRideCourse(TestDriveSelection.CourseKind.HighlandClimb); }
     private void SelectFreeRideCourse(TestDriveSelection.CourseKind course)
     {
         if (!CourseMenuOpen || isTransitioning) return;
@@ -255,7 +261,8 @@ public class VehicleShowcaseManager : MonoBehaviour
             return;
         }
         TestDriveSelection.Select(currentVehicleIndex, mode, lighting, challenge, course, currentVehicle.DisplayName);
-        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge ? "PineRidgeScene"
+        string scene = TestDriveSelection.Course == TestDriveSelection.CourseKind.HighlandClimb ? "HighlandClimbScene"
+            : TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge ? "PineRidgeScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet ? "HarborStreetScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass ? "MountainPassScene"
             : TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown ? "LakeTownScene" : "TestTrackScene";

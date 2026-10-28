@@ -80,7 +80,12 @@ public class TestDriveIntro : MonoBehaviour
     private void BuildShots()
     {
         string scene = SceneManager.GetActiveScene().name;
-        if (scene == "PineRidgeScene")
+        if (scene == "HighlandClimbScene")
+        {
+            first = new Shot("HIGHLAND CLIMB", "Steep climbs and rolling dirt trails", Vector3.zero, new Vector3(100, 90, -120), new Vector3(10, 75, -100));
+            second = new Shot("HILL COUNTRY", "Choose your line and climb carefully", new Vector3(0, 20, 100), new Vector3(90, 80, 50), new Vector3(20, 65, 80));
+        }
+        else if (scene == "PineRidgeScene")
         {
             first = new Shot("PINE RIDGE TRAIL", "Explore a forest dirt circuit", Vector3.zero, new Vector3(100, 80, -120), new Vector3(10, 65, -100));
             second = new Shot("FOREST AND RIDGE", "Follow the trail through the hills", new Vector3(0, 8, 120), new Vector3(90, 65, 50), new Vector3(20, 55, 80));
@@ -198,7 +203,8 @@ public class TestDriveIntro : MonoBehaviour
         }
     }
 
-    private static string CourseName() => SceneManager.GetActiveScene().name == "PineRidgeScene" ? "PINE RIDGE TRAIL"
+    private static string CourseName() => SceneManager.GetActiveScene().name == "HighlandClimbScene" ? "HIGHLAND CLIMB"
+        : SceneManager.GetActiveScene().name == "PineRidgeScene" ? "PINE RIDGE TRAIL"
         : SceneManager.GetActiveScene().name == "HarborStreetScene" ? "HARBOR STREET"
         : SceneManager.GetActiveScene().name == "MountainPassScene" ? "MOUNTAIN PASS"
         : SceneManager.GetActiveScene().name == "LakeTownScene" ? "LAKE TOWN" : "TEST CIRCUIT";
