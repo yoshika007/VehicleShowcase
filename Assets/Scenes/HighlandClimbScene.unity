@@ -4939,8 +4939,8 @@ MonoBehaviour:
   roadMesh: {fileID: 4300000, guid: 37d443747f82d4fdd899e3306d6d967e, type: 2}
   roadTransform: {fileID: 591428310}
   vehicle: {fileID: 0}
-  startLineA: {x: 196.35783, y: 19.401525, z: 6.929861}
-  startLineB: {x: 208.93443, y: 19.401525, z: 0.7793443}
+  startLineA: {x: 99.556946, y: 31.284182, z: 97.77623}
+  startLineB: {x: 105.28496, y: 31.284182, z: 110.55081}
   markerColor: {r: 0.98, g: 0.77, b: 0.25, a: 1}
 --- !u!222 &1368167996
 CanvasRenderer:
@@ -5923,8 +5923,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1561444181}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.2172052, z: -0, w: 0.97612596}
-  m_LocalPosition: {x: 202.64613, y: 19.901525, z: 3.8546028}
+  m_LocalRotation: {x: -0, y: -0.54210174, z: -0, w: 0.8403129}
+  m_LocalPosition: {x: 102.42095, y: 31.784182, z: 104.16352}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

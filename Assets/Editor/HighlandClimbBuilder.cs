@@ -176,12 +176,13 @@ public static class HighlandClimbBuilder
             mesh.CombineMeshes(group.items.ToArray());
             AssetDatabase.CreateAsset(mesh, Dir + "/" + group.name + ".asset"); MeshObject(group.name, mesh, group.mat);
         }
-        var spawn=infrastructure.transform.Find("VehicleSpawn"); var direction=route[3]-route[2]; direction.y=0;
-        spawn.SetPositionAndRotation(route[2]+Vector3.up*.5f,Quaternion.LookRotation(direction));
+        const int spawnIndex = 85; // A broad, nearly level section of the trail.
+        var spawn=infrastructure.transform.Find("VehicleSpawn"); var direction=route[spawnIndex+1]-route[spawnIndex]; direction.y=0;
+        spawn.SetPositionAndRotation(route[spawnIndex]+Vector3.up*.5f,Quaternion.LookRotation(direction));
         var camera=infrastructure.GetComponentInChildren<Camera>(true); if(camera!=null) camera.farClipPlane=1600;
         var map=scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<TestDriveMinimap>(true)).First(); var mapData=new SerializedObject(map);
         mapData.FindProperty("roadMesh").objectReferenceValue=full; mapData.FindProperty("roadTransform").objectReferenceValue=root;
-        mapData.FindProperty("startLineA").vector3Value=route[2]-Side(2)*7; mapData.FindProperty("startLineB").vector3Value=route[2]+Side(2)*7; mapData.ApplyModifiedPropertiesWithoutUndo();
+        mapData.FindProperty("startLineA").vector3Value=route[spawnIndex]-Side(spawnIndex)*7; mapData.FindProperty("startLineB").vector3Value=route[spawnIndex]+Side(spawnIndex)*7; mapData.ApplyModifiedPropertiesWithoutUndo();
         RenderSettings.fog=true; RenderSettings.fogColor=new Color(.68f,.62f,.53f); RenderSettings.fogMode=FogMode.Exponential; RenderSettings.fogDensity=.0008f;
         EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
         var scenes=EditorBuildSettings.scenes.ToList(); scenes.Add(new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
