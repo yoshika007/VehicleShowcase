@@ -109,7 +109,8 @@ public static class HighlandClimbBuilder
         for (int i=0; i<samples; i++)
         {
             float a = i * Mathf.PI * 2 / samples;
-            float x = 170 * Mathf.Cos(a) + 18 * Mathf.Sin(3*a), z = 135 * Mathf.Sin(a) + 12 * Mathf.Sin(2*a);
+            float radius = 1f + .18f * Mathf.Cos(4*a) + .10f * Mathf.Sin(3*a);
+            float x = 170 * radius * Mathf.Cos(a) + 18 * Mathf.Sin(3*a), z = 135 * radius * Mathf.Sin(a) + 12 * Mathf.Sin(2*a);
             float height = 18f + 16f * Mathf.Sin(a) + 9f * Mathf.Sin(3*a) + 4f * Mathf.Sin(6*a);
             route[i] = new Vector3(x, height, z);
         }
