@@ -15,7 +15,6 @@ public static class HighlandClimbBuilder
     static Vector3[] route;
     static Transform root;
     static Material dirt, soil, grass, rock, foliage, bark, creek;
-    static Mesh cone;
     static int assetNumber;
     static Mesh SaveMesh(string name, Vector3[] vertices, int[] triangles)
     {
@@ -142,23 +141,40 @@ public static class HighlandClimbBuilder
             Surface(road,part==1?.85f:.88f);
             AudioSurface(road, part==1 ? TestDriveAudioSurface.Kind.Gravel : TestDriveAudioSurface.Kind.Dirt);
         }
-        var cv=new List<Vector3>(); var ct=new List<int>();
-        for(int i=0;i<8;i++){float a=i*Mathf.PI/4,b=(i+1)*Mathf.PI/4;int n=cv.Count;cv.AddRange(new[]{new Vector3(Mathf.Cos(a),0,Mathf.Sin(a)),Vector3.up,new Vector3(Mathf.Cos(b),0,Mathf.Sin(b))});ct.AddRange(new[]{n,n+1,n+2});}
-        cone=SaveMesh("Pine crown",cv.ToArray(),ct.ToArray());
-        var random=new System.Random(20731); var crowns=new List<CombineInstance>(); var trunks=new List<CombineInstance>();
-        var cube=GameObject.CreatePrimitive(PrimitiveType.Cube); var cubeMesh=cube.GetComponent<MeshFilter>().sharedMesh; Object.DestroyImmediate(cube);
-        for(int i=0;i<450;i++)
+        // Sparse rocks and dry scrub keep the wasteland open around the driving line.
+        var random = new System.Random(9361);
+        var stones = new List<CombineInstance>(); var brushes = new List<CombineInstance>();
+        var sphere = Resources.GetBuiltinResource<Mesh>("Sphere.fbx");
+        var cube = Resources.GetBuiltinResource<Mesh>("Cube.fbx");
+        for (int i = 0; i < 450; i++)
         {
-            float x=-430+(float)random.NextDouble()*860,z=-430+(float)random.NextDouble()*860;
-            if(route.Min(p=>(p.x-x)*(p.x-x)+(p.z-z)*(p.z-z))<30*30)continue;
-            float h=8+(float)random.NextDouble()*8; var pos=new Vector3(x,Ground(x,z),z);
-            trunks.Add(new CombineInstance{mesh=cubeMesh,transform=Matrix4x4.TRS(pos+Vector3.up*h*.25f,Quaternion.identity,new Vector3(.6f,h*.5f,.6f))});
-            crowns.Add(new CombineInstance{mesh=cone,transform=Matrix4x4.TRS(pos+Vector3.up*h*.2f,Quaternion.identity,new Vector3(h*.43f,h*.8f,h*.43f))});
+            float x = -430 + (float)random.NextDouble() * 860, z = -430 + (float)random.NextDouble() * 860;
+            if (route.Min(p => (p.x-x)*(p.x-x) + (p.z-z)*(p.z-z)) < 30*30) continue;
+            var hits = Physics.RaycastAll(new Vector3(x, 200, z), Vector3.down, 400);
+            var ground = hits.Where(h => h.collider.name == "Forest terrain" && h.collider.gameObject.scene == scene).OrderByDescending(h => h.point.y).ToArray();
+            if (ground.Length == 0) continue;
+            var pos = ground[0].point;
+            if (i % 3 != 0)
+            {
+                float size = 2f + (float)random.NextDouble() * 5f;
+                var rotation = Quaternion.Euler(0, (float)random.NextDouble() * 360, 0);
+                stones.Add(new CombineInstance { mesh = sphere, transform = Matrix4x4.TRS(pos + Vector3.up*size*.16f, rotation, new Vector3(size, size*.40f, size*.7f)) });
+            }
+            else
+            {
+                float height = .7f + (float)random.NextDouble() * 1.3f;
+                for (int j = 0; j < 3; j++)
+                {
+                    var rotation = Quaternion.Euler(j == 1 ? 22 : -22, (float)random.NextDouble() * 360, j == 2 ? 24 : 0);
+                    brushes.Add(new CombineInstance { mesh = cube, transform = Matrix4x4.TRS(pos + Vector3.up*height*.42f, rotation, new Vector3(.09f, height, .09f)) });
+                }
+            }
         }
-        foreach(var group in new[]{(name:"Pine trees",items:crowns,mat:foliage),(name:"Pine trunks",items:trunks,mat:bark)})
+        foreach (var group in new[] { (name: "Dry rock outcrops", items: stones, mat: rock), (name: "Dry scrub", items: brushes, mat: bark) })
         {
-            var mesh=new Mesh{name=group.name,indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};mesh.CombineMeshes(group.items.ToArray());
-            AssetDatabase.CreateAsset(mesh,Dir+"/"+group.name+".asset");MeshObject(group.name,mesh,group.mat);
+            var mesh = new Mesh { name = group.name, indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+            mesh.CombineMeshes(group.items.ToArray());
+            AssetDatabase.CreateAsset(mesh, Dir + "/" + group.name + ".asset"); MeshObject(group.name, mesh, group.mat);
         }
         var spawn=infrastructure.transform.Find("VehicleSpawn"); var direction=route[3]-route[2]; direction.y=0;
         spawn.SetPositionAndRotation(route[2]+Vector3.up*.5f,Quaternion.LookRotation(direction));

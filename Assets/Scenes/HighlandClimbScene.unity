@@ -2159,7 +2159,7 @@ GameObject:
   - component: {fileID: 645074179}
   - component: {fileID: 645074178}
   m_Layer: 0
-  m_Name: Pine trunks
+  m_Name: Dry scrub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2760,7 +2760,7 @@ GameObject:
   - component: {fileID: 863718992}
   - component: {fileID: 863718991}
   m_Layer: 0
-  m_Name: Pine trees
+  m_Name: Dry rock outcrops
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2806,7 +2806,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 936d6a4fff80646a1b0f5bf9368b873f, type: 2}
+  - {fileID: 2100000, guid: 499b16addbc3f41fe956e044c638aa54, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
