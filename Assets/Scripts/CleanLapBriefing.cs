@@ -39,14 +39,14 @@ public class CleanLapBriefing : MonoBehaviour
         var cover = (RectTransform)overlay.transform;
         cover.anchorMin = Vector2.zero; cover.anchorMax = Vector2.one;
         cover.offsetMin = cover.offsetMax = Vector2.zero;
-        overlay.AddComponent<Image>().color = new Color(0, 0, 0, .8f);
-        panel = Rect("BriefingPanel", cover, new Vector2(920, 780));
-        panel.gameObject.AddComponent<Image>().color = new Color(.045f, .12f, .14f, 1);
+        overlay.AddComponent<Image>().color = new Color(0, 0, 0, .76f);
+        panel = Rect("BriefingPanel", cover, new Vector2(1100, 780));
+        panel.gameObject.AddComponent<Image>().color = new Color(.045f, .08f, .11f, .99f);
         Text("Heading", panel, challenge.IsNightLap ? "NIGHT LAP" : challenge.IsTrail ? "OFF-ROAD TRAIL" : "CLEAN LAP CHALLENGE", 48, 28, 72, font);
-        Text("Objective", panel, challenge.IsNightLap ? "Finish one clean circuit lap after dark." : challenge.IsTrail ? "Complete the dirt loop through eight gates." : "Finish one lap without hitting a barrier.", 34, 110, 60, font);
+        Text("Objective", panel, challenge.IsNightLap ? "Finish one clean circuit lap after dark." : challenge.IsTrail ? "Complete the dirt loop through eight gates." : "Finish one lap without hitting a barrier.", 42, 108, 80, font);
         Text("Rules", panel,
-            challenge.IsNightLap ? "Cross START / FINISH after the countdown.\nFollow the circuit in the correct direction.\nUse your headlights and the roadside lights.\nBarrier contact or resetting ends the attempt." : challenge.IsTrail ? "Cross START / FINISH after the countdown.\nFollow the main dirt loop through gates 1–8.\nTake care over hills and gravel turns.\nMissed a gate? Go back. Reset ends the run." : "After the countdown, cross START / FINISH.\nFollow the circuit in the correct direction.\nCurbs and runoff are OK.\nBarrier contact or resetting ends the attempt.", 36, 180, 320, font);
-        Text("Medals", panel, challenge.IsTrail ? "The next gate is gold.\nSet your fastest time. No time limit." : $"GOLD  ≤ {challenge.GoldSeconds:0}s     SILVER  ≤ {challenge.SilverSeconds:0}s\nBRONZE  ≤ {challenge.BronzeSeconds:0}s", 34, 500, 100, font);
+            challenge.IsNightLap ? "Cross START / FINISH after the countdown.\nFollow the circuit in the correct direction.\nUse your headlights and the roadside lights.\nBarrier contact or resetting ends the attempt." : challenge.IsTrail ? "Cross START / FINISH after the countdown.\nFollow the main dirt loop through gates 1–8.\nTake care over hills and gravel turns.\nMissed a gate? Go back. Reset ends the run." : "After the countdown, cross START / FINISH.\nFollow the circuit in the correct direction.\nCurbs and runoff are OK.\nBarrier contact or resetting ends the attempt.", 42, 190, 300, font);
+        Text("Medals", panel, challenge.IsTrail ? "The next gate is gold.\nSet your fastest time. No time limit." : $"GOLD  ≤ {challenge.GoldSeconds:0}s     SILVER  ≤ {challenge.SilverSeconds:0}s\nBRONZE  ≤ {challenge.BronzeSeconds:0}s", 40, 500, 115, font);
         var start = MakeButton("StartChallenge", panel, "START CHALLENGE", new Vector2(460, 72), font, Continue);
         ((RectTransform)start.transform).anchoredPosition = new Vector2(0, -270);
         startLabel = start.GetComponentInChildren<TMP_Text>();
@@ -65,11 +65,11 @@ public class CleanLapBriefing : MonoBehaviour
         cover.offsetMin = cover.offsetMax = Vector2.zero;
         cover.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, .76f);
         resultPanel = Rect("ResultPanel", cover, new Vector2(760, 560));
-        resultPanel.gameObject.AddComponent<Image>().color = new Color(.045f, .12f, .14f, 1);
+        resultPanel.gameObject.AddComponent<Image>().color = new Color(.045f, .08f, .11f, .99f);
         Text("ResultHeading", resultPanel, "LAP COMPLETE!", 52, 24, 76, font);
-        Text("ResultSummary", resultPanel, "", 28, 112, 44, font);
+        Text("ResultSummary", resultPanel, "", 38, 108, 54, font);
         Text("ResultTime", resultPanel, "00:00.00", 64, 166, 96, font);
-        Text("ResultReason", resultPanel, "", 26, 280, 64, font);
+        Text("ResultReason", resultPanel, "", 38, 270, 80, font);
         resultHeading = resultPanel.Find("ResultHeading").GetComponent<TMP_Text>();
         resultSummary = resultPanel.Find("ResultSummary").GetComponent<TMP_Text>();
         resultTime = resultPanel.Find("ResultTime").GetComponent<TMP_Text>();
@@ -138,7 +138,7 @@ public class CleanLapBriefing : MonoBehaviour
         var safe = Screen.safeArea;
         Vector2 min = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMin / Screen.width), Mathf.Clamp01(safe.yMin / Screen.height)));
         Vector2 max = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMax / Screen.width), Mathf.Clamp01(safe.yMax / Screen.height)));
-        panel.localScale = Vector3.one * Mathf.Min(1, (max.x-min.x-40)/920, (max.y-min.y-40)/780);
+        panel.localScale = Vector3.one * Mathf.Min(1, (max.x-min.x-40)/1100, (max.y-min.y-40)/780);
         panel.anchoredPosition = (min+max)*.5f;
         if (resultPanel != null)
         {
@@ -155,17 +155,19 @@ public class CleanLapBriefing : MonoBehaviour
     }
     private static void Text(string name, Transform parent, string value, float size, float top, float height, TMP_FontAsset font)
     {
-        var r = Rect(name, parent, new Vector2(860, height));
+        var r = Rect(name, parent, new Vector2(1040, height));
         r.anchorMin = r.anchorMax = new Vector2(.5f, 1); r.pivot = new Vector2(.5f, 1); r.anchoredPosition = new Vector2(0,-top);
         var t = r.gameObject.AddComponent<TextMeshProUGUI>(); t.font = font; t.text = value; t.fontSize = size;
-        t.color = Color.white; t.alignment = TextAlignmentOptions.Center; t.raycastTarget = false;
+        t.color = name == "Heading" || name == "ResultHeading" ? new Color(.98f, .77f, .25f)
+            : name == "Objective" || name == "Rules" || name == "ResultReason" ? new Color(.8f, .88f, .9f) : Color.white; t.alignment = TextAlignmentOptions.Center; t.raycastTarget = false;
     }
     private static Button MakeButton(string name, Transform parent, string label, Vector2 size, TMP_FontAsset font, UnityEngine.Events.UnityAction callback)
     {
         var r = Rect(name, parent, size);
-        var image = r.gameObject.AddComponent<Image>(); image.color = new Color(.10f,.34f,.38f);
+        var image = r.gameObject.AddComponent<Image>(); image.color = new Color(.08f, .25f, .29f);
         var b = r.gameObject.AddComponent<Button>(); b.targetGraphic = image;
-        var colors = b.colors; colors.highlightedColor = colors.selectedColor = Color.white; colors.pressedColor = new Color(.7f,.7f,.7f); b.colors = colors;
+        var colors = b.colors; colors.normalColor = Color.white; colors.highlightedColor = colors.selectedColor = new Color(.961f, .961f, .961f);
+        colors.pressedColor = new Color(.784f, .784f, .784f); colors.disabledColor = new Color(.784f, .784f, .784f, .502f); colors.fadeDuration = .1f; b.colors = colors;
         b.onClick.AddListener(callback);
         Text("Label", r, label, 28, 4, size.y-8, font);
         var t = r.GetComponentInChildren<TMP_Text>(); t.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x-16);

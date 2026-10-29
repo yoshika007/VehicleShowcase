@@ -36,6 +36,7 @@ public class LakeTownChallenge : MonoBehaviour
     private TestDriveSceneManager manager;
     private GameObject canvasObject, overlay, marker;
     private TMP_Text heading, detail, hud;
+    private RectTransform challengePanel;
     private Button start, retry, back;
     private bool running, parking;
     private int next;
@@ -59,6 +60,7 @@ public class LakeTownChallenge : MonoBehaviour
     public void ShowBriefing()
     {
         canvasObject.SetActive(true); overlay.SetActive(true);
+        heading.color = new Color(.98f, .77f, .25f);
         heading.text = parking ? "PARKING CHALLENGE" : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
         detail.text = parking ? $"Drive to the gold bay. Stop inside it, aligned with the road, and hold for {parkingHoldSeconds:0.#} seconds.\nResetting ends the attempt."
             : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
@@ -200,6 +202,7 @@ public class LakeTownChallenge : MonoBehaviour
         running = false; if (marker != null) Destroy(marker); if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true);
         overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
+        heading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
         detail.text = message + $"\nTime: {elapsed:0.0} seconds";
         start.gameObject.SetActive(false); retry.gameObject.SetActive(true); back.gameObject.SetActive(true); hud.text = "";
     }
@@ -225,14 +228,24 @@ public class LakeTownChallenge : MonoBehaviour
         hud = Text("Status", canvasObject.transform, 34, new Vector2(900, 65));
         hud.rectTransform.anchorMin = hud.rectTransform.anchorMax = new Vector2(.5f, 1); hud.rectTransform.anchoredPosition = new Vector2(0, -70);
         overlay = new GameObject("Briefing and result", typeof(RectTransform), typeof(Image)); overlay.transform.SetParent(canvasObject.transform, false);
-        var cover = (RectTransform)overlay.transform; cover.anchorMin = Vector2.zero; cover.anchorMax = Vector2.one; cover.offsetMin = cover.offsetMax = Vector2.zero; overlay.GetComponent<Image>().color = new Color(0, 0, 0, .8f);
+        var cover = (RectTransform)overlay.transform; cover.anchorMin = Vector2.zero; cover.anchorMax = Vector2.one; cover.offsetMin = cover.offsetMax = Vector2.zero; overlay.GetComponent<Image>().color = new Color(0, 0, 0, .76f);
         var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image)); panel.transform.SetParent(overlay.transform, false);
-        var pr = (RectTransform)panel.transform; pr.sizeDelta = new Vector2(900, 650); panel.GetComponent<Image>().color = new Color(.045f, .12f, .14f, 1);
-        heading = Text("Heading", panel.transform, 46, new Vector2(820, 100)); heading.rectTransform.anchoredPosition = new Vector2(0, 235);
-        detail = Text("Details", panel.transform, 32, new Vector2(800, 220)); detail.rectTransform.anchoredPosition = new Vector2(0, 75);
-        start = MakeButton("START CHALLENGE", panel.transform, new Vector2(0, -100), Begin);
-        retry = MakeButton("TRY AGAIN", panel.transform, new Vector2(0, -100), Begin);
-        back = MakeButton("BACK TO SHOWROOM", panel.transform, new Vector2(0, -200), manager.ReturnToShowroom);
+        var pr = (RectTransform)panel.transform; challengePanel = pr; pr.sizeDelta = new Vector2(1050, 650); panel.GetComponent<Image>().color = new Color(.045f, .08f, .11f, .99f);
+        heading = Text("Heading", panel.transform, 52, new Vector2(970, 100)); heading.rectTransform.anchoredPosition = new Vector2(0, 235);
+        detail = Text("Details", panel.transform, 44, new Vector2(970, 250)); detail.color = new Color(.8f, .88f, .9f); detail.rectTransform.anchoredPosition = new Vector2(0, 75);
+        start = MakeButton("START CHALLENGE", panel.transform, new Vector2(0, -115), Begin);
+        retry = MakeButton("TRY AGAIN", panel.transform, new Vector2(0, -115), Begin);
+        back = MakeButton("BACK TO SHOWROOM", panel.transform, new Vector2(0, -205), manager.ReturnToShowroom);
+    }
+    private void LateUpdate()
+    {
+        if (challengePanel == null || Screen.width <= 0 || Screen.height <= 0) return;
+        var root = (RectTransform)canvasObject.transform;
+        var safe = Screen.safeArea;
+        Vector2 min = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMin / Screen.width), Mathf.Clamp01(safe.yMin / Screen.height)));
+        Vector2 max = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMax / Screen.width), Mathf.Clamp01(safe.yMax / Screen.height)));
+        challengePanel.localScale = Vector3.one * Mathf.Min(1f, (max.x - min.x - 40f) / 1050f, (max.y - min.y - 40f) / 650f);
+        challengePanel.anchoredPosition = (min + max) * .5f;
     }
     private TMP_Text Text(string name, Transform parent, float size, Vector2 dimensions)
     {
@@ -243,7 +256,10 @@ public class LakeTownChallenge : MonoBehaviour
     {
         var go = new GameObject(label, typeof(RectTransform), typeof(Image), typeof(Button)); go.transform.SetParent(parent, false);
         var rect = (RectTransform)go.transform; rect.sizeDelta = new Vector2(480, 70); rect.anchoredPosition = position;
-        go.GetComponent<Image>().color = new Color(.08f, .42f, .42f); var button = go.GetComponent<Button>(); button.onClick.AddListener(action);
+        go.GetComponent<Image>().color = new Color(.08f, .25f, .29f); var button = go.GetComponent<Button>();
+        var colors = button.colors; colors.normalColor = Color.white; colors.highlightedColor = colors.selectedColor = new Color(.961f, .961f, .961f);
+        colors.pressedColor = new Color(.784f, .784f, .784f); colors.disabledColor = new Color(.784f, .784f, .784f, .502f); colors.fadeDuration = .1f; button.colors = colors;
+        button.onClick.AddListener(action);
         var text = Text("Label", go.transform, 30, new Vector2(460, 65)); text.text = label; return button;
     }
 }
