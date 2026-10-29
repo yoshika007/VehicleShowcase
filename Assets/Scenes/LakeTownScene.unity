@@ -96291,6 +96291,7 @@ GameObject:
   - component: {fileID: 1201754146}
   - component: {fileID: 1201754145}
   - component: {fileID: 1201754148}
+  - component: {fileID: 1201754149}
   m_Layer: 0
   m_Name: TestDriveSceneManager
   m_TagString: Untagged
@@ -96446,6 +96447,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveNightLighting
   sun: {fileID: 1396658519}
   nightSky: {fileID: 2100000, guid: 23333a4fc53164ee08bccf2dcc31ba57, type: 2}
+--- !u!114 &1201754149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201754144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e0c56289be643ef95c8cbc4a4515da, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::LakeTownChallenge
+  checkpoints:
+  - {x: -160, y: 0, z: 65}
+  - {x: 20, y: 0, z: 115}
+  - {x: 180, y: 0, z: 95}
+  - {x: 250, y: 0, z: -40}
+  - {x: 25, y: 0, z: -135}
+  - {x: -255, y: 0, z: -100}
+  - {x: -290, y: 0, z: -35}
+  - {x: -250, y: 0, z: 70}
+  checkpointRadius: 9
+  parkingCenter: {x: -160, y: 0, z: 65}
+  parkingSize: {x: 8, y: 14}
+  parkingYaw: 74
+  parkingSpeed: 0.7
+  parkingHoldSeconds: 2
+  parkingAngleTolerance: 35
 --- !u!1 &1205158398
 GameObject:
   m_ObjectHideFlags: 0

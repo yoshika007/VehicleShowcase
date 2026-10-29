@@ -123,6 +123,7 @@ public class TestDriveIntro : MonoBehaviour
                 point, point + new Vector3(55, 35, -50), point + new Vector3(5, 30, -60));
         }
         if (TestDriveSelection.Mode != TestDriveSelection.DriveMode.Challenge) return;
+        if (scene == "LakeTownScene") return;
         var trail = FindAnyObjectByType<OffroadTrailCourse>();
         if (trail != null)
         {

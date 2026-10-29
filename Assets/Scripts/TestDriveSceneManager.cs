@@ -18,6 +18,7 @@ public class TestDriveSceneManager : MonoBehaviour
 
     [SerializeField] private TestDriveCleanLapChallenge cleanLapChallenge;
 
+    private LakeTownChallenge lakeChallenge;
     private TestDriveMovement vehicle;
     private bool isReturning;
     private TestDriveIntro intro;
@@ -56,6 +57,12 @@ public class TestDriveSceneManager : MonoBehaviour
         // The briefing and countdown remain behind the cinematic handoff.
         if (cleanLapChallenge != null)
             cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
+        if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge && TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown)
+        {
+            lakeChallenge = GetComponent<LakeTownChallenge>();
+            if (lakeChallenge == null) lakeChallenge = gameObject.AddComponent<LakeTownChallenge>();
+            lakeChallenge.Initialize(vehicle, this);
+        }
         if (TestDriveSelection.ConsumeIntroRequest() && followCamera != null)
         {
             intro = new GameObject("Drive Intro").AddComponent<TestDriveIntro>();
@@ -67,6 +74,7 @@ public class TestDriveSceneManager : MonoBehaviour
     private void BeginDriving()
     {
         if (isReturning) return;
+        if (lakeChallenge != null) lakeChallenge.ShowBriefing();
         if (cleanLapChallenge != null && TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge)
         {
             var briefing = new GameObject("CleanLapBriefing", typeof(RectTransform)).AddComponent<CleanLapBriefing>();
@@ -90,6 +98,7 @@ public class TestDriveSceneManager : MonoBehaviour
         if (intro != null) intro.Cancel();
         if (followCamera != null) followCamera.DisableViewSwitching();
         if (cleanLapChallenge != null) cleanLapChallenge.BindVehicle(null);
+        if (lakeChallenge != null) lakeChallenge.StopChallenge();
         if (returnButton != null) returnButton.interactable = false;
         if (touchControls != null) touchControls.BindVehicle(null);
         if (vehicle != null)
