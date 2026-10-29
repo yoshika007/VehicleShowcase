@@ -4308,6 +4308,7 @@ GameObject:
   - component: {fileID: 1201754146}
   - component: {fileID: 1201754145}
   - component: {fileID: 1201754148}
+  - component: {fileID: 1201754149}
   m_Layer: 0
   m_Name: TestDriveSceneManager
   m_TagString: Untagged
@@ -4463,6 +4464,91 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveNightLighting
   sun: {fileID: 1396658519}
   nightSky: {fileID: 2100000, guid: 23333a4fc53164ee08bccf2dcc31ba57, type: 2}
+--- !u!114 &1201754149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201754144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e0c56289be643ef95c8cbc4a4515da, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::LakeTownChallenge
+  gates:
+  - position: {x: -160, y: 0, z: 65}
+    yaw: 83.7
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 20, y: 0, z: 115}
+    yaw: 81.9
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 180, y: 0, z: 95}
+    yaw: 80.2
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 250, y: 0, z: -40}
+    yaw: -137.5
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 25, y: 0, z: -135}
+    yaw: -110.6
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: -255, y: 0, z: -100}
+    yaw: -65.4
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: -290, y: 0, z: -35}
+    yaw: 1.7
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: -250, y: 0, z: 70}
+    yaw: 52.4
+    openingWidth: 16
+    openingHeight: 6
+  gateGroundTolerance: 2
+  gateAudio: {fileID: 0}
+  gatePassSound: {fileID: 0}
+  parkingSpots:
+  - position: {x: -160, y: 0, z: 65}
+    yaw: 83.7
+  - position: {x: 20, y: 0, z: 115}
+    yaw: 81.9
+  - position: {x: 250, y: 0, z: -40}
+    yaw: -137.5
+  - position: {x: 25, y: 0, z: -135}
+    yaw: -110.6
+  - position: {x: -255, y: 0, z: -100}
+    yaw: -65.4
+  - position: {x: -90, y: 0, z: 40}
+    yaw: 0
+  - position: {x: 85, y: 0, z: 45}
+    yaw: 0
+  - position: {x: 0, y: 0, z: -5}
+    yaw: 90
+  parkingCenter: {x: -160, y: 0, z: 65}
+  parkingSize: {x: 4.5, y: 8}
+  parkingYaw: 74
+  parkingSpeed: 0.7
+  parkingHoldSeconds: 2
+  parkingAngleTolerance: 35
+  beaconColor: {r: 1, g: 0.74, b: 0.12, a: 1}
+  beaconHeight: 30
+  beaconBaseHeight: 8
+  beaconWidth: 1.8
+  beaconIntensity: 1
+  beaconPulseSpeed: 1.2
+  highlandCheckpoints: 12
+  highlandRoadTolerance: 3
+  harborCheckpoints: 12
+  harborRoadTolerance: 2
+  pineCheckpoints: 12
+  pineRoadTolerance: 3
+  mountainCheckpoints: 12
+  mountainRoadTolerance: 3
 --- !u!1 &1212844335
 GameObject:
   m_ObjectHideFlags: 0

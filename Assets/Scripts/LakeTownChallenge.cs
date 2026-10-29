@@ -66,7 +66,10 @@ public class LakeTownChallenge : MonoBehaviour
     private TMP_Text heading, detail, hud;
     private RectTransform challengePanel;
     private Button start, retry, back;
-    private bool running, parking, mountain, pine, harbor;
+    private bool running, parking, mountain, pine, harbor, highland;
+    [Header("Highland Climb lap tuning")]
+    [SerializeField, Range(4, 24)] private int highlandCheckpoints = 12;
+    [SerializeField, Min(0)] private float highlandRoadTolerance = 3f;
     [Header("Harbor Street lap tuning")]
     [SerializeField, Range(4, 24)] private int harborCheckpoints = 12;
     [SerializeField, Min(0)] private float harborRoadTolerance = 2f;
@@ -99,7 +102,8 @@ public class LakeTownChallenge : MonoBehaviour
         mountain = TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass;
         pine = TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge;
         harbor = TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet;
-        if (mountain || pine || harbor) { BuildMountainRoute(); if (mountain || harbor) vehicle.ColliderContact += MountainContact; }
+        highland = TestDriveSelection.Course == TestDriveSelection.CourseKind.HighlandClimb;
+        if (mountain || pine || harbor || highland) { BuildMountainRoute(); if (mountain || harbor || highland) vehicle.ColliderContact += MountainContact; }
         vehicle.SetChallengeStopped(true);
         vehicle.SetChallengeInputLocked(true);
         BuildUI();
@@ -109,9 +113,9 @@ public class LakeTownChallenge : MonoBehaviour
     {
         canvasObject.SetActive(true); overlay.SetActive(true);
         heading.color = new Color(.98f, .77f, .25f);
-        heading.text = parking ? "PARKING CHALLENGE" : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
+        heading.text = parking ? "PARKING CHALLENGE" : highland ? (TestDriveSelection.IsNight ? "HIGHLAND NIGHT LAP" : "HIGHLAND DAY LAP") : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
         detail.text = parking ? $"Explore Lake Town and find the gold parking bay.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt."
-            : harbor ? "Complete one lap through the numbered gates.\nStay on the street and avoid walls. Resetting ends the attempt." : pine ? "Complete one lap through the numbered gates.\nStay on the trail. Resetting ends the attempt." : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
+            : highland ? "Complete one lap through the numbered gates.\nStay on the trail and avoid barriers. Resetting ends the attempt." : harbor ? "Complete one lap through the numbered gates.\nStay on the street and avoid walls. Resetting ends the attempt." : pine ? "Complete one lap through the numbered gates.\nStay on the trail. Resetting ends the attempt." : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
         start.gameObject.SetActive(true); retry.gameObject.SetActive(false);
         back.gameObject.SetActive(true); hud.text = "";
     }
@@ -147,19 +151,19 @@ public class LakeTownChallenge : MonoBehaviour
         if (!running || parking || vehicle == null || body == null) return;
         if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
         Vector3 position = body.position;
-        if ((mountain || pine || harbor) && !OnMountainRoad(position)) { End(false, "Left the road. Try again."); return; }
+        if ((mountain || pine || harbor || highland) && !OnMountainRoad(position)) { End(false, "Left the road. Try again."); return; }
         if (next < gates.Length && CrossedGate(gates[next], previousPosition, position, gateGroundTolerance))
         {
             if (gateAudio != null && gatePassSound != null) gateAudio.PlayOneShot(gatePassSound);
             next++;
-            if (next == gates.Length) End(true, harbor ? "Harbor lap complete!" : pine ? "Pine Ridge lap complete!" : mountain ? "Mountain lap complete!" : "All gates passed!");
+            if (next == gates.Length) End(true, highland ? "Highland lap complete!" : harbor ? "Harbor lap complete!" : pine ? "Pine Ridge lap complete!" : mountain ? "Mountain lap complete!" : "All gates passed!");
             else RefreshGates();
         }
         previousPosition = position;
     }
     private void BuildMountainRoute()
     {
-        var names = harbor ? new[] { "Harbor Street asphalt" } : pine ? new[] { "Packed dirt trail 0", "Shallow creek crossing", "Packed dirt trail 2" } : new[] { "Mountain Pass asphalt" };
+        var names = highland ? new[] { "Packed dirt trail 0", "Rocky trail section", "Packed dirt trail 2" } : harbor ? new[] { "Harbor Street asphalt" } : pine ? new[] { "Packed dirt trail 0", "Shallow creek crossing", "Packed dirt trail 2" } : new[] { "Mountain Pass asphalt" };
         var points = new System.Collections.Generic.List<Vector3>();
         foreach (string name in names)
         {
@@ -175,8 +179,8 @@ public class LakeTownChallenge : MonoBehaviour
         int count = mountainRoute.Length;
         int nearest = 0; float best = float.PositiveInfinity;
         for (int i = 0; i < count; i++) { float d = (mountainRoute[i] - vehicle.transform.position).sqrMagnitude; if (d < best) { best = d; nearest = i; } }
-        int start = (nearest + (pine ? 3 : 6)) % count;
-        int checkpointCount = Mathf.Clamp(harbor ? harborCheckpoints : pine ? pineCheckpoints : mountainCheckpoints, 4, 24);
+        int start = (nearest + ((pine || highland) ? 3 : 6)) % count;
+        int checkpointCount = Mathf.Clamp(highland ? highlandCheckpoints : harbor ? harborCheckpoints : pine ? pineCheckpoints : mountainCheckpoints, 4, 24);
         var lapGates = new System.Collections.Generic.List<Gate>();
         for (int i = 0; i <= checkpointCount; i++)
         {
@@ -213,13 +217,14 @@ public class LakeTownChallenge : MonoBehaviour
             float distance = (position - (a + delta*u)).sqrMagnitude;
             if (distance < best) best = distance;
         }
-        float limit = mountainHalfWidth + (harbor ? harborRoadTolerance : pine ? pineRoadTolerance : mountainRoadTolerance);
+        float limit = mountainHalfWidth + (highland ? highlandRoadTolerance : harbor ? harborRoadTolerance : pine ? pineRoadTolerance : mountainRoadTolerance);
         return best <= limit * limit;
     }
     private void MountainContact(Collider surface)
     {
         if (!running || surface == null) return;
         if (mountain && (surface.name == "Left safety rail" || surface.name == "Right safety rail")) End(false, "Safety rail hit. Try again.");
+        else if (highland && surface.name == "Desert perimeter boundary") End(false, "Barrier hit. Try again.");
         else if (harbor && (surface.name == "Left city safety wall" || surface.name == "Right city safety wall" || surface.name == "Seaside covered tunnel")) End(false, "Wall hit. Try again.");
     }
     private static bool CrossedGate(Gate gate, Vector3 previous, Vector3 current, float groundTolerance)
