@@ -39,7 +39,10 @@ public class LakeTownChallenge : MonoBehaviour
         new ParkingSpot(new Vector3(20, 0, 115), 81.9f),
         new ParkingSpot(new Vector3(250, 0, -40), -137.5f),
         new ParkingSpot(new Vector3(25, 0, -135), -110.6f),
-        new ParkingSpot(new Vector3(-255, 0, -100), -65.4f)
+        new ParkingSpot(new Vector3(-255, 0, -100), -65.4f),
+        new ParkingSpot(new Vector3(-90, 0, 40), 0f),
+        new ParkingSpot(new Vector3(85, 0, 45), 0f),
+        new ParkingSpot(new Vector3(0, 0, -5), 90f)
     };
     [Tooltip("Fallback bay used when no parking spots are configured.")]
     [SerializeField] private Vector3 parkingCenter = new Vector3(-160, 0, 65);

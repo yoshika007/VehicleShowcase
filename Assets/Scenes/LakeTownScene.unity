@@ -96506,6 +96506,12 @@ MonoBehaviour:
     yaw: -110.6
   - position: {x: -255, y: 0, z: -100}
     yaw: -65.4
+  - position: {x: -90, y: 0, z: 40}
+    yaw: 0
+  - position: {x: 85, y: 0, z: 45}
+    yaw: 0
+  - position: {x: 0, y: 0, z: -5}
+    yaw: 90
   parkingCenter: {x: -160, y: 0, z: 65}
   parkingSize: {x: 4.5, y: 8}
   parkingYaw: 74
