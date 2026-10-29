@@ -9,8 +9,9 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
 
     public void Initialize(TMP_Text description)
     {
-        if (fills != null && fills.Length == 6 && speedText != null)
+        if (fills != null && (fills.Length == 6 || fills.Length == 4) && speedText != null)
         {
+            ArrangeVisibleRows();
             description.gameObject.SetActive(false);
             return;
         }
@@ -19,19 +20,45 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         area.anchorMin = new Vector2(0f, 1f); area.anchorMax = new Vector2(1f, 1f);
         area.pivot = new Vector2(.5f, 1f); area.sizeDelta = new Vector2(-56f, 203f);
         area.anchoredPosition = new Vector2(0f, -201f);
-        fills = new UnityEngine.UI.Image[6];
-        string[] names = { "ACCELERATION", "BRAKING", "CORNERING", "STABILITY", "ON-ROAD", "OFF-ROAD" };
+        fills = new UnityEngine.UI.Image[4];
+        string[] names = { "ACCELERATION", "BRAKING", "HANDLING", "STABILITY" };
         for (int i = 0; i < names.Length; i++)
         {
-            float y = -i * 27f;
+            float y = -i * 36f;
             Label(area, description, names[i], new Vector2(0f, y), new Vector2(164f, 28f));
             var track = Image(area, "Track", new Vector2(170f, y - 6f), new Vector2(255f, 16f), new Color(.15f, .27f, .28f, 1f));
             fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(255f, 16f), new Color(.98f, .74f, .25f, 1f));
         }
-        speedText = Label(area, description, "", new Vector2(0f, -162f), new Vector2(425f, 40f));
+        speedText = Label(area, description, "", new Vector2(0f, -144f), new Vector2(425f, 40f));
         var layout = description.transform.parent.Find("LayoutText")?.GetComponent<TMP_Text>();
         if (layout != null) speedText.fontSize = layout.fontSize;
         description.gameObject.SetActive(false);
+    }
+
+    private void ArrangeVisibleRows()
+    {
+        // Keep the authored ratings intact while hiding the two road-use rows.
+        foreach (var label in GetComponentsInChildren<TMP_Text>(true))
+        {
+            if (label.text == "ON-ROAD" || label.text == "OFF-ROAD")
+                label.gameObject.SetActive(false);
+        }
+        for (int i = 0; i < fills.Length; i++)
+        {
+            if (fills[i] == null) continue;
+            var track = fills[i].transform.parent as RectTransform;
+            if (track == null) continue;
+            track.gameObject.SetActive(i < 4);
+            if (i >= 4) continue;
+            track.anchoredPosition = new Vector2(track.anchoredPosition.x, -i * 36f - 6f);
+        }
+        string[] names = { "ACCELERATION", "BRAKING", "HANDLING", "STABILITY" };
+        foreach (var label in GetComponentsInChildren<TMP_Text>(true))
+        {
+            int index = System.Array.IndexOf(names, label.text);
+            if (index >= 0) label.rectTransform.anchoredPosition = new Vector2(label.rectTransform.anchoredPosition.x, -index * 36f);
+        }
+        speedText.rectTransform.anchoredPosition = new Vector2(speedText.rectTransform.anchoredPosition.x, -144f);
     }
 
     private static TMP_Text Label(RectTransform parent, TMP_Text source, string value, Vector2 position, Vector2 size)
