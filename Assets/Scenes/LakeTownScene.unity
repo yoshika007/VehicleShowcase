@@ -96459,16 +96459,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5e0c56289be643ef95c8cbc4a4515da, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::LakeTownChallenge
-  checkpoints:
-  - {x: -160, y: 0, z: 65}
-  - {x: 20, y: 0, z: 115}
-  - {x: 180, y: 0, z: 95}
-  - {x: 250, y: 0, z: -40}
-  - {x: 25, y: 0, z: -135}
-  - {x: -255, y: 0, z: -100}
-  - {x: -290, y: 0, z: -35}
-  - {x: -250, y: 0, z: 70}
-  checkpointRadius: 9
+  gates:
+  - position: {x: -160, y: 0, z: 65}
+    yaw: 83.7
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 20, y: 0, z: 115}
+    yaw: 81.9
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 180, y: 0, z: 95}
+    yaw: 80.2
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 250, y: 0, z: -40}
+    yaw: -137.5
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: 25, y: 0, z: -135}
+    yaw: -110.6
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: -255, y: 0, z: -100}
+    yaw: -65.4
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: -290, y: 0, z: -35}
+    yaw: 1.7
+    openingWidth: 16
+    openingHeight: 6
+  - position: {x: -250, y: 0, z: 70}
+    yaw: 52.4
+    openingWidth: 16
+    openingHeight: 6
+  gateGroundTolerance: 2
   parkingCenter: {x: -160, y: 0, z: 65}
   parkingSize: {x: 8, y: 14}
   parkingYaw: 74

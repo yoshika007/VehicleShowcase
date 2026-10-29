@@ -5,14 +5,24 @@ using UnityEngine.UI;
 // First-pass Lake Town challenges. Positions follow the authored lakeside road.
 public class LakeTownChallenge : MonoBehaviour
 {
-    [Header("Checkpoint tuning")]
-    [SerializeField] private Vector3[] checkpoints = {
-        new Vector3(-160, 0, 65), new Vector3(20, 0, 115),
-        new Vector3(180, 0, 95), new Vector3(250, 0, -40),
-        new Vector3(25, 0, -135), new Vector3(-255, 0, -100),
-        new Vector3(-290, 0, -35), new Vector3(-250, 0, 70)
+    [System.Serializable]
+    private class Gate
+    {
+        public Vector3 position;
+        [Tooltip("Direction of travel through the gate, in degrees around Y.")]
+        public float yaw;
+        [Min(1)] public float openingWidth = 16f;
+        [Min(2)] public float openingHeight = 6f;
+        public Gate(Vector3 position, float yaw) { this.position = position; this.yaw = yaw; }
+    }
+    [Header("Checkpoint gates")]
+    [SerializeField] private Gate[] gates = {
+        new Gate(new Vector3(-160, 0, 65), 83.7f), new Gate(new Vector3(20, 0, 115), 81.9f),
+        new Gate(new Vector3(180, 0, 95), 80.2f), new Gate(new Vector3(250, 0, -40), -137.5f),
+        new Gate(new Vector3(25, 0, -135), -110.6f), new Gate(new Vector3(-255, 0, -100), -65.4f),
+        new Gate(new Vector3(-290, 0, -35), 1.7f), new Gate(new Vector3(-250, 0, 70), 52.4f)
     };
-    [SerializeField, Min(1)] private float checkpointRadius = 9f;
+    [SerializeField, Min(0)] private float gateGroundTolerance = 2f;
     [Header("Parking tuning")]
     [SerializeField] private Vector3 parkingCenter = new Vector3(-160, 0, 65);
     [SerializeField] private Vector2 parkingSize = new Vector2(8, 14);
@@ -31,7 +41,11 @@ public class LakeTownChallenge : MonoBehaviour
     private int next;
     private float elapsed, held;
     private int resetCount;
-    private Material markerMaterial;
+    private Material markerMaterial, activeGateMaterial, inactiveGateMaterial, signMaterial;
+    private GameObject gateRoot;
+    private Renderer[][] gateRenderers;
+    private TMP_Text[][] gateLabels;
+    private Vector3 previousPosition;
 
     public void Initialize(TestDriveMovement car, TestDriveSceneManager sceneManager)
     {
@@ -47,7 +61,7 @@ public class LakeTownChallenge : MonoBehaviour
         canvasObject.SetActive(true); overlay.SetActive(true);
         heading.text = parking ? "PARKING CHALLENGE" : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
         detail.text = parking ? $"Drive to the gold bay. Stop inside it, aligned with the road, and hold for {parkingHoldSeconds:0.#} seconds.\nResetting ends the attempt."
-            : "Follow the gold markers in order around Lake Town.\nResetting ends the attempt. No time limit.";
+            : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
         start.gameObject.SetActive(true); retry.gameObject.SetActive(false);
         back.gameObject.SetActive(true); hud.text = "";
     }
@@ -56,7 +70,8 @@ public class LakeTownChallenge : MonoBehaviour
         overlay.SetActive(false); next = 0; elapsed = held = 0;
         vehicle.SetChallengeStopped(false); vehicle.ResetVehicle(); resetCount = vehicle.ResetCount;
         vehicle.SetChallengeInputLocked(false); running = true;
-        ShowMarker();
+        previousPosition = body.position;
+        if (parking) ShowMarker(); else BuildGates();
     }
     private void Update()
     {
@@ -74,24 +89,95 @@ public class LakeTownChallenge : MonoBehaviour
             hud.text = valid ? $"HOLD POSITION  {held:0.0} / {parkingHoldSeconds:0.0}s" : "PARK IN THE GOLD BAY";
             if (held >= parkingHoldSeconds && valid) End(true, "Parking complete!");
         }
-        else
+        else hud.text = $"GATES PASSED {next} / {gates.Length}    •    NEXT {next + 1}    {elapsed:0.0}s";
+    }
+    private void FixedUpdate()
+    {
+        if (!running || parking || vehicle == null || body == null) return;
+        if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
+        Vector3 position = body.position;
+        if (next < gates.Length && CrossedGate(gates[next], previousPosition, position, gateGroundTolerance))
         {
-            Vector3 delta = pos - checkpoints[next]; delta.y = 0;
-            hud.text = $"CHECKPOINT {next + 1} / {checkpoints.Length}    {elapsed:0.0}s";
-            if (delta.sqrMagnitude <= checkpointRadius * checkpointRadius)
-            {
-                next++;
-                if (next >= checkpoints.Length) End(true, "All checkpoints reached!");
-                else ShowMarker();
-            }
+            next++;
+            if (next == gates.Length) End(true, "All gates passed!");
+            else RefreshGates();
+        }
+        previousPosition = position;
+    }
+    private static bool CrossedGate(Gate gate, Vector3 previous, Vector3 current, float groundTolerance)
+    {
+        Quaternion inverse = Quaternion.Inverse(Quaternion.Euler(0, gate.yaw, 0));
+        Vector3 a = inverse * (previous - gate.position), b = inverse * (current - gate.position);
+        // A directed, swept segment catches a crossing even when a physics step skips the plane.
+        if (a.z >= 0f || b.z < 0f) return false;
+        float fraction = -a.z / (b.z - a.z);
+        Vector3 crossing = Vector3.LerpUnclamped(a, b, fraction);
+        return Mathf.Abs(crossing.x) <= gate.openingWidth * .5f
+            && crossing.y >= -groundTolerance && crossing.y <= gate.openingHeight;
+    }
+    private void BuildGates()
+    {
+        if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
+        gateRoot = new GameObject("Lake Town numbered gates");
+        gateRenderers = new Renderer[gates.Length][]; gateLabels = new TMP_Text[gates.Length][];
+        var shader = Shader.Find("Universal Render Pipeline/Lit");
+        if (activeGateMaterial == null)
+        {
+            activeGateMaterial = new Material(shader); activeGateMaterial.color = new Color(1f, .68f, .04f);
+            activeGateMaterial.EnableKeyword("_EMISSION"); activeGateMaterial.SetColor("_EmissionColor", new Color(.8f, .32f, .01f));
+            inactiveGateMaterial = new Material(shader); inactiveGateMaterial.color = new Color(.12f, .38f, .42f);
+            inactiveGateMaterial.EnableKeyword("_EMISSION"); inactiveGateMaterial.SetColor("_EmissionColor", new Color(.02f, .12f, .14f));
+            signMaterial = new Material(shader); signMaterial.color = new Color(.025f, .07f, .08f);
+        }
+        for (int i = 0; i < gates.Length; i++)
+        {
+            Gate gate = gates[i];
+            var root = new GameObject("Gate " + (i + 1)); root.transform.SetParent(gateRoot.transform, false);
+            root.transform.position = gate.position; root.transform.rotation = Quaternion.Euler(0, gate.yaw, 0);
+            float half = gate.openingWidth * .5f, height = gate.openingHeight;
+            gateRenderers[i] = new[] {
+                GatePart(root.transform, new Vector3(-half-.3f, height*.5f, 0), new Vector3(.6f, height, .6f)),
+                GatePart(root.transform, new Vector3(half+.3f, height*.5f, 0), new Vector3(.6f, height, .6f)),
+                GatePart(root.transform, new Vector3(0, height+.35f, 0), new Vector3(gate.openingWidth+1.2f, .7f, .7f))
+            };
+            var sign = GatePart(root.transform, new Vector3(0, height + 1.75f, 0), new Vector3(7f, 2f, .7f));
+            sign.sharedMaterial = signMaterial;
+            gateLabels[i] = new[] { GateLabel(root.transform, i + 1, height, false), GateLabel(root.transform, i + 1, height, true) };
+        }
+        RefreshGates();
+    }
+    private Renderer GatePart(Transform parent, Vector3 position, Vector3 scale)
+    {
+        var part = GameObject.CreatePrimitive(PrimitiveType.Cube); part.transform.SetParent(parent, false);
+        part.transform.localPosition = position; part.transform.localScale = scale;
+        Destroy(part.GetComponent<Collider>()); return part.GetComponent<Renderer>();
+    }
+    private TMP_Text GateLabel(Transform parent, int number, float height, bool reverse)
+    {
+        var go = new GameObject("Gate number " + number, typeof(TextMeshPro)); go.transform.SetParent(parent, false);
+        go.transform.localPosition = new Vector3(0, height + 1.75f, reverse ? .42f : -.42f);
+        go.transform.localRotation = Quaternion.Euler(0, reverse ? 180 : 0, 0);
+        var text = go.GetComponent<TextMeshPro>(); text.text = "GATE " + number; text.fontSize = 7f;
+        text.alignment = TextAlignmentOptions.Center; text.rectTransform.sizeDelta = new Vector2(6.5f, 1.8f);
+        text.color = Color.white; text.fontStyle = FontStyles.Bold; return text;
+    }
+    private void RefreshGates()
+    {
+        for (int i = 0; i < gates.Length; i++)
+        {
+            // Show only the gate being approached, so distant gates cannot visually overlap.
+            bool active = i == next, visible = active;
+            gateRenderers[i][0].transform.parent.gameObject.SetActive(visible);
+            foreach (var renderer in gateRenderers[i]) { renderer.gameObject.SetActive(visible); renderer.sharedMaterial = active ? activeGateMaterial : inactiveGateMaterial; }
+            foreach (var label in gateLabels[i]) { label.gameObject.SetActive(visible); label.color = active ? Color.white : new Color(.65f, .85f, .85f); }
         }
     }
     private void ShowMarker()
     {
         if (marker != null) Destroy(marker);
         marker = new GameObject("Lake Town challenge marker");
-        marker.transform.position = parking ? parkingCenter : checkpoints[next];
-        marker.transform.rotation = parking ? Quaternion.Euler(0, parkingYaw, 0) : Quaternion.identity;
+        marker.transform.position = parkingCenter;
+        marker.transform.rotation = Quaternion.Euler(0, parkingYaw, 0);
         var shader = Shader.Find("Universal Render Pipeline/Lit");
         if (markerMaterial == null) { markerMaterial = new Material(shader); markerMaterial.color = new Color(1f, .7f, .06f); }
         if (parking)
@@ -101,12 +187,7 @@ public class LakeTownChallenge : MonoBehaviour
             Line(new Vector3(0, .12f, -parkingSize.y/2), new Vector3(parkingSize.x, .1f, .18f));
             Line(new Vector3(0, .12f, parkingSize.y/2), new Vector3(parkingSize.x, .1f, .18f));
         }
-        else
-        {
-            Line(new Vector3(-checkpointRadius * .75f, 2, 0), new Vector3(.35f, 4, .35f));
-            Line(new Vector3(checkpointRadius * .75f, 2, 0), new Vector3(.35f, 4, .35f));
-            Line(new Vector3(0, 4, 0), new Vector3(checkpointRadius * 1.5f, .35f, .35f));
-        }
+
     }
     private void Line(Vector3 position, Vector3 scale)
     {
@@ -116,7 +197,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void End(bool success, string message)
     {
-        running = false; if (marker != null) Destroy(marker);
+        running = false; if (marker != null) Destroy(marker); if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true);
         overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
         detail.text = message + $"\nTime: {elapsed:0.0} seconds";
@@ -124,10 +205,17 @@ public class LakeTownChallenge : MonoBehaviour
     }
     public void StopChallenge()
     {
-        running = false; if (marker != null) Destroy(marker);
+        running = false; if (marker != null) Destroy(marker); if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         if (canvasObject != null) canvasObject.SetActive(false);
     }
-    private void OnDestroy() { if (markerMaterial != null) Destroy(markerMaterial); }
+    private void OnDestroy()
+    {
+        if (markerMaterial != null) Destroy(markerMaterial);
+        if (activeGateMaterial != null) Destroy(activeGateMaterial);
+        if (inactiveGateMaterial != null) Destroy(inactiveGateMaterial);
+        if (signMaterial != null) Destroy(signMaterial);
+        if (gateRoot != null) Destroy(gateRoot);
+    }
     private void BuildUI()
     {
         canvasObject = new GameObject("Lake Challenge UI", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
