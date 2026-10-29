@@ -185,17 +185,19 @@ public class LakeTownChallenge : MonoBehaviour
         for (int i = 0; i <= checkpointCount; i++)
         {
             int index = (start + i * count / checkpointCount) % count;
-            // The tunnel roof overlaps the seventh default Harbor gate. Omit that
-            // checkpoint entirely, including its progress requirement.
-            if (harbor && i > 0 && i < checkpointCount && IsHarborTunnelPoint(mountainRoute[index])) continue;
+            // Skip intermediate checkpoints under the course tunnel roofs.
+            // Removing them from this list also removes the progress requirement.
+            if (i > 0 && i < checkpointCount &&
+                ((harbor && IsTunnelPoint(mountainRoute[index], "Seaside covered tunnel")) ||
+                 (mountain && IsTunnelPoint(mountainRoute[index], "Summit tunnel vault")))) continue;
             Vector3 direction = mountainRoute[(index + 1) % count] - mountainRoute[(index + count - 1) % count]; direction.y = 0;
             lapGates.Add(new Gate(mountainRoute[index], Quaternion.LookRotation(direction).eulerAngles.y) { openingWidth = mountainHalfWidth * 2f + 1f, openingHeight = 6f });
         }
         gates = lapGates.ToArray();
     }
-    private bool IsHarborTunnelPoint(Vector3 point)
+    private bool IsTunnelPoint(Vector3 point, string tunnelName)
     {
-        var tunnel = GameObject.Find("Seaside covered tunnel");
+        var tunnel = GameObject.Find(tunnelName);
         var filter = tunnel != null ? tunnel.GetComponent<MeshFilter>() : null;
         if (filter == null || filter.sharedMesh == null) return false;
         foreach (var vertex in filter.sharedMesh.vertices)
@@ -258,10 +260,13 @@ public class LakeTownChallenge : MonoBehaviour
             var root = new GameObject("Gate " + (i + 1)); root.transform.SetParent(gateRoot.transform, false);
             root.transform.position = gate.position; root.transform.rotation = Quaternion.Euler(0, gate.yaw, 0);
             float half = gate.openingWidth * .5f, height = gate.openingHeight;
+            // Harbor walls sit just outside the asphalt. Keep decorative posts
+            // inside them; crossing detection retains the full original width.
+            float visualHalf = harbor ? Mathf.Min(half, mountainHalfWidth - .55f) : half;
             gateRenderers[i] = new[] {
-                GatePart(root.transform, new Vector3(-half-.3f, height*.5f, 0), new Vector3(.6f, height, .6f)),
-                GatePart(root.transform, new Vector3(half+.3f, height*.5f, 0), new Vector3(.6f, height, .6f)),
-                GatePart(root.transform, new Vector3(0, height+.35f, 0), new Vector3(gate.openingWidth+1.2f, .7f, .7f))
+                GatePart(root.transform, new Vector3(-visualHalf-.3f, height*.5f, 0), new Vector3(.6f, height, .6f)),
+                GatePart(root.transform, new Vector3(visualHalf+.3f, height*.5f, 0), new Vector3(.6f, height, .6f)),
+                GatePart(root.transform, new Vector3(0, height+.35f, 0), new Vector3(visualHalf*2f+1.2f, .7f, .7f))
             };
             var sign = GatePart(root.transform, new Vector3(0, height + 1.75f, 0), new Vector3(7f, 2f, .7f));
             sign.sharedMaterial = signMaterial;
