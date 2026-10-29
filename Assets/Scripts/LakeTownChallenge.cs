@@ -66,7 +66,12 @@ public class LakeTownChallenge : MonoBehaviour
     private TMP_Text heading, detail, hud;
     private RectTransform challengePanel;
     private Button start, retry, back;
-    private bool running, parking;
+    private bool running, parking, mountain;
+    [Header("Mountain lap tuning")]
+    [SerializeField, Range(4, 24)] private int mountainCheckpoints = 12;
+    [SerializeField, Min(0)] private float mountainRoadTolerance = 3f;
+    private Vector3[] mountainRoute;
+    private float mountainHalfWidth;
     private int next;
     private float elapsed, held;
     private int resetCount;
@@ -85,6 +90,8 @@ public class LakeTownChallenge : MonoBehaviour
     {
         vehicle = car; body = car.GetComponent<Rigidbody>(); manager = sceneManager;
         parking = TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.LakeParking;
+        mountain = TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass;
+        if (mountain) { BuildMountainRoute(); vehicle.ColliderContact += MountainContact; }
         vehicle.SetChallengeStopped(true);
         vehicle.SetChallengeInputLocked(true);
         BuildUI();
@@ -94,9 +101,9 @@ public class LakeTownChallenge : MonoBehaviour
     {
         canvasObject.SetActive(true); overlay.SetActive(true);
         heading.color = new Color(.98f, .77f, .25f);
-        heading.text = parking ? "PARKING CHALLENGE" : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
+        heading.text = parking ? "PARKING CHALLENGE" : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
         detail.text = parking ? $"Explore Lake Town and find the gold parking bay.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt."
-            : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
+            : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
         start.gameObject.SetActive(true); retry.gameObject.SetActive(false);
         back.gameObject.SetActive(true); hud.text = "";
     }
@@ -132,14 +139,56 @@ public class LakeTownChallenge : MonoBehaviour
         if (!running || parking || vehicle == null || body == null) return;
         if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
         Vector3 position = body.position;
+        if (mountain && !OnMountainRoad(position)) { End(false, "Left the road. Try again."); return; }
         if (next < gates.Length && CrossedGate(gates[next], previousPosition, position, gateGroundTolerance))
         {
             if (gateAudio != null && gatePassSound != null) gateAudio.PlayOneShot(gatePassSound);
             next++;
-            if (next == gates.Length) End(true, "All gates passed!");
+            if (next == gates.Length) End(true, mountain ? "Mountain lap complete!" : "All gates passed!");
             else RefreshGates();
         }
         previousPosition = position;
+    }
+    private void BuildMountainRoute()
+    {
+        var road = GameObject.Find("Mountain Pass asphalt");
+        var filter = road != null ? road.GetComponent<MeshFilter>() : null;
+        if (filter == null || filter.sharedMesh == null) { Debug.LogError("Mountain Pass road mesh is missing."); return; }
+        var vertices = filter.sharedMesh.vertices;
+        int count = vertices.Length / 2 - 1;
+        mountainRoute = new Vector3[count];
+        for (int i = 0; i < count; i++) mountainRoute[i] = filter.transform.TransformPoint((vertices[2*i] + vertices[2*i+1]) * .5f);
+        mountainHalfWidth = Vector3.Distance(filter.transform.TransformPoint(vertices[0]), filter.transform.TransformPoint(vertices[1])) * .5f;
+        int nearest = 0; float best = float.PositiveInfinity;
+        for (int i = 0; i < count; i++) { float d = (mountainRoute[i] - vehicle.transform.position).sqrMagnitude; if (d < best) { best = d; nearest = i; } }
+        int start = (nearest + 6) % count;
+        int checkpointCount = Mathf.Clamp(mountainCheckpoints, 4, 24);
+        gates = new Gate[checkpointCount + 1];
+        for (int i = 0; i <= checkpointCount; i++)
+        {
+            int index = (start + i * count / checkpointCount) % count;
+            Vector3 direction = mountainRoute[(index + 1) % count] - mountainRoute[(index + count - 1) % count]; direction.y = 0;
+            gates[i] = new Gate(mountainRoute[index], Quaternion.LookRotation(direction).eulerAngles.y) { openingWidth = mountainHalfWidth * 2f + 1f, openingHeight = 6f };
+        }
+    }
+    private bool OnMountainRoad(Vector3 position)
+    {
+        if (mountainRoute == null || mountainRoute.Length == 0) return false;
+        float best = float.PositiveInfinity;
+        for (int i = 0; i < mountainRoute.Length; i++)
+        {
+            Vector3 a = mountainRoute[i], b = mountainRoute[(i + 1) % mountainRoute.Length];
+            Vector3 delta = b - a; float length = delta.sqrMagnitude;
+            float u = length > .0001f ? Mathf.Clamp01(Vector3.Dot(position-a, delta)/length) : 0f;
+            float distance = (position - (a + delta*u)).sqrMagnitude;
+            if (distance < best) best = distance;
+        }
+        float limit = mountainHalfWidth + mountainRoadTolerance;
+        return best <= limit * limit;
+    }
+    private void MountainContact(Collider surface)
+    {
+        if (mountain && running && surface != null && (surface.name == "Left safety rail" || surface.name == "Right safety rail")) End(false, "Safety rail hit. Try again.");
     }
     private static bool CrossedGate(Gate gate, Vector3 previous, Vector3 current, float groundTolerance)
     {
@@ -297,6 +346,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void OnDestroy()
     {
+        if (vehicle != null) vehicle.ColliderContact -= MountainContact;
         if (markerMaterial != null) Destroy(markerMaterial);
         if (beaconMaterial != null) Destroy(beaconMaterial);
         if (activeGateMaterial != null) Destroy(activeGateMaterial);

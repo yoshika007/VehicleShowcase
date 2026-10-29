@@ -57,7 +57,7 @@ public class TestDriveSceneManager : MonoBehaviour
         // The briefing and countdown remain behind the cinematic handoff.
         if (cleanLapChallenge != null)
             cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
-        if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge && TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown)
+        if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge && (TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown || TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass))
         {
             lakeChallenge = GetComponent<LakeTownChallenge>();
             if (lakeChallenge == null) lakeChallenge = gameObject.AddComponent<LakeTownChallenge>();
