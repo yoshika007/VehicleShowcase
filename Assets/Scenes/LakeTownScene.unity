@@ -96494,7 +96494,7 @@ MonoBehaviour:
     openingHeight: 6
   gateGroundTolerance: 2
   parkingCenter: {x: -160, y: 0, z: 65}
-  parkingSize: {x: 8, y: 14}
+  parkingSize: {x: 4.5, y: 8}
   parkingYaw: 74
   parkingSpeed: 0.7
   parkingHoldSeconds: 2

@@ -25,7 +25,7 @@ public class LakeTownChallenge : MonoBehaviour
     [SerializeField, Min(0)] private float gateGroundTolerance = 2f;
     [Header("Parking tuning")]
     [SerializeField] private Vector3 parkingCenter = new Vector3(-160, 0, 65);
-    [SerializeField] private Vector2 parkingSize = new Vector2(8, 14);
+    [SerializeField] private Vector2 parkingSize = new Vector2(4.5f, 8f);
     [SerializeField] private float parkingYaw = 74f;
     [SerializeField, Min(0)] private float parkingSpeed = 0.7f;
     [SerializeField, Min(0)] private float parkingHoldSeconds = 2f;
