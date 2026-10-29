@@ -96495,6 +96495,17 @@ MonoBehaviour:
   gateGroundTolerance: 2
   gateAudio: {fileID: 1201754145}
   gatePassSound: {fileID: 8300000, guid: c0edb2705c93e4dae934a1e5baa7de76, type: 3}
+  parkingSpots:
+  - position: {x: -160, y: 0, z: 65}
+    yaw: 83.7
+  - position: {x: 20, y: 0, z: 115}
+    yaw: 81.9
+  - position: {x: 250, y: 0, z: -40}
+    yaw: -137.5
+  - position: {x: 25, y: 0, z: -135}
+    yaw: -110.6
+  - position: {x: -255, y: 0, z: -100}
+    yaw: -65.4
   parkingCenter: {x: -160, y: 0, z: 65}
   parkingSize: {x: 4.5, y: 8}
   parkingYaw: 74
