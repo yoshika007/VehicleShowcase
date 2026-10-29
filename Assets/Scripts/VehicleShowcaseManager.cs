@@ -52,6 +52,11 @@ public class VehicleShowcaseManager : MonoBehaviour
     private int currentVehicleIndex;
     private Vehicle currentVehicle;
     private VehicleCapabilityBars capabilityBars;
+    private RectTransform infoPanel, nextButton, driveButton, showroomCanvas;
+    private Vector2 infoBasePosition, driveBasePosition;
+    private Vector3 infoBaseScale;
+    private Canvas showroomRootCanvas;
+    private readonly Vector3[] showroomCorners = new Vector3[4];
 
     private void Awake()
     {
@@ -70,6 +75,7 @@ public class VehicleShowcaseManager : MonoBehaviour
         if (courseSelectionPanel != null) courseSelectionPanel.SetActive(false);
         currentVehicleIndex = Mathf.Clamp(TestDriveSelection.VehicleIndex, 0, vehiclePrefabs.Length - 1);
         ShowVehicle();
+        InitializeShowroomLayout();
     }
 
     public void ShowNextVehicle()
@@ -109,6 +115,57 @@ public class VehicleShowcaseManager : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) NavigateBack();
+    }
+
+    private void InitializeShowroomLayout()
+    {
+        infoPanel = descriptionText != null ? descriptionText.transform.parent as RectTransform : null;
+        nextButton = GameObject.Find("NextButton")?.GetComponent<RectTransform>();
+        driveButton = GameObject.Find("DriveButton")?.GetComponent<RectTransform>();
+        showroomRootCanvas = infoPanel != null ? infoPanel.GetComponentInParent<Canvas>()?.rootCanvas : null;
+        showroomCanvas = showroomRootCanvas != null ? showroomRootCanvas.transform as RectTransform : null;
+        if (infoPanel == null || nextButton == null || driveButton == null || showroomCanvas == null) return;
+        infoBasePosition = infoPanel.anchoredPosition;
+        driveBasePosition = driveButton.anchoredPosition;
+        infoBaseScale = infoPanel.localScale;
+        UpdateShowroomLayout();
+    }
+
+    private void LateUpdate() => UpdateShowroomLayout();
+
+    private void UpdateShowroomLayout()
+    {
+        if (infoPanel == null || showroomCanvas == null || nextButton == null || driveButton == null) return;
+        Rect viewport = showroomRootCanvas.pixelRect;
+        Rect safe = Screen.safeArea;
+        if (viewport.width <= 0 || viewport.height <= 0 || safe.width <= 0 || safe.height <= 0) return;
+        // The Simulator can report a viewport different from Screen.width during rotation.
+        if (safe.xMin < viewport.xMin || safe.yMin < viewport.yMin || safe.xMax > viewport.xMax || safe.yMax > viewport.yMax) return;
+        nextButton.GetWorldCorners(showroomCorners);
+        float nextTop = showroomCanvas.InverseTransformPoint(showroomCorners[1]).y;
+        ApplyShowroomLayout(viewport, safe, showroomCanvas.rect, nextTop);
+    }
+
+    private void ApplyShowroomLayout(Rect viewport, Rect safe, Rect root, float nextTop)
+    {
+        float safeRight = root.xMin + root.width * ((safe.xMax - viewport.xMin) / viewport.width);
+        float safeTop = root.yMin + root.height * ((safe.yMax - viewport.yMin) / viewport.height);
+        const float margin = 12f;
+        float maxScale = Mathf.Max(.01f, (safeTop - margin - nextTop - margin) / infoPanel.rect.height);
+        float scale = Mathf.Min(infoBaseScale.x, maxScale);
+        float halfHeight = infoPanel.rect.height * scale * .5f;
+        float baseCenter = root.center.y + infoBasePosition.y;
+        float center = Mathf.Clamp(Mathf.Max(baseCenter, nextTop + margin + halfHeight),
+            nextTop + margin + halfHeight, safeTop - margin - halfHeight);
+        float baseRight = root.xMax + infoBasePosition.x;
+        float right = Mathf.Min(baseRight, safeRight - margin);
+        float baseBottom = baseCenter - infoPanel.rect.height * infoBaseScale.y * .5f;
+        float bottom = center - halfHeight;
+        infoPanel.localScale = new Vector3(scale, scale, infoBaseScale.z);
+        infoPanel.anchoredPosition = infoBasePosition + new Vector2(right - baseRight, center - baseCenter);
+        Vector2 drivePosition = driveBasePosition + new Vector2(right - baseRight, bottom - baseBottom);
+        if (driveButton.TryGetComponent<TestDriveButtonFeedback>(out var feedback)) feedback.SetRestingPosition(drivePosition);
+        else driveButton.anchoredPosition = drivePosition;
     }
 
     public void NavigateBack()
