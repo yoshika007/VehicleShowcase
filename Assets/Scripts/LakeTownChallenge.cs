@@ -23,6 +23,8 @@ public class LakeTownChallenge : MonoBehaviour
         new Gate(new Vector3(-290, 0, -35), 1.7f), new Gate(new Vector3(-250, 0, 70), 52.4f)
     };
     [SerializeField, Min(0)] private float gateGroundTolerance = 2f;
+    [SerializeField] private AudioSource gateAudio;
+    [SerializeField] private AudioClip gatePassSound;
     [Header("Parking tuning")]
     [SerializeField] private Vector3 parkingCenter = new Vector3(-160, 0, 65);
     [SerializeField] private Vector2 parkingSize = new Vector2(4.5f, 8f);
@@ -100,6 +102,7 @@ public class LakeTownChallenge : MonoBehaviour
         Vector3 position = body.position;
         if (next < gates.Length && CrossedGate(gates[next], previousPosition, position, gateGroundTolerance))
         {
+            if (gateAudio != null && gatePassSound != null) gateAudio.PlayOneShot(gatePassSound);
             next++;
             if (next == gates.Length) End(true, "All gates passed!");
             else RefreshGates();

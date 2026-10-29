@@ -96493,6 +96493,8 @@ MonoBehaviour:
     openingWidth: 16
     openingHeight: 6
   gateGroundTolerance: 2
+  gateAudio: {fileID: 1201754145}
+  gatePassSound: {fileID: 8300000, guid: c0edb2705c93e4dae934a1e5baa7de76, type: 3}
   parkingCenter: {x: -160, y: 0, z: 65}
   parkingSize: {x: 4.5, y: 8}
   parkingYaw: 74
