@@ -96512,6 +96512,12 @@ MonoBehaviour:
   parkingSpeed: 0.7
   parkingHoldSeconds: 2
   parkingAngleTolerance: 35
+  beaconColor: {r: 1, g: 0.74, b: 0.12, a: 1}
+  beaconHeight: 15
+  beaconBaseHeight: 4
+  beaconWidth: 1.8
+  beaconIntensity: 1
+  beaconPulseSpeed: 1.2
 --- !u!1 &1205158398
 GameObject:
   m_ObjectHideFlags: 0

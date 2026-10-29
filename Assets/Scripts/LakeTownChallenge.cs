@@ -48,6 +48,13 @@ public class LakeTownChallenge : MonoBehaviour
     [SerializeField, Min(0)] private float parkingSpeed = 0.7f;
     [SerializeField, Min(0)] private float parkingHoldSeconds = 2f;
     [SerializeField, Range(0, 90)] private float parkingAngleTolerance = 35f;
+    [Header("Parking beacon")]
+    [SerializeField] private Color beaconColor = new Color(1f, .74f, .12f);
+    [SerializeField, Min(1f)] private float beaconHeight = 30f;
+    [SerializeField, Min(3f)] private float beaconBaseHeight = 8f;
+    [SerializeField, Min(.1f)] private float beaconWidth = 1.8f;
+    [SerializeField, Range(.1f, 1f)] private float beaconIntensity = 1f;
+    [SerializeField, Min(0f)] private float beaconPulseSpeed = 1.2f;
 
     private TestDriveMovement vehicle;
     private Rigidbody body;
@@ -60,7 +67,9 @@ public class LakeTownChallenge : MonoBehaviour
     private int next;
     private float elapsed, held;
     private int resetCount;
-    private Material markerMaterial, activeGateMaterial, inactiveGateMaterial, signMaterial;
+    private Material markerMaterial, activeGateMaterial, inactiveGateMaterial, signMaterial, beaconMaterial;
+    private Renderer[] beaconRenderers;
+    private MaterialPropertyBlock beaconProperties;
     private GameObject gateRoot;
     private Renderer[][] gateRenderers;
     private TMP_Text[][] gateLabels;
@@ -104,6 +113,7 @@ public class LakeTownChallenge : MonoBehaviour
         Vector3 pos = body.position;
         if (parking)
         {
+            UpdateBeacon();
             Vector3 local = Quaternion.Euler(0, -selectedParkingYaw, 0) * (pos - selectedParkingCenter);
             float angle = Vector3.Angle(Vector3.ProjectOnPlane(vehicle.transform.forward, Vector3.up), Quaternion.Euler(0, selectedParkingYaw, 0) * Vector3.forward);
             bool inside = Mathf.Abs(local.x) <= parkingSize.x * .5f && Mathf.Abs(local.z) <= parkingSize.y * .5f;
@@ -218,7 +228,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void ShowMarker()
     {
-        if (marker != null) Destroy(marker);
+        if (marker != null) { marker.SetActive(false); Destroy(marker); }
         marker = new GameObject("Lake Town challenge marker");
         marker.transform.position = selectedParkingCenter;
         marker.transform.rotation = Quaternion.Euler(0, selectedParkingYaw, 0);
@@ -230,8 +240,37 @@ public class LakeTownChallenge : MonoBehaviour
             Line(new Vector3(parkingSize.x/2, .12f, 0), new Vector3(.18f, .1f, parkingSize.y));
             Line(new Vector3(0, .12f, -parkingSize.y/2), new Vector3(parkingSize.x, .1f, .18f));
             Line(new Vector3(0, .12f, parkingSize.y/2), new Vector3(parkingSize.x, .1f, .18f));
+            BuildBeacon();
         }
 
+    }
+    private void BuildBeacon()
+    {
+        if (beaconMaterial == null) beaconMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        var beacon = new GameObject("Parking beacon"); beacon.transform.SetParent(marker.transform, false);
+        float middle = beaconBaseHeight + beaconHeight * .5f;
+        beaconRenderers = new[] {
+            BeaconPart(beacon.transform, new Vector3(0, middle, 0), new Vector3(beaconWidth, beaconHeight, .12f), 0f),
+            BeaconPart(beacon.transform, new Vector3(0, middle, 0), new Vector3(beaconWidth, beaconHeight, .12f), 90f),
+            BeaconPart(beacon.transform, new Vector3(0, beaconBaseHeight + beaconHeight, 0), new Vector3(beaconWidth * 1.6f, beaconWidth * 1.6f, beaconWidth * 1.6f), 45f)
+        };
+        UpdateBeacon();
+    }
+    private Renderer BeaconPart(Transform parent, Vector3 position, Vector3 scale, float yaw)
+    {
+        var part = GameObject.CreatePrimitive(PrimitiveType.Cube); part.transform.SetParent(parent, false);
+        part.transform.localPosition = position; part.transform.localRotation = Quaternion.Euler(0, yaw, 0); part.transform.localScale = scale;
+        Destroy(part.GetComponent<Collider>()); var renderer = part.GetComponent<Renderer>(); renderer.sharedMaterial = beaconMaterial;
+        renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; renderer.receiveShadows = false; return renderer;
+    }
+    private void UpdateBeacon()
+    {
+        if (beaconRenderers == null) return;
+        if (beaconProperties == null) beaconProperties = new MaterialPropertyBlock();
+        float pulse = .8f + .2f * Mathf.Sin(Time.time * beaconPulseSpeed);
+        Color color = beaconColor * (beaconIntensity * pulse); color.a = 1f;
+        beaconProperties.SetColor("_BaseColor", color);
+        foreach (var part in beaconRenderers) if (part != null) part.SetPropertyBlock(beaconProperties);
     }
     private void Line(Vector3 position, Vector3 scale)
     {
@@ -241,7 +280,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void End(bool success, string message)
     {
-        running = false; if (marker != null) Destroy(marker); if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
+        running = false; if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true);
         overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
         heading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
@@ -250,12 +289,13 @@ public class LakeTownChallenge : MonoBehaviour
     }
     public void StopChallenge()
     {
-        running = false; if (marker != null) Destroy(marker); if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
+        running = false; if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         if (canvasObject != null) canvasObject.SetActive(false);
     }
     private void OnDestroy()
     {
         if (markerMaterial != null) Destroy(markerMaterial);
+        if (beaconMaterial != null) Destroy(beaconMaterial);
         if (activeGateMaterial != null) Destroy(activeGateMaterial);
         if (inactiveGateMaterial != null) Destroy(inactiveGateMaterial);
         if (signMaterial != null) Destroy(signMaterial);
