@@ -6,11 +6,16 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
 {
     [SerializeField] private UnityEngine.UI.Image[] fills;
     [SerializeField] private TMP_Text speedText;
+    [SerializeField] private UnityEngine.UI.Image speedFill;
+    [SerializeField] private TMP_Text speedValue;
+    // All vehicles use the same scale; 240 km/h leaves headroom above the current 220 km/h maximum.
+    private const float MaxSpeedScaleKmh = 240f;
 
     public void Initialize(TMP_Text description)
     {
         if (fills != null && (fills.Length == 6 || fills.Length == 4) && speedText != null)
         {
+            EnsureSpeedBar(description);
             ArrangeVisibleRows();
             description.gameObject.SetActive(false);
             return;
@@ -24,12 +29,13 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         string[] names = { "ACCELERATION", "BRAKING", "HANDLING", "STABILITY" };
         for (int i = 0; i < names.Length; i++)
         {
-            float y = -i * 36f;
+            float y = -(i + 1) * 36f;
             Label(area, description, names[i], new Vector2(0f, y), new Vector2(164f, 28f));
             var track = Image(area, "Track", new Vector2(170f, y - 6f), new Vector2(255f, 16f), new Color(.15f, .27f, .28f, 1f));
             fills[i] = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(255f, 16f), new Color(.98f, .74f, .25f, 1f));
         }
-        speedText = Label(area, description, "", new Vector2(0f, -144f), new Vector2(425f, 40f));
+        speedText = Label(area, description, "MAX SPEED", Vector2.zero, new Vector2(164f, 28f));
+        EnsureSpeedBar(description);
         var layout = description.transform.parent.Find("LayoutText")?.GetComponent<TMP_Text>();
         if (layout != null) speedText.fontSize = layout.fontSize;
         description.gameObject.SetActive(false);
@@ -50,15 +56,32 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
             if (track == null) continue;
             track.gameObject.SetActive(i < 4);
             if (i >= 4) continue;
-            track.anchoredPosition = new Vector2(track.anchoredPosition.x, -i * 36f - 6f);
+            track.anchoredPosition = new Vector2(track.anchoredPosition.x, -(i + 1) * 36f - 6f);
         }
         string[] names = { "ACCELERATION", "BRAKING", "HANDLING", "STABILITY" };
         foreach (var label in GetComponentsInChildren<TMP_Text>(true))
         {
             int index = System.Array.IndexOf(names, label.text);
-            if (index >= 0) label.rectTransform.anchoredPosition = new Vector2(label.rectTransform.anchoredPosition.x, -index * 36f);
+            if (index >= 0) label.rectTransform.anchoredPosition = new Vector2(label.rectTransform.anchoredPosition.x, -(index + 1) * 36f);
         }
-        speedText.rectTransform.anchoredPosition = new Vector2(speedText.rectTransform.anchoredPosition.x, -144f);
+        speedText.text = "MAX SPEED";
+        speedText.fontSize = 20f;
+        speedText.enableAutoSizing = false;
+        speedText.rectTransform.anchoredPosition = Vector2.zero;
+        speedText.rectTransform.sizeDelta = new Vector2(164f, 28f);
+    }
+
+    private void EnsureSpeedBar(TMP_Text source)
+    {
+        if (speedFill != null && speedValue != null) return;
+        var area = (RectTransform)transform;
+        var track = Image(area, "MaxSpeedTrack", new Vector2(170f, -6f), new Vector2(255f, 16f), new Color(.15f, .27f, .28f, 1f));
+        speedFill = Image(track.rectTransform, "Fill", Vector2.zero, new Vector2(255f, 16f), new Color(.98f, .74f, .25f, 1f));
+        speedValue = Label(track.rectTransform, source, "-- km/h", new Vector2(0f, 6f), new Vector2(255f, 28f));
+        speedValue.name = "MaxSpeedValue";
+        speedValue.fontSize = 18f;
+        speedValue.alignment = TextAlignmentOptions.MidlineRight;
+        speedValue.color = Color.white;
     }
 
     private static TMP_Text Label(RectTransform parent, TMP_Text source, string value, Vector2 position, Vector2 size)
@@ -128,6 +151,7 @@ public sealed class VehicleCapabilityBars : MonoBehaviour
         float[] values = { rating.x, braking, handling.x, handling.y, rating.y, rating.z };
         for (int i = 0; i < fills.Length; i++)
             fills[i].rectTransform.sizeDelta = new Vector2(255f * values[i], 16f);
-        speedText.text = topSpeed.HasValue ? $"TOP SPEED: {Mathf.RoundToInt(topSpeed.Value)} km/h" : "TOP SPEED: --";
+        speedValue.text = topSpeed.HasValue ? $"{Mathf.RoundToInt(topSpeed.Value)} km/h" : "-- km/h";
+        speedFill.rectTransform.sizeDelta = new Vector2(255f * Mathf.Clamp01(topSpeed.GetValueOrDefault() / MaxSpeedScaleKmh), 16f);
     }
 }
