@@ -122,7 +122,8 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             gateHalfWidth = trailCourse.HalfWidth;
             return;
         }
-        var vertices = circuit.sharedMesh.vertices;
+        var vertices = CleanLapCircuitBarrier.SourceMesh(circuit).vertices;
+        if (vertices.Length < 8 || vertices.Length % 2 != 0) throw new InvalidOperationException("Invalid circuit route geometry.");
         route = new Vector3[vertices.Length / 2];
         distances = new float[route.Length];
         for (int i = 0; i < route.Length; i++)

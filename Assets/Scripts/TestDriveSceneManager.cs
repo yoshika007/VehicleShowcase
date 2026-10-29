@@ -38,13 +38,14 @@ public class TestDriveSceneManager : MonoBehaviour
             return;
         }
         Transform selectedSpawn = spawnPoint;
+        System.Exception setupError = null;
         if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge
             && TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.OffroadTrail)
         {
             var trail = new GameObject("Off-road Trail Course").AddComponent<OffroadTrailCourse>();
             trail.transform.SetParent(transform, false);
-            trail.Initialize();
-            selectedSpawn = trail.Spawn;
+            try { trail.Initialize(); selectedSpawn = trail.Spawn; }
+            catch (System.Exception ex) { setupError = ex; Destroy(trail.gameObject); }
         }
         vehicle = Instantiate(catalog.drivingPrefabs[index], selectedSpawn.position, selectedSpawn.rotation);
         vehicle.ConfigureReset(selectedSpawn, followCamera);
@@ -53,15 +54,28 @@ public class TestDriveSceneManager : MonoBehaviour
         followCamera.SetTarget(vehicle.transform, framingScale);
         speedDisplay.SetVehicle(vehicle.GetComponent<Rigidbody>());
         minimap.SetVehicle(vehicle.transform);
-        // Cache challenge geometry in Awake, before Unity combines static meshes.
-        // The briefing and countdown remain behind the cinematic handoff.
-        if (cleanLapChallenge != null)
-            cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
-        if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge && (TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown || TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass || TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge || TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet || TestDriveSelection.Course == TestDriveSelection.CourseKind.HighlandClimb))
+        if (setupError == null)
         {
-            lakeChallenge = GetComponent<LakeTownChallenge>();
+            try
+            {
+                if (cleanLapChallenge != null)
+                    cleanLapChallenge.ConfigureMode(TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge, vehicle);
+                if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge && (TestDriveSelection.Course == TestDriveSelection.CourseKind.LakeTown || TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass || TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge || TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet || TestDriveSelection.Course == TestDriveSelection.CourseKind.HighlandClimb))
+                {
+                    lakeChallenge = GetComponent<LakeTownChallenge>();
+                    if (lakeChallenge == null) lakeChallenge = gameObject.AddComponent<LakeTownChallenge>();
+                    lakeChallenge.Initialize(vehicle, this);
+                }
+            }
+            catch (System.Exception ex) { setupError = ex; }
+        }
+        if (setupError != null)
+        {
+            Debug.LogException(setupError);
+            if (cleanLapChallenge != null) { cleanLapChallenge.BindVehicle(null); cleanLapChallenge.gameObject.SetActive(false); }
             if (lakeChallenge == null) lakeChallenge = gameObject.AddComponent<LakeTownChallenge>();
-            lakeChallenge.Initialize(vehicle, this);
+            lakeChallenge.ShowInitializationFailure(vehicle, this);
+            return;
         }
         if (TestDriveSelection.ConsumeIntroRequest() && followCamera != null)
         {
@@ -89,6 +103,11 @@ public class TestDriveSceneManager : MonoBehaviour
             if (intro != null && intro.IsPlaying) intro.Skip();
             else ReturnToShowroom();
         }
+    }
+
+    public void RetryChallenge()
+    {
+        if (!isReturning) SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ReturnToShowroom()

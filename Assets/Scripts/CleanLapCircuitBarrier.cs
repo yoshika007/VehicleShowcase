@@ -12,11 +12,19 @@ public sealed class CleanLapCircuitBarrier : MonoBehaviour
     private Mesh[] generatedMeshes;
     private Material[] generatedMaterials;
 
+    // Static batching may replace MeshFilter.sharedMesh with a non-readable combined
+    // render mesh. MeshCollider retains the original authored collision mesh.
+    public static Mesh SourceMesh(MeshFilter filter)
+    {
+        var collider = filter != null ? filter.GetComponent<MeshCollider>() : null;
+        var mesh = collider != null ? collider.sharedMesh : null;
+        if (mesh == null || !mesh.isReadable)
+            throw new System.InvalidOperationException("Original readable collision mesh is missing for " + (filter != null ? filter.name : "course"));
+        return mesh;
+    }
     public static GameObject Create(MeshFilter circuit)
     {
-        if (circuit == null || circuit.sharedMesh == null || !circuit.sharedMesh.isReadable)
-            return null;
-        var vertices = circuit.sharedMesh.vertices;
+        var vertices = SourceMesh(circuit).vertices;
         if (vertices.Length < 8 || vertices.Length % 2 != 0) return null;
         int rows = vertices.Length / 2;
         // The authored ribbon repeats its first inner/outer pair at the end.

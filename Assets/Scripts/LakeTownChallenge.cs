@@ -109,6 +109,18 @@ public class LakeTownChallenge : MonoBehaviour
         BuildUI();
         canvasObject.SetActive(false);
     }
+    public void ShowInitializationFailure(TestDriveMovement car, TestDriveSceneManager sceneManager)
+    {
+        vehicle = car; body = car.GetComponent<Rigidbody>(); manager = sceneManager;
+        vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true);
+        if (canvasObject == null) BuildUI();
+        canvasObject.SetActive(true); overlay.SetActive(true);
+        heading.text = "CHALLENGE UNAVAILABLE";
+        detail.text = "The challenge could not be prepared.\nTry again or return to the showroom.";
+        hud.text = ""; start.gameObject.SetActive(false);
+        retry.gameObject.SetActive(true); back.gameObject.SetActive(true);
+        retry.onClick.RemoveAllListeners(); retry.onClick.AddListener(manager.RetryChallenge);
+    }
     public void ShowBriefing()
     {
         canvasObject.SetActive(true); overlay.SetActive(true);
@@ -169,8 +181,8 @@ public class LakeTownChallenge : MonoBehaviour
         {
             var road = GameObject.Find(name);
             var filter = road != null ? road.GetComponent<MeshFilter>() : null;
-            if (filter == null || filter.sharedMesh == null) { Debug.LogError("Lap road mesh is missing: " + name); mountainRoute = null; return; }
-            var vertices = filter.sharedMesh.vertices;
+            var vertices = CleanLapCircuitBarrier.SourceMesh(filter).vertices;
+            if (vertices.Length < 4 || vertices.Length % 2 != 0) throw new System.InvalidOperationException("Invalid lap geometry: " + name);
             int segmentCount = vertices.Length / 2 - 1;
             if (points.Count == 0) mountainHalfWidth = Vector3.Distance(filter.transform.TransformPoint(vertices[0]), filter.transform.TransformPoint(vertices[1])) * .5f;
             for (int i = 0; i < segmentCount; i++) points.Add(filter.transform.TransformPoint((vertices[2*i] + vertices[2*i+1]) * .5f));
@@ -199,8 +211,8 @@ public class LakeTownChallenge : MonoBehaviour
     {
         var tunnel = GameObject.Find(tunnelName);
         var filter = tunnel != null ? tunnel.GetComponent<MeshFilter>() : null;
-        if (filter == null || filter.sharedMesh == null) return false;
-        foreach (var vertex in filter.sharedMesh.vertices)
+        var mesh = CleanLapCircuitBarrier.SourceMesh(filter);
+        foreach (var vertex in mesh.vertices)
         {
             Vector3 delta = filter.transform.TransformPoint(vertex) - point;
             if (delta.x * delta.x + delta.z * delta.z < 100f && Mathf.Abs(delta.y) < 10f) return true;

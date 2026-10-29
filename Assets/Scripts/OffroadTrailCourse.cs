@@ -18,8 +18,10 @@ public class OffroadTrailCourse : MonoBehaviour
         var points = new List<Vector3>();
         foreach (string name in new[] { "Dirt Hill 1", "Gravel Corner 1", "Dirt Hill 2", "Gravel Corner 2" })
         {
-            var road = GameObject.Find(name).GetComponent<MeshFilter>();
-            var vertices = road.sharedMesh.vertices;
+            var objectOnRoad = GameObject.Find(name);
+            var road = objectOnRoad != null ? objectOnRoad.GetComponent<MeshFilter>() : null;
+            var vertices = CleanLapCircuitBarrier.SourceMesh(road).vertices;
+            if (vertices.Length < 4 || vertices.Length % 2 != 0) throw new System.InvalidOperationException("Invalid trail geometry: " + name);
             for (int row = 0; row < vertices.Length / 2; row++)
             {
                 Vector3 a = road.transform.TransformPoint(vertices[row * 2]);
