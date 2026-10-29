@@ -369,7 +369,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ENTER SHOWCASE
+  m_text: Choose Your Ride
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
   m_sharedMaterial: {fileID: -6265614645810339613, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
@@ -780,7 +780,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Explore the Collection
+  m_text: Explore. Drive. Challenge.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7ac3d0480ece947f69f6283db1b39041, type: 2}
   m_sharedMaterial: {fileID: -7160898516635688911, guid: 7ac3d0480ece947f69f6283db1b39041, type: 2}
@@ -1129,7 +1129,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VEHICLE SHOWCASE
+  m_text: Roam & Rev
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
   m_sharedMaterial: {fileID: -6265614645810339613, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
