@@ -6,7 +6,7 @@ public static class TestDriveSelection
     public enum CourseKind { TestCircuit, LakeTown, MountainPass, HarborStreet, PineRidge, HighlandClimb }
     public static CourseKind Course { get; private set; }
     public enum DriveMode { FreeRun, Challenge }
-    public enum ChallengeKind { CleanLap = 0, OffroadTrail = 3, NightLap = 5, LakeDay = 6, LakeNight = 7, LakeParking = 8, MountainDay = 9, MountainNight = 10, PineDay = 11, PineNight = 12 }
+    public enum ChallengeKind { CleanLap = 0, OffroadTrail = 3, NightLap = 5, LakeDay = 6, LakeNight = 7, LakeParking = 8, MountainDay = 9, MountainNight = 10, PineDay = 11, PineNight = 12, HarborDay = 13, HarborNight = 14 }
     public static ChallengeKind SelectedChallenge { get; private set; }
     public enum TimeOfDay { Day, Night }
     public static TimeOfDay Lighting { get; private set; }
@@ -31,7 +31,7 @@ public static class TestDriveSelection
         Mode = mode;
         SelectedChallenge = mode == DriveMode.Challenge ? challenge : ChallengeKind.CleanLap;
         Lighting = mode == DriveMode.Challenge
-            ? ((challenge == ChallengeKind.NightLap || challenge == ChallengeKind.LakeNight || challenge == ChallengeKind.MountainNight || challenge == ChallengeKind.PineNight) ? TimeOfDay.Night : TimeOfDay.Day) : lighting;
+            ? ((challenge == ChallengeKind.NightLap || challenge == ChallengeKind.LakeNight || challenge == ChallengeKind.MountainNight || challenge == ChallengeKind.PineNight || challenge == ChallengeKind.HarborNight) ? TimeOfDay.Night : TimeOfDay.Day) : lighting;
         HasSelection = true;
         VehicleName = vehicleName;
         introPending = true;
