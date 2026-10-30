@@ -425,6 +425,10 @@ public class LakeTownChallenge : MonoBehaviour
         start = MakeButton("START CHALLENGE", panel.transform, new Vector2(0, -115), Begin);
         retry = MakeButton("TRY AGAIN", panel.transform, new Vector2(0, -115), Begin);
         back = MakeButton("BACK TO SHOWROOM", panel.transform, new Vector2(0, -205), manager.ReturnToShowroom);
+        // Match the Test Circuit briefing and result font without changing the driving HUD.
+        if (manager.ChallengePanelFont != null)
+            foreach (var text in panel.GetComponentsInChildren<TMP_Text>(true))
+                text.font = manager.ChallengePanelFont;
     }
     private void LateUpdate()
     {

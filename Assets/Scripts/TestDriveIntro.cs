@@ -246,6 +246,8 @@ public class TestDriveIntro : MonoBehaviour
     {
         var rect = Rect(name, parent, min, max);
         var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
+        var sceneManager = FindAnyObjectByType<TestDriveSceneManager>();
+        if (sceneManager != null && sceneManager.ChallengePanelFont != null) text.font = sceneManager.ChallengePanelFont;
         text.text = value; text.fontSize = size; text.color = Color.white;
         text.enableAutoSizing = true; text.fontSizeMin = size * .7f; text.fontSizeMax = size;
         text.alignment = TextAlignmentOptions.MidlineLeft; text.raycastTarget = false;

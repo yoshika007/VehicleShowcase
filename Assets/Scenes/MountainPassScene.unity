@@ -10937,6 +10937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71909de5a6d154786b5fd350b0841f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDriveSceneManager
+  challengePanelFont: {fileID: 11400000, guid: ad85e14e884c44f849628eb7d477ffcf, type: 2}
   catalog: {fileID: 11400000, guid: ae619287bcbf64d63ade48d5e941a60f, type: 2}
   spawnPoint: {fileID: 1561444182}
   followCamera: {fileID: 932022082}
