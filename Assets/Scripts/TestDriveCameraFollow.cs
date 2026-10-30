@@ -76,7 +76,7 @@ public class TestDriveCameraFollow : MonoBehaviour
         if (target == null) return;
         if (IsDriverView && driverView != null)
         {
-            transform.SetPositionAndRotation(driverView.position, driverView.rotation);
+            SetCenteredDriverView();
             return;
         }
         Vector3 position = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * (followOffset * framingScale);
@@ -84,13 +84,20 @@ public class TestDriveCameraFollow : MonoBehaviour
         transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookPoint - position, Vector3.up));
     }
 
+    private void SetCenteredDriverView()
+    {
+        Vector3 localPosition = target.InverseTransformPoint(driverView.position);
+        localPosition.x = 0f;
+        transform.SetPositionAndRotation(target.TransformPoint(localPosition), driverView.rotation);
+    }
+
     private void LateUpdate()
     {
         if (target == null) return;
         if (IsDriverView && driverView != null)
         {
-            // Follow the seat directly so bumps and turns never put the camera through the body.
-            transform.SetPositionAndRotation(driverView.position, driverView.rotation);
+            // Follow the vehicle through bumps and turns while staying centered.
+            SetCenteredDriverView();
             return;
         }
 
