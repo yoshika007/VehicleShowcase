@@ -94,6 +94,7 @@ public class CleanLapBriefing : MonoBehaviour
         resultTime.fontStyle = FontStyles.Bold;
         resultReason.text = success ? finished.Message.Contains("New best") ? "New personal best!" : finished.IsNightLap ? "Clean night lap complete." : finished.IsTrail ? "Dirt loop complete." : "Clean lap complete." : finished.Message;
         resultOverlay.SetActive(true);
+        if (success) ChallengeConfetti.Play(resultOverlay.transform);
         Fit();
     }
     private void Retry()

@@ -390,6 +390,7 @@ public class LakeTownChallenge : MonoBehaviour
         if (success) vehicle.SetChallengeCoasting();
         else { vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true); }
         overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
+        if (success) ChallengeConfetti.Play(overlay.transform);
         heading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
         detail.text = message + $"\nTime: {elapsed:0.0} seconds";
         start.gameObject.SetActive(false); retry.gameObject.SetActive(true); back.gameObject.SetActive(true); hud.text = "";
