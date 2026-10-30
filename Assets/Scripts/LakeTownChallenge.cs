@@ -44,6 +44,10 @@ public class LakeTownChallenge : MonoBehaviour
         new ParkingSpot(new Vector3(85, 0, 45), 0f),
         new ParkingSpot(new Vector3(0, 0, -5), 90f)
     };
+    [Header("Mountain precision stop")]
+    [SerializeField] private Vector3 mountainStopCenter = new Vector3(-88.74f, 90.004f, 289.46f);
+    [SerializeField] private float mountainStopYaw = 86.3f;
+    [SerializeField, Min(1f)] private float mountainStopTimeLimit = 100f;
     [Header("Harbor parking bay")]
     [SerializeField] private Vector3 harborParkingCenter = new Vector3(15.01f, -.056f, -171.13f);
     [SerializeField] private float harborParkingYaw = 91.1f;
@@ -106,7 +110,7 @@ public class LakeTownChallenge : MonoBehaviour
     public void Initialize(TestDriveMovement car, TestDriveSceneManager sceneManager)
     {
         vehicle = car; body = car.GetComponent<Rigidbody>(); manager = sceneManager;
-        parking = TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.LakeParking || TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HarborParking;
+        parking = TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.LakeParking || TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HarborParking || TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.MountainStop;
         mountain = TestDriveSelection.Course == TestDriveSelection.CourseKind.MountainPass;
         pine = TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge;
         harbor = TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet;
@@ -133,8 +137,8 @@ public class LakeTownChallenge : MonoBehaviour
     {
         canvasObject.SetActive(true); overlay.SetActive(true);
         heading.color = new Color(.98f, .77f, .25f);
-        heading.text = parking ? (harbor ? "DOCKSIDE PARKING" : "PARKING CHALLENGE") : highland ? (TestDriveSelection.IsNight ? "HIGHLAND NIGHT LAP" : "HIGHLAND DAY LAP") : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
-        detail.text = parking ? (harbor ? $"Find the gold bay and park within {harborParkingTimeLimit:0} seconds.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : $"Explore Lake Town and find the gold parking bay.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt.")
+        heading.text = parking ? (harbor ? "DOCKSIDE PARKING" : mountain ? "PRECISION STOP" : "PARKING CHALLENGE") : highland ? (TestDriveSelection.IsNight ? "HIGHLAND NIGHT LAP" : "HIGHLAND DAY LAP") : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
+        detail.text = parking ? (harbor ? $"Find the gold bay and park within {harborParkingTimeLimit:0} seconds.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : mountain ? $"Find the summit bay and stop within {mountainStopTimeLimit:0} seconds.\nHold inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : $"Explore Lake Town and find the gold parking bay.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt.")
             : highland ? "Complete one lap through the numbered gates.\nStay on the trail and avoid barriers. Resetting ends the attempt." : harbor ? "Complete one lap through the numbered gates.\nStay on the street and avoid walls. Resetting ends the attempt." : pine ? "Complete one lap through the numbered gates.\nStay on the trail. Resetting ends the attempt." : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
         start.gameObject.SetActive(true); retry.gameObject.SetActive(false);
         back.gameObject.SetActive(true); hud.text = "";
@@ -178,7 +182,7 @@ public class LakeTownChallenge : MonoBehaviour
         if (!running || vehicle == null) return;
         elapsed += Time.deltaTime;
         UpdateTimer();
-        if (parking && harbor && elapsed >= harborParkingTimeLimit) { elapsed = harborParkingTimeLimit; UpdateTimer(); End(false, "Time limit reached. Try again."); return; }
+        if (parking && (harbor || mountain) && elapsed >= ParkingTimeLimit) { elapsed = ParkingTimeLimit; UpdateTimer(); End(false, "Time limit reached. Try again."); return; }
         if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
         Vector3 pos = body.position;
         if (parking)
@@ -350,6 +354,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void SelectParkingSpot()
     {
+        if (mountain) { selectedParkingCenter = mountainStopCenter; selectedParkingYaw = mountainStopYaw; return; }
         if (harbor) { selectedParkingCenter = harborParkingCenter; selectedParkingYaw = harborParkingYaw; return; }
         int count = parkingSpots != null ? parkingSpots.Length : 0;
         if (count == 0)
@@ -500,16 +505,17 @@ public class LakeTownChallenge : MonoBehaviour
         if (countdownText != null) countdownText.rectTransform.anchoredPosition = (min + max) * .5f;
         if (timerPanel != null) timerPanel.anchoredPosition = new Vector2(max.x - root.rect.xMax - 36f, max.y - root.rect.yMax - 36f);
     }
+    private float ParkingTimeLimit => mountain ? mountainStopTimeLimit : harborParkingTimeLimit;
     private void UpdateTimer()
     {
         if (timer == null) return;
-        float displayedTime = parking && harbor ? Mathf.Max(0f, harborParkingTimeLimit - elapsed) : elapsed;
-        if (parking && harbor) displayedTime = Mathf.Ceil(displayedTime * 100f) / 100f;
+        float displayedTime = parking && (harbor || mountain) ? Mathf.Max(0f, ParkingTimeLimit - elapsed) : elapsed;
+        if (parking && (harbor || mountain)) displayedTime = Mathf.Ceil(displayedTime * 100f) / 100f;
         string time = TestDriveCleanLapView.FormatTime(displayedTime);
         timer.fontFeatures.Clear(); timer.alignment = TextAlignmentOptions.Left;
         timer.margin = new Vector4(Mathf.Max(0, (timer.rectTransform.rect.width - 64f * .58f * time.Length) * .5f), 0, 0, 0);
         timer.text = "<mspace=0.58em>" + time + "</mspace>";
-        timer.color = running && parking && harbor && displayedTime <= 15f ? new Color(1f, .58f, .30f) : running ? new Color(.64f, 1f, .88f) : Color.white;
+        timer.color = running && parking && (harbor || mountain) && displayedTime <= 15f ? new Color(1f, .58f, .30f) : running ? new Color(.64f, 1f, .88f) : Color.white;
     }
     private TMP_Text Text(string name, Transform parent, float size, Vector2 dimensions)
     {
