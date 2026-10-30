@@ -15,6 +15,13 @@ public class FreeRideCourseMenu : MonoBehaviour
     private const int VisibleCourses = 3;
     private UnityEngine.UI.Button previousPage, nextPage;
     private int firstVisible;
+    private RectTransform cardViewport;
+    private float slideOffset;
+    private float snapTarget;
+    private bool sliding;
+    private bool dragging;
+    private const float CardStep = 320f;
+    [SerializeField] private float snapSpeed = 12f;
     private UnityEngine.UI.Button[] CourseButtons => new[] { circuit, lakeTown, mountainPass, pineRidge, harborStreet, highlandClimb };
 
     private void OnEnable()
@@ -24,7 +31,9 @@ public class FreeRideCourseMenu : MonoBehaviour
         firstVisible = manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HighlandClimb ? 3
             : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? 2
             : manager != null && manager.FreeRideCourse == TestDriveSelection.CourseKind.PineRidge ? 1 : 0;
+        EnsureCardViewport();
         ArrangeCourses();
+        EnsureDialogSwipe();
         EnsurePagingControls();
         MatchButtonSizes();
         AddCoursePhotos();
@@ -62,6 +71,108 @@ public class FreeRideCourseMenu : MonoBehaviour
         var rect = transform.Find("Dialog/" + name) as RectTransform;
         if (rect != null) rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, y);
     }
+    private void EnsureCardViewport()
+    {
+        var dialog = transform.Find("Dialog") as RectTransform;
+        if (dialog == null) return;
+        cardViewport = dialog.Find("CourseViewport") as RectTransform;
+        if (cardViewport == null)
+        {
+            var obj = new GameObject("CourseViewport", typeof(RectTransform), typeof(UnityEngine.UI.RectMask2D));
+            cardViewport = (RectTransform)obj.transform;
+            cardViewport.SetParent(dialog, false);
+            cardViewport.anchorMin = cardViewport.anchorMax = cardViewport.pivot = new Vector2(.5f, .5f);
+            cardViewport.anchoredPosition = new Vector2(0f, 50f);
+            cardViewport.sizeDelta = new Vector2(940f, 380f);
+            cardViewport.SetAsFirstSibling();
+        }
+        foreach (var button in CourseButtons)
+            if (button != null && button.transform.parent != cardViewport)
+                button.transform.SetParent(cardViewport, false);
+    }
+
+    private void OnDisable()
+    {
+        dragging = sliding = false;
+        slideOffset = snapTarget = 0f;
+    }
+
+    public bool BeginSlide()
+    {
+        // Ignore another drag until the short snap finishes.
+        if (dragging || sliding) return false;
+        dragging = true;
+        SetMovingCards();
+        return true;
+    }
+
+    public void DragSlide(float delta)
+    {
+        if (!dragging) return;
+        int max = CourseCount() - VisibleCourses;
+        if ((firstVisible == 0 && delta > 0f) || (firstVisible >= max && delta < 0f)) delta *= .25f;
+        slideOffset = Mathf.Clamp(delta, -CardStep, CardStep);
+        PositionMovingCards();
+    }
+
+    public void EndSlide(bool advance, float delta)
+    {
+        if (!dragging) return;
+        dragging = false;
+        int max = Mathf.Max(0, CourseCount() - VisibleCourses);
+        int direction = advance ? (delta < 0f ? 1 : -1) : 0;
+        if (firstVisible + direction < 0 || firstVisible + direction > max) direction = 0;
+        snapTarget = -direction * CardStep;
+        sliding = true;
+    }
+
+    private int CourseCount()
+    {
+        int count = 0;
+        foreach (var button in CourseButtons) if (button != null) count++;
+        return count;
+    }
+
+    private void SetMovingCards()
+    {
+        int index = 0;
+        foreach (var button in CourseButtons)
+        {
+            if (button == null) continue;
+            button.gameObject.SetActive(index >= firstVisible - 1 && index <= firstVisible + VisibleCourses);
+            index++;
+        }
+        PositionMovingCards();
+    }
+
+    private void PositionMovingCards()
+    {
+        int index = 0;
+        foreach (var button in CourseButtons)
+        {
+            if (button == null) continue;
+            if (button.gameObject.activeSelf)
+                ((RectTransform)button.transform).anchoredPosition = new Vector2((index - firstVisible - 1) * CardStep + slideOffset, 0f);
+            index++;
+        }
+    }
+
+    private void FinishSlide()
+    {
+        firstVisible = Mathf.Clamp(firstVisible - Mathf.RoundToInt(snapTarget / CardStep), 0, Mathf.Max(0, CourseCount() - VisibleCourses));
+        sliding = dragging = false;
+        slideOffset = snapTarget = 0f;
+        UpdatePage();
+    }
+
+    private void Update()
+    {
+        if (!sliding || dragging) return;
+        slideOffset = Mathf.MoveTowards(slideOffset, snapTarget, CardStep * snapSpeed * Time.unscaledDeltaTime);
+        PositionMovingCards();
+        if (Mathf.Approximately(slideOffset, snapTarget)) FinishSlide();
+    }
+
     private void ArrangeCourses()
     {
         var dialog = transform.Find("Dialog") as RectTransform;
@@ -90,6 +201,23 @@ public class FreeRideCourseMenu : MonoBehaviour
             swipe.Initialize(this);
         }
         UpdatePage();
+    }
+
+    private void EnsureDialogSwipe()
+    {
+        var dialog = transform.Find("Dialog");
+        if (dialog == null) return;
+        var swipe = dialog.GetComponent<CourseCardSwipe>();
+        if (swipe == null) swipe = dialog.gameObject.AddComponent<CourseCardSwipe>();
+        swipe.Initialize(this);
+    }
+
+    public bool IsCourseCard(GameObject target)
+    {
+        if (target == null) return false;
+        foreach (var button in CourseButtons)
+            if (button != null && (target == button.gameObject || target.transform.IsChildOf(button.transform))) return true;
+        return false;
     }
 
     private void EnsurePagingControls()
@@ -128,6 +256,8 @@ public class FreeRideCourseMenu : MonoBehaviour
 
     public void ChangePage(int direction)
     {
+        if (sliding) FinishSlide();
+        if (dragging) { dragging = false; slideOffset = 0f; }
         int count = 0;
         foreach (var button in CourseButtons) if (button != null) count++;
         firstVisible = Mathf.Clamp(firstVisible + direction, 0, Mathf.Max(0, count - VisibleCourses));
@@ -142,7 +272,7 @@ public class FreeRideCourseMenu : MonoBehaviour
             if (button == null) continue;
             bool visible = index >= firstVisible && index < firstVisible + VisibleCourses;
             button.gameObject.SetActive(visible);
-            if (visible) ((RectTransform)button.transform).anchoredPosition = new Vector2((index - firstVisible - 1) * 320f, 50f);
+            if (visible) ((RectTransform)button.transform).anchoredPosition = new Vector2((index - firstVisible - 1) * CardStep, 0f);
             index++;
         }
         if (previousPage != null) previousPage.interactable = firstVisible > 0;
@@ -295,17 +425,50 @@ public class FreeRideCourseMenu : MonoBehaviour
     }
 }
 
-// A drag on a card changes the visible set; an ordinary tap still selects the card.
-public class CourseCardSwipe : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+// Dragging the course area pages the carousel; taps keep their normal button action.
+public class CourseCardSwipe : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private FreeRideCourseMenu menu;
     private Vector2 start;
+    private int? activePointer;
+    private bool allowPaging;
+    private bool horizontal;
+
     public void Initialize(FreeRideCourseMenu target) => menu = target;
-    public void OnBeginDrag(PointerEventData eventData) => start = eventData.position;
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (activePointer.HasValue || eventData.button != PointerEventData.InputButton.Left || menu == null || !menu.isActiveAndEnabled) return;
+        activePointer = eventData.pointerId;
+        start = eventData.pressPosition;
+        var pressedButton = eventData.pointerPress != null ? eventData.pointerPress.GetComponentInParent<UnityEngine.UI.Button>() : null;
+        allowPaging = (pressedButton == null || menu.IsCourseCard(pressedButton.gameObject)) && menu.BeginSlide();
+        horizontal = false;
+        // Dragging must never activate a card or another button when released.
+        eventData.eligibleForClick = false;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (!allowPaging || activePointer != eventData.pointerId || menu == null) return;
+        Vector2 delta = eventData.position - start;
+        if (!horizontal && Mathf.Abs(delta.x) > Mathf.Abs(delta.y) * 1.25f) horizontal = true;
+        var canvas = menu.GetComponentInParent<Canvas>();
+        float scale = canvas != null && canvas.scaleFactor > 0f ? canvas.scaleFactor : 1f;
+        menu.DragSlide(horizontal ? delta.x / scale : 0f);
+    }
+
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (activePointer != eventData.pointerId) return;
+        activePointer = null;
+        eventData.eligibleForClick = false;
+        if (!allowPaging || menu == null || !menu.isActiveAndEnabled) return;
         Vector2 delta = eventData.position - start;
-        if (menu != null && Mathf.Abs(delta.x) >= 60f && Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
-            menu.ChangePage(delta.x < 0f ? 1 : -1);
+        var canvas = menu.GetComponentInParent<Canvas>();
+        float threshold = Mathf.Max(20f, 60f * (canvas != null ? canvas.scaleFactor : 1f));
+        menu.EndSlide(horizontal && Mathf.Abs(delta.x) >= threshold && Mathf.Abs(delta.x) > Mathf.Abs(delta.y) * 1.25f, delta.x);
     }
+
+    private void OnDisable() { activePointer = null; allowPaging = false; }
 }
