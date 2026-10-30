@@ -318,10 +318,10 @@ public class VehicleShowcaseManager : MonoBehaviour
         var third = dialog.Find("OffroadTrailButton");
         var night = dialog.Find("NightLapButton") as RectTransform;
         if (night != null && !challengePositionsSaved) { nightChallengePosition = night.anchoredPosition; challengePositionsSaved = true; }
-        if (third != null) third.gameObject.SetActive(!mountain);
-        if (night != null) night.anchoredPosition = mountain && third != null ? ((RectTransform)third).anchoredPosition : nightChallengePosition;
+        if (third != null) third.gameObject.SetActive(!mountain || harbor);
+        if (night != null) night.anchoredPosition = mountain && !harbor && third != null ? ((RectTransform)third).anchoredPosition : nightChallengePosition;
         SetChallengeLabel("CleanLapButton", lake ? "DAY CHECKPOINTS" : mountain ? "DAY CLEAR LAP" : "CLEAN LAP", lake ? "Follow the lakeside route by day." : highland ? "Complete the highland loop by day." : harbor ? "Complete the harbor loop by day." : pine ? "Complete the forest loop by day." : mountain ? "Complete the mountain loop by day." : "One lap. Avoid the barriers.");
-        SetChallengeLabel("OffroadTrailButton", lake ? "PARKING" : "OFF-ROAD TRAIL", lake ? "Drive to the marked bay and park." : "Dirt hills. Gravel turns. Eight gates.");
+        SetChallengeLabel("OffroadTrailButton", (lake || harbor) ? "PARKING" : "OFF-ROAD TRAIL", harbor ? "Find and park within 25 seconds." : lake ? "Find the marked bay and park." : "Dirt hills. Gravel turns. Eight gates.");
         SetChallengeLabel("NightLapButton", lake ? "NIGHT CHECKPOINTS" : mountain ? "NIGHT CLEAR LAP" : "NIGHT LAP", lake ? "Follow the lakeside route after dark." : highland ? "Complete the highland loop at night." : harbor ? "Complete the harbor loop at night." : pine ? "Complete the forest loop at night." : mountain ? "Complete the mountain loop at night." : "One clean lap. After dark.");
         if (challengePanel.TryGetComponent<CanvasGroup>(out var group)) group.interactable = true;
     }
@@ -337,7 +337,7 @@ public class VehicleShowcaseManager : MonoBehaviour
     public void CleanLap() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         challenge: freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? TestDriveSelection.ChallengeKind.LakeDay : freeRideCourse == TestDriveSelection.CourseKind.MountainPass ? TestDriveSelection.ChallengeKind.MountainDay : freeRideCourse == TestDriveSelection.CourseKind.PineRidge ? TestDriveSelection.ChallengeKind.PineDay : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? TestDriveSelection.ChallengeKind.HarborDay : freeRideCourse == TestDriveSelection.CourseKind.HighlandClimb ? TestDriveSelection.ChallengeKind.HighlandDay : TestDriveSelection.ChallengeKind.CleanLap, course: freeRideCourse); }
     public void OffroadTrail() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
-        TestDriveSelection.TimeOfDay.Day, freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? TestDriveSelection.ChallengeKind.LakeParking : TestDriveSelection.ChallengeKind.OffroadTrail, freeRideCourse); }
+        TestDriveSelection.TimeOfDay.Day, freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? TestDriveSelection.ChallengeKind.LakeParking : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? TestDriveSelection.ChallengeKind.HarborParking : TestDriveSelection.ChallengeKind.OffroadTrail, freeRideCourse); }
 
     public void NightLap() { if (ChallengeMenuOpen) BeginDrive(TestDriveSelection.DriveMode.Challenge,
         TestDriveSelection.TimeOfDay.Night, freeRideCourse == TestDriveSelection.CourseKind.LakeTown ? TestDriveSelection.ChallengeKind.LakeNight : freeRideCourse == TestDriveSelection.CourseKind.MountainPass ? TestDriveSelection.ChallengeKind.MountainNight : freeRideCourse == TestDriveSelection.CourseKind.PineRidge ? TestDriveSelection.ChallengeKind.PineNight : freeRideCourse == TestDriveSelection.CourseKind.HarborStreet ? TestDriveSelection.ChallengeKind.HarborNight : freeRideCourse == TestDriveSelection.CourseKind.HighlandClimb ? TestDriveSelection.ChallengeKind.HighlandNight : TestDriveSelection.ChallengeKind.NightLap, freeRideCourse); }
