@@ -204,7 +204,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     {
         if (State == Phase.Countdown && vehicle != null)
         {
-            if (vehicle.ResetCount != resetCount) Fail("Reset used. Try again.");
+            if (vehicle.ResetCount != resetCount) Fail("Vehicle reset ended the attempt.");
             else if (Time.timeAsDouble >= countdownEnd)
             {
                 vehicle.SetChallengeStopped(false);
@@ -243,12 +243,12 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
                 if (wheel.GetGroundHit(out var hit)) ReportBarrierContact(hit.collider);
         }
         if (State != Phase.Armed && State != Phase.Running) return;
-        if (!IsAvailable) { Fail("Attempt ended. Try again."); return; }
-        if (vehicle.ResetCount != resetCount) { Fail("Reset used. Try again."); return; }
+        if (!IsAvailable) { Fail("Challenge became unavailable."); return; }
+        if (vehicle.ResetCount != resetCount) { Fail("Vehicle reset ended the attempt."); return; }
         Vector3 position = body.position;
         // Reject warps while allowing the maximum normal speed and physics jitter.
         float allowedStep = Mathf.Max(5f, body.linearVelocity.magnitude * Time.fixedDeltaTime * 2f + 1f);
-        if (Vector3.Distance(position, previousPosition) > allowedStep) { Fail("Position changed. Try again."); return; }
+        if (Vector3.Distance(position, previousPosition) > allowedStep) { Fail("Vehicle position changed unexpectedly."); return; }
         float before = Vector3.Dot(previousPosition - startLine.position, startLine.forward);
         float after = Vector3.Dot(position - startLine.position, startLine.forward);
         bool crossed = before < 0f && after >= 0f
@@ -294,7 +294,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         if (IsTrail || !isActiveAndEnabled || !IsAvailable || surface == null) return;
         if (State != Phase.Armed && State != Phase.Running) return;
         if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
-            Fail("Barrier hit. Try again.");
+            Fail("Hit a barrier.");
     }
 
     private void OnDestroy()

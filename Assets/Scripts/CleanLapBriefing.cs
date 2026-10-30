@@ -89,7 +89,7 @@ public class CleanLapBriefing : MonoBehaviour
         bool success = finished.State == TestDriveCleanLapChallenge.Phase.Finished;
         resultHeading.text = success ? (finished.IsNightLap ? "NIGHT LAP COMPLETE!" : finished.IsTrail ? "TRAIL COMPLETE!" : "LAP COMPLETE!") : "CHALLENGE FAILED";
         resultHeading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
-        resultSummary.text = success ? finished.IsTrail ? "8 / 8 TRAIL GATES" : finished.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : finished.LastMedal.ToString().ToUpperInvariant() + " MEDAL" : "ATTEMPT ENDED";
+        resultSummary.text = success ? finished.IsTrail ? "8 / 8 TRAIL GATES" : finished.LastMedal == TestDriveCleanLapChallenge.Medal.None ? "NO MEDAL" : finished.LastMedal.ToString().ToUpperInvariant() + " MEDAL" : "";
         resultTime.text = TestDriveCleanLapView.FormatTime(finished.ElapsedSeconds);
         resultTime.fontStyle = FontStyles.Bold;
         resultReason.text = success ? finished.Message.Contains("New best") ? "New personal best!" : finished.IsNightLap ? "Clean night lap complete." : finished.IsTrail ? "Dirt loop complete." : "Clean lap complete." : finished.Message;

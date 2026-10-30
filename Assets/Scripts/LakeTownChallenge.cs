@@ -188,8 +188,8 @@ public class LakeTownChallenge : MonoBehaviour
         if (!running || vehicle == null) return;
         elapsed += Time.deltaTime;
         UpdateTimer();
-        if (parking && (harbor || mountain) && elapsed >= ParkingTimeLimit) { elapsed = ParkingTimeLimit; UpdateTimer(); End(false, "Time limit reached. Try again."); return; }
-        if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
+        if (parking && (harbor || mountain) && elapsed >= ParkingTimeLimit) { elapsed = ParkingTimeLimit; UpdateTimer(); End(false, "Time ran out."); return; }
+        if (vehicle.ResetCount != resetCount) { End(false, "Vehicle reset ended the attempt."); return; }
         Vector3 pos = body.position;
         if (parking)
         {
@@ -207,9 +207,9 @@ public class LakeTownChallenge : MonoBehaviour
     private void FixedUpdate()
     {
         if (!running || parking || vehicle == null || body == null) return;
-        if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
+        if (vehicle.ResetCount != resetCount) { End(false, "Vehicle reset ended the attempt."); return; }
         Vector3 position = body.position;
-        if (!ascent && !explorer && (mountain || pine || harbor || highland) && !OnMountainRoad(position)) { End(false, "Left the road. Try again."); return; }
+        if (!ascent && !explorer && (mountain || pine || harbor || highland) && !OnMountainRoad(position)) { End(false, "Left the road."); return; }
         if (next < gates.Length && CrossedGate(gates[next], previousPosition, position, gateGroundTolerance))
         {
             if (gateAudio != null && gatePassSound != null) gateAudio.PlayOneShot(gatePassSound);
@@ -347,9 +347,9 @@ public class LakeTownChallenge : MonoBehaviour
     private void MountainContact(Collider surface)
     {
         if (!running || surface == null) return;
-        if (mountain && (surface.name == "Left safety rail" || surface.name == "Right safety rail")) End(false, "Safety rail hit. Try again.");
-        else if (highland && surface.name == "Desert perimeter boundary") End(false, "Barrier hit. Try again.");
-        else if (harbor && (surface.name == "Left city safety wall" || surface.name == "Right city safety wall" || surface.name == "Seaside covered tunnel")) End(false, "Wall hit. Try again.");
+        if (mountain && (surface.name == "Left safety rail" || surface.name == "Right safety rail")) End(false, "Hit a safety rail.");
+        else if (highland && surface.name == "Desert perimeter boundary") End(false, "Hit a barrier.");
+        else if (harbor && (surface.name == "Left city safety wall" || surface.name == "Right city safety wall" || surface.name == "Seaside covered tunnel")) End(false, "Hit a wall.");
     }
     private static bool CrossedGate(Gate gate, Vector3 previous, Vector3 current, float groundTolerance)
     {
@@ -501,7 +501,7 @@ public class LakeTownChallenge : MonoBehaviour
         running = countingDown = false; if (countdownAudio != null) countdownAudio.Stop(); if (countdownText != null) countdownText.gameObject.SetActive(false); if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         if (success) vehicle.SetChallengeCoasting();
         else { vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true); }
-        overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
+        overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE FAILED";
         if (success) ChallengeConfetti.Play(overlay.transform);
         heading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
         detail.text = message + $"\nTime: {elapsed:0.0} seconds";
