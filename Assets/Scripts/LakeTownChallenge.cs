@@ -27,6 +27,7 @@ public class LakeTownChallenge : MonoBehaviour
     [SerializeField] private AudioClip gatePassSound;
     [SerializeField] private AudioClip ascentGateSound;
     [SerializeField, Range(4, 16)] private int ascentGateCount = 8;
+    [SerializeField, Range(4, 16)] private int explorerGateCount = 8;
     [System.Serializable]
     private class ParkingSpot
     {
@@ -77,7 +78,7 @@ public class LakeTownChallenge : MonoBehaviour
     private RectTransform timerPanel;
     private RectTransform challengePanel;
     private Button start, retry, back;
-    private bool running, countingDown, parking, mountain, pine, harbor, highland, ascent;
+    private bool running, countingDown, parking, mountain, pine, harbor, highland, ascent, explorer;
     private double countdownEnd, goUntil;
     private AudioSource countdownAudio;
     private int lastCountdown;
@@ -118,7 +119,8 @@ public class LakeTownChallenge : MonoBehaviour
         harbor = TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet;
         highland = TestDriveSelection.Course == TestDriveSelection.CourseKind.HighlandClimb;
         ascent = TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HighlandAscent;
-        if (ascent) { BuildAscentRoute(); gateAudio = GetComponent<AudioSource>(); gatePassSound = ascentGateSound; }
+        explorer = TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.PineExplorer;
+        if (ascent || explorer) { if (ascent) BuildAscentRoute(); else BuildExplorerRoute(); gateAudio = GetComponent<AudioSource>(); gatePassSound = ascentGateSound; }
         else if (!parking && (mountain || pine || harbor || highland)) { BuildMountainRoute(); if (mountain || harbor || highland) vehicle.ColliderContact += MountainContact; }
         vehicle.SetChallengeStopped(true);
         vehicle.SetChallengeInputLocked(true);
@@ -141,9 +143,9 @@ public class LakeTownChallenge : MonoBehaviour
     {
         canvasObject.SetActive(true); overlay.SetActive(true);
         heading.color = new Color(.98f, .77f, .25f);
-        heading.text = parking ? (harbor ? "DOCKSIDE PARKING" : mountain ? "PRECISION STOP" : "PARKING CHALLENGE") : ascent ? "SUMMIT ASCENT" : highland ? (TestDriveSelection.IsNight ? "HIGHLAND NIGHT LAP" : "HIGHLAND DAY LAP") : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
+        heading.text = parking ? (harbor ? "DOCKSIDE PARKING" : mountain ? "PRECISION STOP" : "PARKING CHALLENGE") : ascent ? "SUMMIT ASCENT" : explorer ? "TRAIL EXPLORER" : highland ? (TestDriveSelection.IsNight ? "HIGHLAND NIGHT LAP" : "HIGHLAND DAY LAP") : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
         detail.text = parking ? (harbor ? $"Find the gold bay and park within {harborParkingTimeLimit:0} seconds.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : mountain ? $"Find the summit bay and stop within {mountainStopTimeLimit:0} seconds.\nHold inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : $"Explore Lake Town and find the gold parking bay.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt.")
-            : ascent ? "Follow the numbered gates to the summit.\nYou may return to the trail if you leave it. Resetting ends the attempt." : highland ? "Complete one lap through the numbered gates.\nStay on the trail and avoid barriers. Resetting ends the attempt." : harbor ? "Complete one lap through the numbered gates.\nStay on the street and avoid walls. Resetting ends the attempt." : pine ? "Complete one lap through the numbered gates.\nStay on the trail. Resetting ends the attempt." : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
+            : ascent ? "Follow the numbered gates to the summit.\nYou may return to the trail if you leave it. Resetting ends the attempt." : explorer ? "Follow the numbered gates through the forest to the creek.\nYou may return to the trail if you leave it. Resetting ends the attempt." : highland ? "Complete one lap through the numbered gates.\nStay on the trail and avoid barriers. Resetting ends the attempt." : harbor ? "Complete one lap through the numbered gates.\nStay on the street and avoid walls. Resetting ends the attempt." : pine ? "Complete one lap through the numbered gates.\nStay on the trail. Resetting ends the attempt." : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
         start.gameObject.SetActive(true); retry.gameObject.SetActive(false);
         back.gameObject.SetActive(true); hud.text = "";
     }
@@ -207,16 +209,50 @@ public class LakeTownChallenge : MonoBehaviour
         if (!running || parking || vehicle == null || body == null) return;
         if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
         Vector3 position = body.position;
-        if (!ascent && (mountain || pine || harbor || highland) && !OnMountainRoad(position)) { End(false, "Left the road. Try again."); return; }
+        if (!ascent && !explorer && (mountain || pine || harbor || highland) && !OnMountainRoad(position)) { End(false, "Left the road. Try again."); return; }
         if (next < gates.Length && CrossedGate(gates[next], previousPosition, position, gateGroundTolerance))
         {
             if (gateAudio != null && gatePassSound != null) gateAudio.PlayOneShot(gatePassSound);
             next++;
-            if (next == gates.Length) End(true, ascent ? "Summit reached!" : highland ? "Highland lap complete!" : harbor ? "Harbor lap complete!" : pine ? "Pine Ridge lap complete!" : mountain ? "Mountain lap complete!" : "All gates passed!");
+            if (next == gates.Length) End(true, ascent ? "Summit reached!" : explorer ? "Creek trail complete!" : highland ? "Highland lap complete!" : harbor ? "Harbor lap complete!" : pine ? "Pine Ridge lap complete!" : mountain ? "Mountain lap complete!" : "All gates passed!");
             else RefreshGates();
         }
         previousPosition = position;
     }
+    private void BuildExplorerRoute()
+    {
+        var points = new System.Collections.Generic.List<Vector3>();
+        float width = 0f;
+        foreach (string name in new[] { "Packed dirt trail 0", "Shallow creek crossing" })
+        {
+            var road = GameObject.Find(name);
+            var filter = road != null ? road.GetComponent<MeshFilter>() : null;
+            var mesh = CleanLapCircuitBarrier.SourceMesh(filter);
+            var vertices = mesh.vertices;
+            if (vertices.Length < 4 || vertices.Length % 2 != 0) throw new System.InvalidOperationException("Invalid Pine Ridge trail geometry: " + name);
+            if (points.Count == 0) width = Vector3.Distance(filter.transform.TransformPoint(vertices[0]), filter.transform.TransformPoint(vertices[1]));
+            for (int i = 0; i < vertices.Length / 2 - 1; i++)
+                points.Add(filter.transform.TransformPoint((vertices[2*i] + vertices[2*i+1]) * .5f));
+        }
+        int nearest = 0; float best = float.PositiveInfinity;
+        for (int i = 0; i < points.Count; i++)
+        {
+            float distance = (points[i] - vehicle.transform.position).sqrMagnitude;
+            if (distance < best) { best = distance; nearest = i; }
+        }
+        int end = points.Count - 1;
+        if (end <= nearest + 8) throw new System.InvalidOperationException("Pine Ridge creek is not ahead of the spawn.");
+        int gateCount = Mathf.Clamp(explorerGateCount, 4, 16);
+        gates = new Gate[gateCount];
+        for (int i = 0; i < gateCount; i++)
+        {
+            int index = nearest + (i + 1) * (end - nearest) / gateCount;
+            Vector3 direction = points[Mathf.Min(index + 1, end)] - points[Mathf.Max(index - 1, 0)];
+            direction.y = 0;
+            gates[i] = new Gate(points[index], Quaternion.LookRotation(direction).eulerAngles.y) { openingWidth = width + 1f, openingHeight = 6f };
+        }
+    }
+
     private void BuildAscentRoute()
     {
         var road = GameObject.Find("Packed dirt trail 0");

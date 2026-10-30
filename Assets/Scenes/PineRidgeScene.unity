@@ -6999,6 +6999,8 @@ MonoBehaviour:
   gateGroundTolerance: 2
   gateAudio: {fileID: 0}
   gatePassSound: {fileID: 0}
+  ascentGateSound: {fileID: 8300000, guid: c0edb2705c93e4dae934a1e5baa7de76, type: 3}
+  explorerGateCount: 8
   parkingSpots:
   - position: {x: -160, y: 0, z: 65}
     yaw: 83.7
