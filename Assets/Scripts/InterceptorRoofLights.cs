@@ -17,10 +17,9 @@ public class InterceptorRoofLights : MonoBehaviour
 
     private void OnEnable()
     {
-        // Keep the flashing lenses, but prevent their colored spill from making
-        // Harbor Street road and scenery pulse with the beacons.
-        allowSpill = GetComponentInParent<TestDriveMovement>() == null ||
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "HarborStreetScene";
+        // Keep the lenses flashing while preventing their lights from causing
+        // nearby scenery to pulse in any driving scene. The showroom keeps its spill.
+        allowSpill = GetComponentInParent<TestDriveMovement>() == null;
         startedAt = Time.time;
         displayedState = -1;
         Update();
