@@ -19,7 +19,8 @@ public class TestDriveCameraFollow : MonoBehaviour
     private float chaseFieldOfView, chaseNearClip;
     private float framingScale = 1f;
     private bool canSwitchView = true;
-    public bool IsDriverView { get; private set; }
+    private int viewMode; // 0: chase, 1: in-car, 2: unobstructed in-car
+    public bool IsDriverView => viewMode != 0;
 
     private void Initialize()
     {
@@ -33,7 +34,7 @@ public class TestDriveCameraFollow : MonoBehaviour
     public void ToggleView()
     {
         if (!canSwitchView || target == null || driverView == null) return;
-        IsDriverView = !IsDriverView;
+        viewMode = (viewMode + 1) % 3;
         if (buttonAudio != null && switchSound != null) buttonAudio.PlayOneShot(switchSound);
         RefreshView();
         SnapToTarget();
@@ -53,18 +54,18 @@ public class TestDriveCameraFollow : MonoBehaviour
             viewCamera.fieldOfView = IsDriverView ? driverFieldOfView : chaseFieldOfView;
             viewCamera.nearClipPlane = IsDriverView ? .03f : chaseNearClip;
         }
-        if (driverProfile != null) driverProfile.SetDriverView(IsDriverView);
+        if (driverProfile != null) driverProfile.SetView(IsDriverView, viewMode == 2);
         if (viewLabel != null) viewLabel.text = "CHANGE VIEW";
         if (viewButton != null) viewButton.interactable = canSwitchView && target != null && driverView != null;
     }
 
     public void SetTarget(Transform vehicle, float scale = 1f)
     {
-        if (driverProfile != null) driverProfile.SetDriverView(false);
+        if (driverProfile != null) driverProfile.SetView(false, false);
         target = vehicle;
         driverView = target != null ? target.Find("DriverView") : null;
         driverProfile = driverView != null ? driverView.GetComponent<TestDriveDriverView>() : null;
-        IsDriverView = false;
+        viewMode = 0;
         canSwitchView = target != null;
         framingScale = scale;
         RefreshView();
@@ -89,6 +90,16 @@ public class TestDriveCameraFollow : MonoBehaviour
         Vector3 localPosition = target.InverseTransformPoint(driverView.position);
         localPosition.x = 0f;
         transform.SetPositionAndRotation(target.TransformPoint(localPosition), driverView.rotation);
+    }
+
+    private void OnEnable()
+    {
+        if (target != null) RefreshView();
+    }
+
+    private void OnDisable()
+    {
+        if (driverProfile != null) driverProfile.SetView(false, false);
     }
 
     private void LateUpdate()
