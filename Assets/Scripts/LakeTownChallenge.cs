@@ -387,7 +387,8 @@ public class LakeTownChallenge : MonoBehaviour
     private void End(bool success, string message)
     {
         running = false; if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
-        vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true);
+        if (success) vehicle.SetChallengeCoasting();
+        else { vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true); }
         overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
         heading.color = success ? new Color(.98f, .77f, .25f) : new Color(1f, .35f, .4f);
         detail.text = message + $"\nTime: {elapsed:0.0} seconds";
