@@ -63,11 +63,14 @@ public class LakeTownChallenge : MonoBehaviour
     private Rigidbody body;
     private TestDriveSceneManager manager;
     private GameObject canvasObject, overlay, marker;
-    private TMP_Text heading, detail, hud, timer;
+    private TMP_Text heading, detail, hud, timer, countdownText;
     private RectTransform timerPanel;
     private RectTransform challengePanel;
     private Button start, retry, back;
-    private bool running, parking, mountain, pine, harbor, highland;
+    private bool running, countingDown, parking, mountain, pine, harbor, highland;
+    private double countdownEnd, goUntil;
+    private AudioSource countdownAudio;
+    private int lastCountdown;
     [Header("Highland Climb lap tuning")]
     [SerializeField, Range(4, 24)] private int highlandCheckpoints = 12;
     [SerializeField, Min(0)] private float highlandRoadTolerance = 3f;
@@ -134,15 +137,40 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void Begin()
     {
+        if (running || countingDown) return;
         overlay.SetActive(false); next = 0; elapsed = held = 0;
         vehicle.SetChallengeStopped(false); vehicle.ResetVehicle(); resetCount = vehicle.ResetCount;
-        vehicle.SetChallengeInputLocked(false); running = true;
-        previousPosition = body.position;
-        UpdateTimer();
-        if (parking) { SelectParkingSpot(); ShowMarker(); } else BuildGates();
+        vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true);
+        countingDown = true; countdownEnd = Time.timeAsDouble + 3.0; goUntil = 0; lastCountdown = 0;
+        hud.text = ""; UpdateTimer(); UpdateCountdown();
+    }
+    private void UpdateCountdown()
+    {
+        if (countdownText == null) return;
+        bool showGo = !countingDown && running && Time.timeAsDouble < goUntil;
+        countdownText.gameObject.SetActive(countingDown || showGo);
+        if (!countingDown && !showGo) return;
+        int number = countingDown ? Mathf.Clamp(Mathf.CeilToInt((float)(countdownEnd - Time.timeAsDouble)), 1, 3) : 0;
+        if (countingDown && number != lastCountdown)
+        {
+            lastCountdown = number;
+            if (countdownAudio != null && manager.CountdownTick != null) { countdownAudio.Stop(); countdownAudio.pitch = 1.5f; countdownAudio.PlayOneShot(manager.CountdownTick); }
+        }
+        countdownText.text = countingDown ? number.ToString() : "GO!";
+        countdownText.fontSize = countingDown ? 180 : 120;
+        countdownText.color = countingDown ? new Color(1f, .23f, .32f) : new Color(.55f, 1f, .65f);
     }
     private void Update()
     {
+        if (countingDown && vehicle != null && Time.timeAsDouble >= countdownEnd)
+        {
+            countingDown = false; running = true; goUntil = Time.timeAsDouble + .8;
+            if (countdownAudio != null && manager.CountdownStart != null) { countdownAudio.Stop(); countdownAudio.pitch = 1f; countdownAudio.PlayOneShot(manager.CountdownStart); }
+            vehicle.SetChallengeStopped(false); vehicle.SetChallengeInputLocked(false);
+            previousPosition = body.position;
+            if (parking) { SelectParkingSpot(); ShowMarker(); } else BuildGates();
+        }
+        UpdateCountdown();
         if (!running || vehicle == null) return;
         elapsed += Time.deltaTime;
         UpdateTimer();
@@ -389,7 +417,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     private void End(bool success, string message)
     {
-        running = false; if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
+        running = countingDown = false; if (countdownAudio != null) countdownAudio.Stop(); if (countdownText != null) countdownText.gameObject.SetActive(false); if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         if (success) vehicle.SetChallengeCoasting();
         else { vehicle.SetChallengeStopped(true); vehicle.SetChallengeInputLocked(true); }
         overlay.SetActive(true); heading.text = success ? "CHALLENGE COMPLETE" : "CHALLENGE ENDED";
@@ -400,7 +428,7 @@ public class LakeTownChallenge : MonoBehaviour
     }
     public void StopChallenge()
     {
-        running = false; if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
+        running = countingDown = false; if (countdownAudio != null) countdownAudio.Stop(); if (countdownText != null) countdownText.gameObject.SetActive(false); if (marker != null) { marker.SetActive(false); Destroy(marker); } if (gateRoot != null) { gateRoot.SetActive(false); Destroy(gateRoot); }
         if (canvasObject != null) canvasObject.SetActive(false);
     }
     private void OnDestroy()
@@ -435,6 +463,11 @@ public class LakeTownChallenge : MonoBehaviour
         timer.rectTransform.anchorMin = timer.rectTransform.anchorMax = new Vector2(.5f, 1);
         timer.rectTransform.pivot = new Vector2(.5f, 1); timer.rectTransform.anchoredPosition = new Vector2(0, -18);
         UpdateTimer();
+        countdownAudio = canvasObject.AddComponent<AudioSource>(); countdownAudio.playOnAwake = false; countdownAudio.spatialBlend = 0; countdownAudio.volume = .82f;
+        countdownText = Text("Challenge countdown", canvasObject.transform, 180, new Vector2(660, 280));
+        if (manager.ChallengePanelFont != null) countdownText.font = manager.ChallengePanelFont;
+        countdownText.fontStyle = FontStyles.Bold; countdownText.outlineColor = new Color(.025f, .08f, .10f, 1f); countdownText.outlineWidth = .2f;
+        countdownText.raycastTarget = false; countdownText.gameObject.SetActive(false);
         overlay = new GameObject("Briefing and result", typeof(RectTransform), typeof(Image)); overlay.transform.SetParent(canvasObject.transform, false);
         var cover = (RectTransform)overlay.transform; cover.anchorMin = Vector2.zero; cover.anchorMax = Vector2.one; cover.offsetMin = cover.offsetMax = Vector2.zero; overlay.GetComponent<Image>().color = new Color(0, 0, 0, .76f);
         var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image)); panel.transform.SetParent(overlay.transform, false);
@@ -458,6 +491,7 @@ public class LakeTownChallenge : MonoBehaviour
         Vector2 max = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMax / Screen.width), Mathf.Clamp01(safe.yMax / Screen.height)));
         challengePanel.localScale = Vector3.one * Mathf.Min(1f, (max.x - min.x - 40f) / 1050f, (max.y - min.y - 40f) / 650f);
         challengePanel.anchoredPosition = (min + max) * .5f;
+        if (countdownText != null) countdownText.rectTransform.anchoredPosition = (min + max) * .5f;
         if (timerPanel != null) timerPanel.anchoredPosition = new Vector2(max.x - root.rect.xMax - 36f, max.y - root.rect.yMax - 36f);
     }
     private void UpdateTimer()

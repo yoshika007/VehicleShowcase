@@ -185,6 +185,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
         vehicle.SetChallengeStopped(false);
         vehicle.ResetVehicle();
         resetCount = vehicle.ResetCount;
+        vehicle.SetChallengeStopped(true);
         vehicle.SetChallengeInputLocked(true);
         State = Phase.Countdown;
         countdownStartedAt = Time.timeAsDouble;
@@ -206,6 +207,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
             if (vehicle.ResetCount != resetCount) Fail("Reset used. Try again.");
             else if (Time.timeAsDouble >= countdownEnd)
             {
+                vehicle.SetChallengeStopped(false);
                 vehicle.SetChallengeInputLocked(false);
                 State = Phase.Armed;
                 previousPosition = body.position;
@@ -235,7 +237,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (IsAvailable && (State == Phase.Countdown || State == Phase.Armed || State == Phase.Running))
+        if (IsAvailable && (State == Phase.Armed || State == Phase.Running))
         {
             foreach (var wheel in wheels)
                 if (wheel.GetGroundHit(out var hit)) ReportBarrierContact(hit.collider);
@@ -290,7 +292,7 @@ public class TestDriveCleanLapChallenge : MonoBehaviour
     private void ReportBarrierContact(Collider surface)
     {
         if (IsTrail || !isActiveAndEnabled || !IsAvailable || surface == null) return;
-        if (State != Phase.Countdown && State != Phase.Armed && State != Phase.Running) return;
+        if (State != Phase.Armed && State != Phase.Running) return;
         if (surface.GetComponentInParent<CleanLapCircuitBarrier>() != null)
             Fail("Barrier hit. Try again.");
     }

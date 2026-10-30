@@ -7,6 +7,9 @@ public class TestDriveSceneManager : MonoBehaviour
 {
     [SerializeField] private TMPro.TMP_FontAsset challengePanelFont;
     public TMPro.TMP_FontAsset ChallengePanelFont => challengePanelFont;
+    [SerializeField] private AudioClip countdownTick, countdownStart;
+    public AudioClip CountdownTick => countdownTick;
+    public AudioClip CountdownStart => countdownStart;
     [SerializeField] private TestDriveVehicleCatalog catalog;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private TestDriveCameraFollow followCamera;
