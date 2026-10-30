@@ -183,7 +183,19 @@ public class LakeTownChallenge : MonoBehaviour
             if (countdownAudio != null && manager.CountdownStart != null) { countdownAudio.Stop(); countdownAudio.pitch = 1f; countdownAudio.PlayOneShot(manager.CountdownStart); }
             vehicle.SetChallengeStopped(false); vehicle.SetChallengeInputLocked(false);
             previousPosition = body.position;
-            if (parking) { SelectParkingSpot(); ShowMarker(); } else BuildGates();
+            if (parking)
+            {
+                try { SelectParkingSpot(); ShowMarker(); }
+                catch (System.Exception ex)
+                {
+                    Debug.LogException(ex, this);
+                    running = false;
+                    if (marker != null) { marker.SetActive(false); Destroy(marker); marker = null; }
+                    ShowInitializationFailure(vehicle, manager);
+                    return;
+                }
+            }
+            else BuildGates();
         }
         UpdateCountdown();
         if (!running || vehicle == null) return;
@@ -451,8 +463,8 @@ public class LakeTownChallenge : MonoBehaviour
         marker = new GameObject("Lake Town challenge marker");
         marker.transform.position = selectedParkingCenter;
         marker.transform.rotation = Quaternion.Euler(0, selectedParkingYaw, 0);
-        var shader = Shader.Find("Universal Render Pipeline/Lit");
-        if (markerMaterial == null) { markerMaterial = new Material(shader); markerMaterial.color = new Color(1f, .7f, .06f); }
+        if (markerMaterial == null) markerMaterial = CreateParkingMaterial("ParkingBay");
+        if (beaconMaterial == null) beaconMaterial = CreateParkingMaterial("ParkingBeacon");
         if (parking)
         {
             Line(new Vector3(-parkingSize.x/2, .12f, 0), new Vector3(.18f, .1f, parkingSize.y));
@@ -463,9 +475,15 @@ public class LakeTownChallenge : MonoBehaviour
         }
 
     }
+    private static Material CreateParkingMaterial(string resourceName)
+    {
+        var source = Resources.Load<Material>(resourceName);
+        if (source == null || source.shader == null || !source.shader.isSupported)
+            throw new System.InvalidOperationException("Parking material unavailable or unsupported: " + resourceName);
+        return new Material(source);
+    }
     private void BuildBeacon()
     {
-        if (beaconMaterial == null) beaconMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
         var beacon = new GameObject("Parking beacon"); beacon.transform.SetParent(marker.transform, false);
         float middle = beaconBaseHeight + beaconHeight * .5f;
         beaconRenderers = new[] {
