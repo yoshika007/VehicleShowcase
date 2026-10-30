@@ -63,7 +63,8 @@ public class LakeTownChallenge : MonoBehaviour
     private Rigidbody body;
     private TestDriveSceneManager manager;
     private GameObject canvasObject, overlay, marker;
-    private TMP_Text heading, detail, hud;
+    private TMP_Text heading, detail, hud, timer;
+    private RectTransform timerPanel;
     private RectTransform challengePanel;
     private Button start, retry, back;
     private bool running, parking, mountain, pine, harbor, highland;
@@ -137,12 +138,14 @@ public class LakeTownChallenge : MonoBehaviour
         vehicle.SetChallengeStopped(false); vehicle.ResetVehicle(); resetCount = vehicle.ResetCount;
         vehicle.SetChallengeInputLocked(false); running = true;
         previousPosition = body.position;
+        UpdateTimer();
         if (parking) { SelectParkingSpot(); ShowMarker(); } else BuildGates();
     }
     private void Update()
     {
         if (!running || vehicle == null) return;
         elapsed += Time.deltaTime;
+        UpdateTimer();
         if (vehicle.ResetCount != resetCount) { End(false, "Reset used. Try again."); return; }
         Vector3 pos = body.position;
         if (parking)
@@ -156,7 +159,7 @@ public class LakeTownChallenge : MonoBehaviour
             hud.text = valid ? $"HOLD POSITION  {held:0.0} / {parkingHoldSeconds:0.0}s" : "FIND AND PARK IN THE GOLD BAY";
             if (held >= parkingHoldSeconds && valid) End(true, "Parking complete!");
         }
-        else hud.text = $"GATES PASSED {next} / {gates.Length}    •    NEXT {next + 1}    {elapsed:0.0}s";
+        else hud.text = $"GATES PASSED {next} / {gates.Length}    •    NEXT {next + 1}";
     }
     private void FixedUpdate()
     {
@@ -418,6 +421,20 @@ public class LakeTownChallenge : MonoBehaviour
         var scaler = canvasObject.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1920, 1080); scaler.matchWidthOrHeight = .5f;
         hud = Text("Status", canvasObject.transform, 34, new Vector2(900, 65));
         hud.rectTransform.anchorMin = hud.rectTransform.anchorMax = new Vector2(.5f, 1); hud.rectTransform.anchoredPosition = new Vector2(0, -70);
+        var timerObject = new GameObject("Challenge timer", typeof(RectTransform), typeof(Image), typeof(Outline));
+        timerObject.transform.SetParent(canvasObject.transform, false);
+        timerPanel = (RectTransform)timerObject.transform;
+        timerPanel.anchorMin = timerPanel.anchorMax = timerPanel.pivot = new Vector2(1, 1);
+        timerPanel.sizeDelta = new Vector2(380, 124);
+        var timerBackground = timerObject.GetComponent<Image>();
+        timerBackground.color = new Color(.025f, .06f, .075f, .98f); timerBackground.raycastTarget = false;
+        var outline = timerObject.GetComponent<Outline>(); outline.effectColor = new Color(.98f, .77f, .25f, .65f); outline.effectDistance = new Vector2(1, -1);
+        timer = Text("Clock", timerPanel, 64, new Vector2(340, 88));
+        if (manager.ChallengePanelFont != null) timer.font = manager.ChallengePanelFont;
+        timer.fontStyle = FontStyles.Bold; timer.raycastTarget = false;
+        timer.rectTransform.anchorMin = timer.rectTransform.anchorMax = new Vector2(.5f, 1);
+        timer.rectTransform.pivot = new Vector2(.5f, 1); timer.rectTransform.anchoredPosition = new Vector2(0, -18);
+        UpdateTimer();
         overlay = new GameObject("Briefing and result", typeof(RectTransform), typeof(Image)); overlay.transform.SetParent(canvasObject.transform, false);
         var cover = (RectTransform)overlay.transform; cover.anchorMin = Vector2.zero; cover.anchorMax = Vector2.one; cover.offsetMin = cover.offsetMax = Vector2.zero; overlay.GetComponent<Image>().color = new Color(0, 0, 0, .76f);
         var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image)); panel.transform.SetParent(overlay.transform, false);
@@ -441,6 +458,16 @@ public class LakeTownChallenge : MonoBehaviour
         Vector2 max = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMax / Screen.width), Mathf.Clamp01(safe.yMax / Screen.height)));
         challengePanel.localScale = Vector3.one * Mathf.Min(1f, (max.x - min.x - 40f) / 1050f, (max.y - min.y - 40f) / 650f);
         challengePanel.anchoredPosition = (min + max) * .5f;
+        if (timerPanel != null) timerPanel.anchoredPosition = new Vector2(max.x - root.rect.xMax - 36f, max.y - root.rect.yMax - 36f);
+    }
+    private void UpdateTimer()
+    {
+        if (timer == null) return;
+        string time = TestDriveCleanLapView.FormatTime(elapsed);
+        timer.fontFeatures.Clear(); timer.alignment = TextAlignmentOptions.Left;
+        timer.margin = new Vector4(Mathf.Max(0, (timer.rectTransform.rect.width - 64f * .58f * time.Length) * .5f), 0, 0, 0);
+        timer.text = "<mspace=0.58em>" + time + "</mspace>";
+        timer.color = running ? new Color(.64f, 1f, .88f) : Color.white;
     }
     private TMP_Text Text(string name, Transform parent, float size, Vector2 dimensions)
     {
