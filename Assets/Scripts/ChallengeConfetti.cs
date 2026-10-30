@@ -4,8 +4,8 @@ using UnityEngine.UI;
 // One non-interactive UI mesh, drawn behind the result panel and removed on close.
 public sealed class ChallengeConfetti : MaskableGraphic
 {
-    private const int PieceCount = 36;
-    private const float Duration = 2.4f;
+    private const int PieceCount = 96;
+    private const float Duration = 3.8f;
     private float elapsed;
     private static readonly Color32[] Colors = {
         new Color32(255, 196, 67, 235), new Color32(110, 220, 201, 235),
@@ -45,11 +45,11 @@ public sealed class ChallengeConfetti : MaskableGraphic
         {
             // Each side remains clear of the center result panel and its controls.
             float side = i % 2 == 0 ? -1f : 1f;
-            float lane = .32f + .15f * ((i * 37 % 101) / 100f);
+            float lane = .29f + .19f * ((i * 37 % 101) / 100f);
             float stagger = (i * 53 % 101) / 100f;
-            float x = side * r.width * lane + Mathf.Sin(elapsed * 2f + i) * 12f;
-            float y = r.height * (.60f + stagger * .40f) - elapsed * r.height * (.48f + .16f * stagger);
-            float size = 7f + (i % 4) * 2f;
+            float x = side * r.width * lane + Mathf.Sin(elapsed * 2f + i) * 20f;
+            float y = r.height * (.55f + stagger * .60f) - elapsed * r.height * (.32f + .13f * stagger);
+            float size = 10f + (i % 4) * 2.5f;
             float angle = elapsed * (1.6f + (i % 3) * .5f) + i;
             Vector2 dx = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * size;
             Vector2 dy = new Vector2(-dx.y, dx.x) * .55f;
