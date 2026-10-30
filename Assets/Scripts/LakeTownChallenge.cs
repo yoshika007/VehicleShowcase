@@ -146,6 +146,7 @@ public class LakeTownChallenge : MonoBehaviour
         heading.text = parking ? (harbor ? "DOCKSIDE PARKING" : mountain ? "PRECISION STOP" : "PARKING CHALLENGE") : ascent ? "SUMMIT ASCENT" : explorer ? "TRAIL EXPLORER" : highland ? (TestDriveSelection.IsNight ? "HIGHLAND NIGHT LAP" : "HIGHLAND DAY LAP") : harbor ? (TestDriveSelection.IsNight ? "HARBOR NIGHT LAP" : "HARBOR DAY LAP") : pine ? (TestDriveSelection.IsNight ? "PINE RIDGE NIGHT LAP" : "PINE RIDGE DAY LAP") : mountain ? (TestDriveSelection.IsNight ? "MOUNTAIN NIGHT LAP" : "MOUNTAIN DAY LAP") : TestDriveSelection.IsNight ? "NIGHT CHECKPOINTS" : "DAY CHECKPOINTS";
         detail.text = parking ? (harbor ? $"Find the gold bay and park within {harborParkingTimeLimit:0} seconds.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : mountain ? $"Find the summit bay and stop within {mountainStopTimeLimit:0} seconds.\nHold inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt." : $"Explore Lake Town and find the gold parking bay.\nStop inside, aligned with the road, for {parkingHoldSeconds:0.#} seconds. Resetting ends the attempt.")
             : ascent ? "Follow the numbered gates to the summit.\nYou may return to the trail if you leave it. Resetting ends the attempt." : explorer ? "Follow the numbered gates through the forest to the creek.\nYou may return to the trail if you leave it. Resetting ends the attempt." : highland ? "Complete one lap through the numbered gates.\nStay on the trail and avoid barriers. Resetting ends the attempt." : harbor ? "Complete one lap through the numbered gates.\nStay on the street and avoid walls. Resetting ends the attempt." : pine ? "Complete one lap through the numbered gates.\nStay on the trail. Resetting ends the attempt." : mountain ? "Complete one lap through the numbered gates.\nStay on the road and avoid the safety rails. Resetting ends the attempt." : "Drive through the numbered gates in order, following the gold gate.\nCross each gate in the direction of travel. Resetting ends the attempt.";
+        detail.text = detail.text.Replace("\n", " ").Replace(" Resetting ends the attempt.", "\nResetting ends the attempt.");
         start.gameObject.SetActive(true); retry.gameObject.SetActive(false);
         back.gameObject.SetActive(true); hud.text = "";
     }
@@ -570,7 +571,12 @@ public class LakeTownChallenge : MonoBehaviour
         var safe = Screen.safeArea;
         Vector2 min = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMin / Screen.width), Mathf.Clamp01(safe.yMin / Screen.height)));
         Vector2 max = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMax / Screen.width), Mathf.Clamp01(safe.yMax / Screen.height)));
-        challengePanel.localScale = Vector3.one * Mathf.Min(1f, (max.x - min.x - 40f) / 1050f, (max.y - min.y - 40f) / 650f);
+        float scale = Mathf.Min(1f, (max.x - min.x - 40f) / 1050f, (max.y - min.y - 40f) / 650f);
+        float panelWidth = Mathf.Clamp((max.x - min.x - 40f) / Mathf.Max(.01f, scale), 1050f, 1500f);
+        challengePanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelWidth);
+        heading.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelWidth - 80f);
+        detail.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, panelWidth - 80f);
+        challengePanel.localScale = Vector3.one * scale;
         challengePanel.anchoredPosition = (min + max) * .5f;
         if (countdownText != null) countdownText.rectTransform.anchoredPosition = (min + max) * .5f;
         if (timerPanel != null) timerPanel.anchoredPosition = new Vector2(max.x - root.rect.xMax - 36f, max.y - root.rect.yMax - 36f);

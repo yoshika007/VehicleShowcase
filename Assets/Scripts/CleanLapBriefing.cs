@@ -16,6 +16,7 @@ public class CleanLapBriefing : MonoBehaviour
     private GameObject resultOverlay;
     private RectTransform resultPanel;
     private TMP_Text resultHeading, resultSummary, resultTime, resultReason;
+    private TMP_Text[] briefingTexts;
 
     public void Initialize(TestDriveCleanLapChallenge target, TestDriveMovement car, TestDriveSceneManager manager)
     {
@@ -47,6 +48,7 @@ public class CleanLapBriefing : MonoBehaviour
         Text("Rules", panel,
             challenge.IsNightLap ? "Cross START / FINISH after the countdown.\nFollow the circuit in the correct direction.\nUse your headlights and the roadside lights.\nBarrier contact or resetting ends the attempt." : challenge.IsTrail ? "Cross START / FINISH after the countdown.\nFollow the main dirt loop through gates 1–8.\nTake care over hills and gravel turns.\nMissed a gate? Go back. Reset ends the run." : "After the countdown, cross START / FINISH.\nFollow the circuit in the correct direction.\nCurbs and runoff are OK.\nBarrier contact or resetting ends the attempt.", 42, 190, 300, font);
         Text("Medals", panel, challenge.IsTrail ? "The next gate is gold.\nSet your fastest time. No time limit." : $"GOLD  ≤ {challenge.GoldSeconds:0}s     SILVER  ≤ {challenge.SilverSeconds:0}s\nBRONZE  ≤ {challenge.BronzeSeconds:0}s", 40, 500, 115, font);
+        briefingTexts = panel.GetComponentsInChildren<TMP_Text>(true);
         var start = MakeButton("StartChallenge", panel, "START CHALLENGE", new Vector2(460, 72), font, Continue);
         ((RectTransform)start.transform).anchoredPosition = new Vector2(0, -270);
         startLabel = start.GetComponentInChildren<TMP_Text>();
@@ -139,11 +141,23 @@ public class CleanLapBriefing : MonoBehaviour
         var safe = Screen.safeArea;
         Vector2 min = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMin / Screen.width), Mathf.Clamp01(safe.yMin / Screen.height)));
         Vector2 max = root.rect.min + Vector2.Scale(root.rect.size, new Vector2(Mathf.Clamp01(safe.xMax / Screen.width), Mathf.Clamp01(safe.yMax / Screen.height)));
-        panel.localScale = Vector3.one * Mathf.Min(1, (max.x-min.x-40)/1100, (max.y-min.y-40)/780);
+        float scale = Mathf.Min(1, (max.x-min.x-40)/1100, (max.y-min.y-40)/780);
+        float width = Mathf.Clamp((max.x-min.x-40)/Mathf.Max(.01f, scale), 1100, 1500);
+        panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        foreach (var text in briefingTexts)
+            text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width - 60);
+        panel.localScale = Vector3.one * scale;
         panel.anchoredPosition = (min+max)*.5f;
         if (resultPanel != null)
         {
-            resultPanel.localScale = Vector3.one * Mathf.Min(1, (max.x-min.x-40)/760, (max.y-min.y-40)/560);
+            float resultScale = Mathf.Min(1, (max.x-min.x-40)/760, (max.y-min.y-40)/560);
+            float resultWidth = Mathf.Clamp((max.x-min.x-40)/Mathf.Max(.01f, resultScale), 760, 1100);
+            resultPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resultWidth);
+            resultHeading.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resultWidth - 60);
+            resultSummary.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resultWidth - 60);
+            resultTime.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resultWidth - 60);
+            resultReason.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resultWidth - 60);
+            resultPanel.localScale = Vector3.one * resultScale;
             resultPanel.anchoredPosition = (min+max)*.5f;
         }
         if (!helpPlacedByHud)
