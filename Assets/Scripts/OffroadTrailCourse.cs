@@ -53,6 +53,7 @@ public class OffroadTrailCourse : MonoBehaviour
         gates.transform.SetParent(transform, false);
         gates.Initialize(positions, forwards, HalfWidth, "TRAIL");
         gates.ShowStart();
+        TrailLineMarking.Create(transform, StartLine.position, StartLine.forward, HalfWidth * 2f, "Trail start and finish");
     }
     public Vector3 Sample(float distance)
     {
@@ -70,4 +71,42 @@ public class OffroadTrailCourse : MonoBehaviour
     public bool Crossed(int gate, Vector3 before, Vector3 after) => gates.Crossed(gate, before, after);
     public void ShowStart() => gates.ShowStart();
     public void ShowNext(int next) => gates.ShowNext(next);
+}
+
+// Small non-colliding ground stripes mark a route plane without changing its rules.
+public class TrailLineMarking : MonoBehaviour
+{
+    private Material material;
+    public static void Create(Transform parent, Vector3 center, Vector3 forward, float width, string label)
+    {
+        var source = Resources.Load<Material>("ParkingBay");
+        if (source == null || source.shader == null) return;
+        var root = new GameObject(label).AddComponent<TrailLineMarking>();
+        root.transform.SetParent(parent, false);
+        root.material = new Material(source); root.material.color = Color.white;
+        forward.y = 0f;
+        if (forward.sqrMagnitude < .001f) forward = Vector3.forward;
+        var rotation = Quaternion.LookRotation(forward.normalized, Vector3.up);
+        var right = rotation * Vector3.right;
+        int count = Mathf.Max(2, Mathf.FloorToInt(width / 1.2f));
+        for (int i = 0; i < count; i++)
+        {
+            var sample = center + right * ((i - (count - 1) * .5f) * (width / count));
+            RaycastHit? ground = null;
+            foreach (var hit in Physics.RaycastAll(sample + Vector3.up * 6f, Vector3.down, 12f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                string n = hit.collider.name;
+                if (!(n.Contains("trail") || n.Contains("Trail") || n.Contains("Dirt Hill") || n.Contains("Gravel Corner") || n.Contains("creek") || n == "Harbor Street asphalt")) continue;
+                if (!ground.HasValue || hit.distance < ground.Value.distance) ground = hit;
+            }
+            if (!ground.HasValue) continue;
+            var stripe = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            stripe.transform.SetParent(root.transform, false);
+            stripe.transform.SetPositionAndRotation(ground.Value.point + ground.Value.normal * .035f, Quaternion.FromToRotation(Vector3.up, ground.Value.normal) * rotation);
+            stripe.transform.localScale = new Vector3(width / count * .72f, .04f, .55f);
+            stripe.GetComponent<Renderer>().sharedMaterial = root.material;
+            Destroy(stripe.GetComponent<Collider>());
+        }
+    }
+    private void OnDestroy() { if (material != null) Destroy(material); }
 }

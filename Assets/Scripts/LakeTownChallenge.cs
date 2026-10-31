@@ -88,6 +88,7 @@ public class LakeTownChallenge : MonoBehaviour
     [Header("Harbor Street lap tuning")]
     [SerializeField, Range(4, 24)] private int harborCheckpoints = 12;
     [SerializeField, Min(0)] private float harborRoadTolerance = 2f;
+    [SerializeField] private Vector3 harborLapStart = new Vector3(-116f, 0f, -170f);
     [Header("Pine Ridge lap tuning")]
     [SerializeField, Range(4, 24)] private int pineCheckpoints = 12;
     [SerializeField, Min(0)] private float pineRoadTolerance = 3f;
@@ -122,6 +123,12 @@ public class LakeTownChallenge : MonoBehaviour
         explorer = TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.PineExplorer;
         if (ascent || explorer) { if (ascent) BuildAscentRoute(); else BuildExplorerRoute(); gateAudio = GetComponent<AudioSource>(); gatePassSound = ascentGateSound; }
         else if (!parking && (mountain || pine || harbor || highland)) { BuildMountainRoute(); if (mountain || harbor || highland) vehicle.ColliderContact += MountainContact; }
+        if (!parking && (pine || highland) && gates != null && gates.Length > 0)
+        {
+            if (ascent || explorer)
+                TrailLineMarking.Create(transform, vehicle.transform.position + vehicle.transform.forward * 5f, vehicle.transform.forward, gates[0].openingWidth, "Trail start line");
+            TrailLineMarking.Create(transform, gates[gates.Length - 1].position, Quaternion.Euler(0f, gates[gates.Length - 1].yaw, 0f) * Vector3.forward, gates[gates.Length - 1].openingWidth, ascent || explorer ? "Trail finish line" : "Trail start and finish line");
+        }
         vehicle.SetChallengeStopped(true);
         vehicle.SetChallengeInputLocked(true);
         BuildUI();
@@ -311,10 +318,20 @@ public class LakeTownChallenge : MonoBehaviour
             for (int i = 0; i < segmentCount; i++) points.Add(filter.transform.TransformPoint((vertices[2*i] + vertices[2*i+1]) * .5f));
         }
         mountainRoute = points.ToArray();
+        if (harbor) System.Array.Reverse(mountainRoute);
         int count = mountainRoute.Length;
         int nearest = 0; float best = float.PositiveInfinity;
         for (int i = 0; i < count; i++) { float d = (mountainRoute[i] - vehicle.transform.position).sqrMagnitude; if (d < best) { best = d; nearest = i; } }
         int start = (nearest + ((pine || highland) ? 3 : 6)) % count;
+        if (harbor)
+        {
+            float closest = float.PositiveInfinity;
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 delta = mountainRoute[i] - harborLapStart; delta.y = 0f;
+                if (delta.sqrMagnitude < closest) { closest = delta.sqrMagnitude; start = i; }
+            }
+        }
         int checkpointCount = Mathf.Clamp(highland ? highlandCheckpoints : harbor ? harborCheckpoints : pine ? pineCheckpoints : mountainCheckpoints, 4, 24);
         var lapGates = new System.Collections.Generic.List<Gate>();
         for (int i = 0; i <= checkpointCount; i++)

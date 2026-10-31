@@ -903,7 +903,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 34121630}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -170}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -912,7 +912,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -110.55, y: 6}
+  m_AnchoredPosition: {x: -109.45, y: 6}
   m_SizeDelta: {x: 14, y: 1.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &34121632
@@ -13548,7 +13548,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828815183}
-  m_Mesh: {fileID: 4300000, guid: 2908c093b99214b9a8f5be568d46fb80, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 519abc92900a54dcc8919688525516de, type: 2}
 --- !u!1 &830508190
 GameObject:
   m_ObjectHideFlags: 0
@@ -18675,6 +18675,7 @@ MonoBehaviour:
   countdownStart: {fileID: 8300000, guid: 4a8af3dcd4b4a43768aaa87056f2aacf, type: 3}
   catalog: {fileID: 11400000, guid: ae619287bcbf64d63ade48d5e941a60f, type: 2}
   spawnPoint: {fileID: 1561444182}
+  harborParkingSpawn: {fileID: 1756049861}
   followCamera: {fileID: 932022082}
   speedDisplay: {fileID: 845890678}
   minimap: {fileID: 1368167995}
@@ -18760,6 +18761,9 @@ MonoBehaviour:
   gateGroundTolerance: 2
   gateAudio: {fileID: 0}
   gatePassSound: {fileID: 0}
+  ascentGateSound: {fileID: 0}
+  ascentGateCount: 8
+  explorerGateCount: 8
   parkingSpots:
   - position: {x: -160, y: 0, z: 65}
     yaw: 83.7
@@ -18777,6 +18781,12 @@ MonoBehaviour:
     yaw: 0
   - position: {x: 0, y: 0, z: -5}
     yaw: 90
+  mountainStopCenter: {x: -88.74, y: 90.004, z: 289.46}
+  mountainStopYaw: 86.3
+  mountainStopTimeLimit: 100
+  harborParkingCenter: {x: 15.01, y: -0.056, z: -171.13}
+  harborParkingYaw: 91.1
+  harborParkingTimeLimit: 25
   parkingCenter: {x: -160, y: 0, z: 65}
   parkingSize: {x: 4.5, y: 8}
   parkingYaw: 74
@@ -18789,8 +18799,11 @@ MonoBehaviour:
   beaconWidth: 1.8
   beaconIntensity: 1
   beaconPulseSpeed: 1.2
+  highlandCheckpoints: 12
+  highlandRoadTolerance: 3
   harborCheckpoints: 12
   harborRoadTolerance: 2
+  harborLapStart: {x: -116, y: 0, z: -170}
   pineCheckpoints: 12
   pineRoadTolerance: 3
   mountainCheckpoints: 12
@@ -24766,8 +24779,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1561444181}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.71963894, z: -0, w: 0.69434845}
-  m_LocalPosition: {x: -148.29932, y: 0.4, z: -170.11795}
+  m_LocalRotation: {x: -0, y: 0.6943483, z: -0, w: -0.7196391}
+  m_LocalPosition: {x: -85, y: 0.4, z: -170}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29365,6 +29378,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1752030215}
   m_CullTransparentMesh: 1
+--- !u!1 &1756049860
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1756049861}
+  m_Layer: 0
+  m_Name: Harbor Parking Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1756049861
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756049860}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.71963894, z: -0, w: 0.69434845}
+  m_LocalPosition: {x: -148.29932, y: 0.4, z: -170.11795}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1756576830
 GameObject:
   m_ObjectHideFlags: 0
@@ -35412,3 +35456,4 @@ SceneRoots:
   - {fileID: 1312183703}
   - {fileID: 1577292790}
   - {fileID: 203196878}
+  - {fileID: 1756049861}

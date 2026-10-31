@@ -1009,9 +1009,9 @@ MonoBehaviour:
   torqueResponse: 5200
   brakeTorque: 4500
   coastingBrakeTorque: 100
-  maximumSteerAngle: 30
+  maximumSteerAngle: 34
   highSpeedSteerAngle: 7
-  steeringFullReductionSpeed: 14
+  steeringFullReductionSpeed: 18
   steeringResponse: 150
   resetPoint: {fileID: 0}
   followCamera: {fileID: 0}

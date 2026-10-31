@@ -12,6 +12,7 @@ public class TestDriveSceneManager : MonoBehaviour
     public AudioClip CountdownStart => countdownStart;
     [SerializeField] private TestDriveVehicleCatalog catalog;
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private Transform harborParkingSpawn;
     [SerializeField] private TestDriveCameraFollow followCamera;
     [SerializeField] private TestDriveSpeedDisplay speedDisplay;
     [SerializeField] private TestDriveMinimap minimap;
@@ -42,7 +43,9 @@ public class TestDriveSceneManager : MonoBehaviour
             Debug.LogError("The selected driving prefab is missing.", this);
             return;
         }
-        Transform selectedSpawn = spawnPoint;
+        Transform selectedSpawn = TestDriveSelection.Course == TestDriveSelection.CourseKind.HarborStreet
+            && TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.HarborParking
+            && harborParkingSpawn != null ? harborParkingSpawn : spawnPoint;
         System.Exception setupError = null;
         if (TestDriveSelection.Mode == TestDriveSelection.DriveMode.Challenge
             && TestDriveSelection.SelectedChallenge == TestDriveSelection.ChallengeKind.OffroadTrail)
@@ -52,6 +55,8 @@ public class TestDriveSceneManager : MonoBehaviour
             try { trail.Initialize(); selectedSpawn = trail.Spawn; }
             catch (System.Exception ex) { setupError = ex; Destroy(trail.gameObject); }
         }
+        if (TestDriveSelection.Course == TestDriveSelection.CourseKind.PineRidge && TestDriveSelection.Mode == TestDriveSelection.DriveMode.FreeRun)
+            TrailLineMarking.Create(transform, selectedSpawn.position + selectedSpawn.forward * 5f, selectedSpawn.forward, 12f, "Pine Ridge start and finish line");
         vehicle = Instantiate(catalog.drivingPrefabs[index], selectedSpawn.position, selectedSpawn.rotation);
         vehicle.ConfigureReset(selectedSpawn, followCamera);
         if (touchControls != null) touchControls.BindVehicle(vehicle);

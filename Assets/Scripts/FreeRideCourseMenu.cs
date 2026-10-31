@@ -18,6 +18,8 @@ public class FreeRideCourseMenu : MonoBehaviour
     private RectTransform cardViewport;
     private float slideOffset;
     private float snapTarget;
+    private float dragStartOffset;
+    private float snapVelocity;
     private bool sliding;
     private bool dragging;
     private const float CardStep = 320f;
@@ -99,9 +101,11 @@ public class FreeRideCourseMenu : MonoBehaviour
 
     public bool BeginSlide()
     {
-        // Ignore another drag until the short snap finishes.
-        if (dragging || sliding) return false;
+        if (dragging) return false;
         dragging = true;
+        sliding = false;
+        snapVelocity = 0f;
+        dragStartOffset = slideOffset;
         SetMovingCards();
         return true;
     }
@@ -109,9 +113,8 @@ public class FreeRideCourseMenu : MonoBehaviour
     public void DragSlide(float delta)
     {
         if (!dragging) return;
-        int max = CourseCount() - VisibleCourses;
-        if ((firstVisible == 0 && delta > 0f) || (firstVisible >= max && delta < 0f)) delta *= .25f;
-        slideOffset = Mathf.Clamp(delta, -CardStep, CardStep);
+        int max = Mathf.Max(0, CourseCount() - VisibleCourses);
+        slideOffset = Mathf.Clamp(dragStartOffset + delta, -(max - firstVisible) * CardStep, firstVisible * CardStep);
         PositionMovingCards();
     }
 
@@ -120,9 +123,12 @@ public class FreeRideCourseMenu : MonoBehaviour
         if (!dragging) return;
         dragging = false;
         int max = Mathf.Max(0, CourseCount() - VisibleCourses);
-        int direction = advance ? (delta < 0f ? 1 : -1) : 0;
-        if (firstVisible + direction < 0 || firstVisible + direction > max) direction = 0;
-        snapTarget = -direction * CardStep;
+        int steps = Mathf.RoundToInt(-slideOffset / CardStep);
+        if (advance && steps == 0 && Mathf.Abs(slideOffset) > .01f)
+            steps = slideOffset < 0f ? 1 : -1;
+        int destination = Mathf.Clamp(firstVisible + steps, 0, max);
+        snapTarget = -(destination - firstVisible) * CardStep;
+        snapVelocity = 0f;
         sliding = true;
     }
 
@@ -139,7 +145,7 @@ public class FreeRideCourseMenu : MonoBehaviour
         foreach (var button in CourseButtons)
         {
             if (button == null) continue;
-            button.gameObject.SetActive(index >= firstVisible - 1 && index <= firstVisible + VisibleCourses);
+            button.gameObject.SetActive(true);
             index++;
         }
         PositionMovingCards();
@@ -168,9 +174,9 @@ public class FreeRideCourseMenu : MonoBehaviour
     private void Update()
     {
         if (!sliding || dragging) return;
-        slideOffset = Mathf.MoveTowards(slideOffset, snapTarget, CardStep * snapSpeed * Time.unscaledDeltaTime);
+        slideOffset = Mathf.SmoothDamp(slideOffset, snapTarget, ref snapVelocity, 1f / Mathf.Max(1f, snapSpeed), Mathf.Infinity, Time.unscaledDeltaTime);
         PositionMovingCards();
-        if (Mathf.Approximately(slideOffset, snapTarget)) FinishSlide();
+        if (Mathf.Abs(slideOffset - snapTarget) < .25f && Mathf.Abs(snapVelocity) < 2f) FinishSlide();
     }
 
     private void ArrangeCourses()

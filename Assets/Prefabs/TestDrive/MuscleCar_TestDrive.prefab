@@ -435,7 +435,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.85
-    m_Stiffness: 1.08
+    m_Stiffness: 1.2
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -794,7 +794,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.85
-    m_Stiffness: 1.08
+    m_Stiffness: 1.2
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1030,14 +1030,14 @@ MonoBehaviour:
     driven: 1
   moveSpeed: 55.555557
   reverseSpeed: 4
-  motorTorque: 4400
+  motorTorque: 4100
   torqueResponse: 5500
   brakeTorque: 5500
   coastingBrakeTorque: 110
   maximumSteerAngle: 30
   highSpeedSteerAngle: 6.5
   steeringFullReductionSpeed: 14
-  steeringResponse: 150
+  steeringResponse: 120
   resetPoint: {fileID: 0}
   followCamera: {fileID: 0}
 --- !u!114 &1365659477364466774
